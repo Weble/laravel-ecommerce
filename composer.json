@@ -1,0 +1,68 @@
+{
+    "name": "weble/laravel-ecommerce",
+    "description": "",
+    "keywords": [
+        "weble",
+        "laravel-ecommerce",
+        "ecommerce",
+        "e-commerce",
+        "laravel",
+        "cart",
+        "shopping-cart"
+    ],
+    "homepage": "https://github.com/spatie/laravel-ecommerce",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Weble",
+            "email": "daniele@weble.it",
+            "homepage": "https://spatie.be",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^7.4",
+        "cknow/laravel-money": "^4.0",
+        "darryldecode/cart": "^4.1",
+        "florianv/laravel-swap": "^2.1",
+        "nyholm/psr7": "^1.2",
+        "php-http/curl-client": "^2.1",
+        "php-http/message": "^1.8"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.16",
+        "symfony/var-dumper": "^5.0",
+        "orchestra/testbench": "^5.2",
+        "phpunit/phpunit": "^9.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Weble\\LaravelEcommerce\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Weble\\LaravelEcommerce\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage",
+        "format": "vendor/bin/php-cs-fixer fix --allow-risky=yes"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Weble\\LaravelEcommerce\\LaravelEcommerceServiceProvider"
+            ],
+            "aliases": {
+                "LaravelEcommerce": "Weble\\LaravelEcommerce\\LaravelEcommerceFacade"
+            }
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
