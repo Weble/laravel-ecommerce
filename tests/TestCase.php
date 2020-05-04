@@ -3,7 +3,6 @@
 
 namespace Weble\LaravelEcommerce\Tests;
 
-
 use Weble\LaravelEcommerce\LaravelEcommerceServiceProvider;
 
 class TestCase extends \Orchestra\Testbench\TestCase

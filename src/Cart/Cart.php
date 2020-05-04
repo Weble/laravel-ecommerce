@@ -3,7 +3,6 @@
 
 namespace Weble\LaravelEcommerce\Cart;
 
-
 class Cart
 {
     protected CartDriverInterface $driver;

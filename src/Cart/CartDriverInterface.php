@@ -3,7 +3,6 @@
 
 namespace Weble\LaravelEcommerce\Cart;
 
-
 use Weble\LaravelEcommerce\Purchasable;
 
 interface CartDriverInterface

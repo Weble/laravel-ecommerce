@@ -21,6 +21,7 @@ class CartManager
     public function instance(?string $name = null): Cart
     {
         $name = $name ?: $this->getDefaultInstance();
+
         return $this->instances[$name] = $this->get($name);
     }
 
@@ -39,6 +40,7 @@ class CartManager
     public function extend($driver, Closure $callback): self
     {
         $this->customCreators[$driver] = $callback;
+
         return $this;
     }
 

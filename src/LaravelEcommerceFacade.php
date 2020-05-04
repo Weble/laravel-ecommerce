@@ -4,7 +4,6 @@ namespace Weble\LaravelEcommerce;
 
 use Illuminate\Support\Facades\Facade;
 
-
 class LaravelEcommerceFacade extends Facade
 {
     /**

@@ -45,7 +45,7 @@ class LaravelEcommerceServiceProvider extends ServiceProvider
 
     protected function publishResources(): void
     {
-        if (!$this->app->runningInConsole()) {
+        if (! $this->app->runningInConsole()) {
             return;
         }
         $this->publishes([
