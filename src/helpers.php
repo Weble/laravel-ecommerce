@@ -1,6 +1,6 @@
 <?php
 
-if (!function_exists('currencyManager')) {
+if (! function_exists('currencyManager')) {
     /**
      * @return \Weble\LaravelEcommerce\Currency\CurrencyManager
      */

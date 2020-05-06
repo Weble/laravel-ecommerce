@@ -41,6 +41,7 @@ class CartSessionDriver extends CartDriver implements CartDriverInterface
     public function remove(CartItem $cartItem): CartDriverInterface
     {
         $items = $this->items()->except($cartItem->getId());
+
         return $this->setItems($items);
     }
 
@@ -59,7 +60,7 @@ class CartSessionDriver extends CartDriver implements CartDriverInterface
     protected function setItems(Collection $items): self
     {
         $this->session->put($this->prefix . 'items', $items);
+
         return $this;
     }
-
 }

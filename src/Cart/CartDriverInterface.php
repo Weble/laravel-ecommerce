@@ -3,8 +3,6 @@
 
 namespace Weble\LaravelEcommerce\Cart;
 
-use Illuminate\Support\Collection;
-
 interface CartDriverInterface
 {
     public function instanceName(): string;

@@ -52,6 +52,7 @@ class CartManager
     protected function get(string $name)
     {
         $class = $this->app['config']['ecommerce.classes.cart'];
+
         return $this->instances[$name] ?? new $class($this->resolve($name));
     }
 

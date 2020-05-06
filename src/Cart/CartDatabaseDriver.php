@@ -22,7 +22,6 @@ class CartDatabaseDriver extends CartDriver implements CartDriverInterface
 
     public function set(CartItem $cartItem): CartDriverInterface
     {
-
     }
 
     public function get(CartItem $cartItem): CartItem
@@ -49,5 +48,4 @@ class CartDatabaseDriver extends CartDriver implements CartDriverInterface
     {
         // TODO: Implement items() method.
     }
-
 }
