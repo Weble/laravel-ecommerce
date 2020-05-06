@@ -18,7 +18,7 @@ class CartManager
         $this->app = $app;
     }
 
-    public function instance(?string $name = null): Cart
+    public function instance(?string $name = null): CartInterface
     {
         $name = $name ?: $this->getDefaultInstance();
 
@@ -51,7 +51,8 @@ class CartManager
 
     protected function get(string $name)
     {
-        return $this->instances[$name] ?? new Cart($this->resolve($name));
+        $class = $this->app['config']['ecommerce.classes.cart'];
+        return $this->instances[$name] ?? new $class($this->resolve($name));
     }
 
     protected function resolve($name)

@@ -22,20 +22,26 @@
     ],
     "require": {
         "php": "^7.4",
+        "ext-json": "*",
+        "illuminate/database": "^7.0",
         "cknow/laravel-money": "^4.0",
-        "darryldecode/cart": "^4.1",
         "florianv/laravel-swap": "^2.1",
         "nyholm/psr7": "^1.2",
         "php-http/curl-client": "^2.1",
-        "php-http/message": "^1.8"
+        "php-http/message": "^1.8",
+        "spatie/data-transfer-object": "^2.0"
     },
     "require-dev": {
+        "darryldecode/cart": "^4.1",
         "friendsofphp/php-cs-fixer": "^2.16",
         "symfony/var-dumper": "^5.0",
         "orchestra/testbench": "^5.2",
         "phpunit/phpunit": "^9.0"
     },
     "autoload": {
+        "files": [
+            "src/helpers.php"
+        ],
         "psr-4": {
             "Weble\\LaravelEcommerce\\": "src"
         }

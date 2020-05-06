@@ -4,8 +4,11 @@
 namespace Weble\LaravelEcommerce;
 
 use Cknow\Money\Money;
+use Illuminate\Support\Collection;
 
 interface Purchasable
 {
-    public function cartPrice(): Money;
+    public function cartId();
+
+    public function cartPrice(?Collection $cartAttributes = null): Money;
 }

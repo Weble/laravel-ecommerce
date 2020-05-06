@@ -3,42 +3,63 @@
 
 namespace Weble\LaravelEcommerce\Cart;
 
-use Weble\LaravelEcommerce\Purchasable;
+use Illuminate\Session\SessionManager;
+use Illuminate\Support\Collection;
 
 class CartSessionDriver extends CartDriver implements CartDriverInterface
 {
     protected string $prefix;
     protected string $instanceName;
+    protected SessionManager $session;
 
     public function __construct(string $instanceName, array $config = [])
     {
         parent::__construct($instanceName, $config);
 
         $this->prefix = $config['session_key_prefix'] ?? 'cart_';
+        $this->session = session();
     }
 
-    public function add(Purchasable $product, float $quantity = 1): CartDriverInterface
+    public function set(CartItem $cartItem): CartDriverInterface
     {
-        // TODO: Implement add() method.
+        $items = $this->items();
+        $items->put($cartItem->getId(), $cartItem);
+
+        return $this->setItems($items);
     }
 
-    public function get(Purchasable $product): Purchasable
+    public function get(CartItem $cartItem): CartItem
     {
-        // TODO: Implement get() method.
+        return $this->items()->get($cartItem->getId());
     }
 
-    public function has(Purchasable $product): bool
+    public function has(CartItem $cartItem): bool
     {
-        // TODO: Implement has() method.
+        return $this->items()->has($cartItem->getId());
     }
 
-    public function remove(Purchasable $product): CartDriverInterface
+    public function remove(CartItem $cartItem): CartDriverInterface
     {
-        // TODO: Implement remove() method.
+        $items = $this->items()->except($cartItem->getId());
+        return $this->setItems($items);
     }
 
     public function clear(): CartDriverInterface
     {
-        // TODO: Implement clear() method.
+        $this->session->remove($this->prefix . 'items');
+
+        return $this;
     }
+
+    public function items(): CartItemCollection
+    {
+        return CartItemCollection::make($this->session->get($this->prefix . 'items', []));
+    }
+
+    protected function setItems(Collection $items): self
+    {
+        $this->session->put($this->prefix . 'items', $items);
+        return $this;
+    }
+
 }

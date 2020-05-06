@@ -3,19 +3,21 @@
 
 namespace Weble\LaravelEcommerce\Cart;
 
-use Weble\LaravelEcommerce\Purchasable;
+use Illuminate\Support\Collection;
 
 interface CartDriverInterface
 {
     public function instanceName(): string;
 
-    public function add(Purchasable $product, float $quantity = 1): self;
+    public function set(CartItem $cartItem): self;
 
-    public function get(Purchasable $product): Purchasable;
+    public function get(CartItem $cartItem): CartItem;
 
-    public function has(Purchasable $product): bool;
+    public function has(CartItem $cartItem): bool;
 
-    public function remove(Purchasable $product): self;
+    public function remove(CartItem $cartItem): self;
 
     public function clear(): self;
+
+    public function items(): CartItemCollection;
 }

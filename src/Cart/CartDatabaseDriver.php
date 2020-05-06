@@ -3,12 +3,51 @@
 
 namespace Weble\LaravelEcommerce\Cart;
 
-class CartDatabaseDriver implements CartDriverInterface
-{
-    protected $prefix;
+use Illuminate\Database\Eloquent\Model;
+use Weble\LaravelEcommerce\Cart\Model\CartItemModel;
 
-    public function __construct(array $config = [])
+class CartDatabaseDriver extends CartDriver implements CartDriverInterface
+{
+    /**
+     * @var Model|CartItemModel
+     */
+    protected Model $model;
+
+    public function __construct(string $instanceName, array $config = [])
     {
-        $this->prefix = $config['session_key_prefix'] ?? 'cart_';
+        parent::__construct($instanceName, $config);
+
+        $this->model = app(config('classes.cartItemModel'));
     }
+
+    public function set(CartItem $cartItem): CartDriverInterface
+    {
+
+    }
+
+    public function get(CartItem $cartItem): CartItem
+    {
+        // TODO: Implement get() method.
+    }
+
+    public function has(CartItem $cartItem): bool
+    {
+        // TODO: Implement has() method.
+    }
+
+    public function remove(CartItem $cartItem): CartDriverInterface
+    {
+        // TODO: Implement remove() method.
+    }
+
+    public function clear(): CartDriverInterface
+    {
+        // TODO: Implement clear() method.
+    }
+
+    public function items(): CartItemCollection
+    {
+        // TODO: Implement items() method.
+    }
+
 }
