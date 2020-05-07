@@ -66,7 +66,7 @@ class Cart implements CartInterface
 
     public function remove(CartItem $cartItem): self
     {
-        if (!$this->driver()->has($cartItem)) {
+        if (! $this->driver()->has($cartItem)) {
             return $this;
         }
 

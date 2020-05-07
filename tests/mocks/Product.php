@@ -4,12 +4,8 @@
 namespace Weble\LaravelEcommerce\Tests\mocks;
 
 use Cknow\Money\Money;
-use CommerceGuys\Tax\Model\TaxRate;
-use CommerceGuys\Tax\Model\TaxRateInterface;
-use CommerceGuys\Tax\Model\TaxType;
 use CommerceGuys\Tax\Model\TaxTypeInterface;
 use CommerceGuys\Tax\Repository\TaxTypeRepository;
-use CommerceGuys\Tax\TaxableInterface;
 use Illuminate\Support\Collection;
 use Weble\LaravelEcommerce\Purchasable;
 
