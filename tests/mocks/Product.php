@@ -4,6 +4,12 @@
 namespace Weble\LaravelEcommerce\Tests\mocks;
 
 use Cknow\Money\Money;
+use CommerceGuys\Tax\Model\TaxRate;
+use CommerceGuys\Tax\Model\TaxRateInterface;
+use CommerceGuys\Tax\Model\TaxType;
+use CommerceGuys\Tax\Model\TaxTypeInterface;
+use CommerceGuys\Tax\Repository\TaxTypeRepository;
+use CommerceGuys\Tax\TaxableInterface;
 use Illuminate\Support\Collection;
 use Weble\LaravelEcommerce\Purchasable;
 
@@ -18,9 +24,14 @@ class Product implements Purchasable
         $this->price = $price;
     }
 
-    public function cartId()
+    public function cartTaxType(): TaxTypeInterface
     {
-        return $this->id;
+        return (new TaxTypeRepository())->get('it_vat_standard');
+    }
+
+    public function isPhysical()
+    {
+        return true;
     }
 
     public function cartPrice(?Collection $cartAttributes = null): Money

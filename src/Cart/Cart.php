@@ -4,12 +4,16 @@
 namespace Weble\LaravelEcommerce\Cart;
 
 use Cknow\Money\Money;
+use CommerceGuys\Addressing\AddressInterface;
 use Illuminate\Support\Collection;
 use Weble\LaravelEcommerce\Purchasable;
 
 class Cart implements CartInterface
 {
     protected CartDriverInterface $driver;
+
+    protected ?AddressInterface $billingAddress = null;
+    protected ?AddressInterface $shippingAddress = null;
 
     public function __construct(CartDriverInterface $driver)
     {
@@ -62,7 +66,7 @@ class Cart implements CartInterface
 
     public function remove(CartItem $cartItem): self
     {
-        if (! $this->driver()->has($cartItem)) {
+        if (!$this->driver()->has($cartItem)) {
             return $this;
         }
 

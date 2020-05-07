@@ -3,6 +3,17 @@
 namespace Weble\LaravelEcommerce;
 
 use Cknow\Money\Money;
+use CommerceGuys\Tax\Repository\TaxTypeRepository;
+use CommerceGuys\Tax\Resolver\TaxRate\ChainTaxRateResolver;
+use CommerceGuys\Tax\Resolver\TaxRate\ChainTaxRateResolverInterface;
+use CommerceGuys\Tax\Resolver\TaxRate\DefaultTaxRateResolver;
+use CommerceGuys\Tax\Resolver\TaxResolver;
+use CommerceGuys\Tax\Resolver\TaxResolverInterface;
+use CommerceGuys\Tax\Resolver\TaxType\CanadaTaxTypeResolver;
+use CommerceGuys\Tax\Resolver\TaxType\ChainTaxTypeResolver;
+use CommerceGuys\Tax\Resolver\TaxType\ChainTaxTypeResolverInterface;
+use CommerceGuys\Tax\Resolver\TaxType\DefaultTaxTypeResolver;
+use CommerceGuys\Tax\Resolver\TaxType\EuTaxTypeResolver;
 use Illuminate\Support\ServiceProvider;
 use Weble\LaravelEcommerce\Cart\CartManager;
 use Weble\LaravelEcommerce\Currency\CurrencyManager;
@@ -28,6 +39,7 @@ class LaravelEcommerceServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(__DIR__ . '/../config/config.php', 'ecommerce');
 
         $this->registerCurrencyManager();
+        $this->registerTaxClasses();
         $this->registerCartInstances();
         $this->registerCartManager();
     }
@@ -85,5 +97,37 @@ class LaravelEcommerceServiceProvider extends ServiceProvider
             __DIR__.'/../resources/views' => base_path('resources/views/vendor/skeleton'),
         ], 'views');
         */
+    }
+
+    protected function registerTaxClasses()
+    {
+        $this->app->singleton('ecommerce.tax.resolver', TaxResolver::class);
+        $this->app->singleton('ecommerce.tax.chainTaxRateResolver', function ($app) {
+            $chainTaxRateResolver = new ChainTaxRateResolver();
+            $chainTaxRateResolver->addResolver(new DefaultTaxRateResolver());
+
+            return $chainTaxRateResolver;
+        });
+        $this->app->singleton('ecommerce.tax.chainTaxTypeResolver', function ($app) {
+            $taxTypeRepository = new TaxTypeRepository();
+            $chainTaxTypeResolver = new ChainTaxTypeResolver();
+            $chainTaxTypeResolver->addResolver(new CanadaTaxTypeResolver($taxTypeRepository));
+            $chainTaxTypeResolver->addResolver(new EuTaxTypeResolver($taxTypeRepository));
+            $chainTaxTypeResolver->addResolver(new DefaultTaxTypeResolver($taxTypeRepository));
+
+            return $chainTaxTypeResolver;
+        });
+
+        $this->app->bind(TaxResolverInterface::class, TaxResolver::class);
+        $this->app->bind(ChainTaxRateResolverInterface::class, ChainTaxRateResolver::class);
+        $this->app->bind(ChainTaxTypeResolverInterface::class, ChainTaxTypeResolver::class);
+
+        $this->app->when(TaxResolver::class)
+            ->needs('$chainTaxTypeResolver')
+            ->give(app('ecommerce.tax.chainTaxTypeResolver'));
+
+        $this->app->when(TaxResolver::class)
+            ->needs('$chainTaxRateResolver')
+            ->give(app('ecommerce.tax.chainTaxRateResolver'));
     }
 }

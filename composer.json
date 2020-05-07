@@ -23,9 +23,10 @@
     "require": {
         "php": "^7.4",
         "ext-json": "*",
-        "illuminate/database": "^7.0",
         "cknow/laravel-money": "^4.0",
+        "commerceguys/tax": "^0.8.2",
         "florianv/laravel-swap": "^2.1",
+        "illuminate/database": "^7.0",
         "nyholm/psr7": "^1.2",
         "php-http/curl-client": "^2.1",
         "php-http/message": "^1.8",
