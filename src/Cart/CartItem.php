@@ -4,14 +4,10 @@ namespace Weble\LaravelEcommerce\Cart;
 
 use Cknow\Money\Money;
 use CommerceGuys\Addressing\AddressInterface;
-use CommerceGuys\Tax\Model\TaxRateAmount;
-use CommerceGuys\Tax\Resolver\Context;
-use CommerceGuys\Tax\Resolver\TaxResolver;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Collection;
 use Spatie\DataTransferObject\DataTransferObject;
-use Weble\LaravelEcommerce\Address\StoreAddress;
 use Weble\LaravelEcommerce\Purchasable;
 
 class CartItem extends DataTransferObject implements Arrayable, Jsonable
