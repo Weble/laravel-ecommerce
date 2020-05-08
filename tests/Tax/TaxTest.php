@@ -7,6 +7,7 @@ use CommerceGuys\Tax\Model\TaxRateAmount;
 use CommerceGuys\Tax\Resolver\Context;
 use CommerceGuys\Tax\Resolver\TaxResolver;
 use CommerceGuys\Tax\Resolver\TaxResolverInterface;
+use Weble\LaravelEcommerce\Tax\TaxManager;
 use Weble\LaravelEcommerce\Tests\mocks\Product;
 use Weble\LaravelEcommerce\Tests\TestCase;
 
@@ -16,6 +17,12 @@ class TaxTest extends TestCase
     public function can_get_tax_resolver()
     {
         $this->assertInstanceOf(TaxResolverInterface::class, app('ecommerce.tax.resolver'));
+    }
+
+    /** @test */
+    public function can_get_tax_manager()
+    {
+        $this->assertInstanceOf(TaxManager::class, app('ecommerce.taxManager'));
     }
 
     /** @test */

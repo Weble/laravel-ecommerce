@@ -74,19 +74,7 @@ class CartItem extends DataTransferObject implements Arrayable, Jsonable
 
     public function unitTax(AddressInterface $address): Money
     {
-        $currency = $this->price->getMoney()->getCurrency();
-        $context = new Context($address, new StoreAddress());
-
-        /** @var TaxRateAmount[] $amounts */
-        $amounts = app()->make(TaxResolver::class)->resolveAmounts($this->product, $context);
-
-        if (count($amounts) <= 0) {
-            return new Money(0, $currency);
-        }
-
-        $amount = array_shift($amounts)->getAmount();
-
-        return $this->price->multiply($amount);
+        return taxManager()->taxFor($this->product, $address);
     }
 
     public function unitTotal(AddressInterface $address): Money

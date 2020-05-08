@@ -19,3 +19,13 @@ if (! function_exists('cartManager')) {
         return app('ecommerce.cartManager');
     }
 }
+
+if (! function_exists('taxManager')) {
+    /**
+     * @return \Weble\LaravelEcommerce\Tax\TaxManager
+     */
+    function taxManager()
+    {
+        return app('ecommerce.taxManager');
+    }
+}

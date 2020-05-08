@@ -19,6 +19,7 @@ use Weble\LaravelEcommerce\Cart\CartManager;
 use Weble\LaravelEcommerce\Currency\CurrencyManager;
 use Weble\LaravelEcommerce\Facades\CartFacade;
 use Weble\LaravelEcommerce\Facades\CurrencyFacade;
+use Weble\LaravelEcommerce\Tax\TaxManager;
 
 class LaravelEcommerceServiceProvider extends ServiceProvider
 {
@@ -133,11 +134,16 @@ class LaravelEcommerceServiceProvider extends ServiceProvider
         $this->app->when(TaxResolver::class)
             ->needs('$chainTaxRateResolver')
             ->give(app('ecommerce.tax.chainTaxRateResolver'));
+
+        $this->app->singleton('ecommerce.taxManager', function ($app) {
+            return new TaxManager($app);
+        });
     }
 
     protected function registerFacades()
     {
         $this->app->alias('ecommerce.cartManager', CartFacade::class);
         $this->app->alias('ecommerce.currencyManager', CurrencyFacade::class);
+        $this->app->alias('ecommerce.taxManager', TaxManager::class);
     }
 }
