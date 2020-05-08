@@ -78,4 +78,20 @@ class CartTest extends TestCase
 
         $this->assertTrue($cart->subTotal()->equals(money(400)));
     }
+
+    /** @test */
+    public function can_calculate_tax()
+    {
+        // These is tested with 22% IT vat
+        $product = new Product(1, money(100));
+        $product2 = new Product(2, money(200));
+
+        /** @var Cart $cart */
+        $cart = app('ecommerce.cartManager');
+        $cart->add($product, 2);
+        $cart->add($product2, 1);
+
+        $this->assertTrue($cart->tax()->equals(money(88)));
+        $this->assertTrue($cart->total()->equals(money(488)));
+    }
 }

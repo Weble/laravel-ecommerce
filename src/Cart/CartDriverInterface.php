@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Weble\LaravelEcommerce\Cart;
 
 interface CartDriverInterface

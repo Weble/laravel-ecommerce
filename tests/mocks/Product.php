@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Weble\LaravelEcommerce\Tests\mocks;
 
 use Cknow\Money\Money;
@@ -18,6 +17,11 @@ class Product implements Purchasable
     {
         $this->id = $id;
         $this->price = $price;
+    }
+
+    public function getKey()
+    {
+        return $this->id;
     }
 
     public function cartTaxType(): TaxTypeInterface

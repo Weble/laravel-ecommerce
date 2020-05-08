@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Weble\LaravelEcommerce\Cart;
 
 use Illuminate\Database\Eloquent\Model;

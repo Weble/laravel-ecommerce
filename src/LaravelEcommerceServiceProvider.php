@@ -17,6 +17,8 @@ use CommerceGuys\Tax\Resolver\TaxType\EuTaxTypeResolver;
 use Illuminate\Support\ServiceProvider;
 use Weble\LaravelEcommerce\Cart\CartManager;
 use Weble\LaravelEcommerce\Currency\CurrencyManager;
+use Weble\LaravelEcommerce\Facades\CartFacade;
+use Weble\LaravelEcommerce\Facades\CurrencyFacade;
 
 class LaravelEcommerceServiceProvider extends ServiceProvider
 {
@@ -42,6 +44,8 @@ class LaravelEcommerceServiceProvider extends ServiceProvider
         $this->registerTaxClasses();
         $this->registerCartInstances();
         $this->registerCartManager();
+
+        $this->registerFacades();
     }
 
     protected function registerCurrencyManager()
@@ -129,5 +133,11 @@ class LaravelEcommerceServiceProvider extends ServiceProvider
         $this->app->when(TaxResolver::class)
             ->needs('$chainTaxRateResolver')
             ->give(app('ecommerce.tax.chainTaxRateResolver'));
+    }
+
+    protected function registerFacades()
+    {
+        $this->app->alias('ecommerce.cartManager', CartFacade::class);
+        $this->app->alias('ecommerce.currencyManager', CurrencyFacade::class);
     }
 }

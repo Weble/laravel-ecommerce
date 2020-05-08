@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Weble\LaravelEcommerce\Cart\Model;
 
 use Illuminate\Auth\Authenticatable;

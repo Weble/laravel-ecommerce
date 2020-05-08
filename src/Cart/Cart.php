@@ -1,11 +1,12 @@
 <?php
 
-
 namespace Weble\LaravelEcommerce\Cart;
 
 use Cknow\Money\Money;
 use CommerceGuys\Addressing\AddressInterface;
 use Illuminate\Support\Collection;
+use Weble\LaravelEcommerce\Address\AddressType;
+use Weble\LaravelEcommerce\Address\StoreAddress;
 use Weble\LaravelEcommerce\Purchasable;
 
 class Cart implements CartInterface
@@ -18,6 +19,63 @@ class Cart implements CartInterface
     public function __construct(CartDriverInterface $driver)
     {
         $this->driver = $driver;
+    }
+
+    public function setBillingAddress(AddressInterface $address): self
+    {
+        $this->billingAddress = $address;
+
+        return $this;
+    }
+
+    public function setShippingAddress(AddressInterface $address): self
+    {
+        $this->shippingAddress = $address;
+
+        return $this;
+    }
+
+    public function billingAddress(): ?AddressInterface
+    {
+        return $this->billingAddress;
+    }
+
+    public function shippingAddress(): ?AddressInterface
+    {
+        return $this->shippingAddress;
+    }
+
+    public function hasBillingAddress(): bool
+    {
+        return $this->billingAddress() !== null;
+    }
+
+    public function hasShippingAddress(): bool
+    {
+        return $this->shippingAddress() !== null;
+    }
+
+    public function taxAddress(): AddressInterface
+    {
+        $taxAddressType = config('ecommerce.store.address_for_tax', 'shipping');
+
+        $address = new StoreAddress();
+        switch ($taxAddressType) {
+            case AddressType::SHIPPING:
+                if ($this->hasShippingAddress()) {
+                    $address = $this->shippingAddress();
+                }
+
+                break;
+            case AddressType::BILLING:
+                if ($this->hasBillingAddress()) {
+                    $address = $this->billingAddress();
+                }
+
+                break;
+        }
+
+        return $address;
     }
 
     public function driver(): CartDriverInterface
@@ -47,7 +105,7 @@ class Cart implements CartInterface
         return $this;
     }
 
-    public function add(Purchasable $purchasable, float $quantity = 1, ?Collection $attributes = null): self
+    public function add(Purchasable $purchasable, float $quantity = 1, ?Collection $attributes = null): CartItem
     {
         if ($attributes === null) {
             $attributes = collect([]);
@@ -61,7 +119,7 @@ class Cart implements CartInterface
 
         $this->driver()->set($cartItem);
 
-        return $this;
+        return $cartItem;
     }
 
     public function remove(CartItem $cartItem): self
@@ -74,7 +132,6 @@ class Cart implements CartInterface
 
         return $this;
     }
-
 
     public function items(): CartItemCollection
     {
@@ -90,5 +147,21 @@ class Cart implements CartInterface
 
             return $sum->add($cartItem->subTotal());
         });
+    }
+
+    public function tax(): Money
+    {
+        return $this->items()->reduce(function (?Money $sum = null, ?CartItem $cartItem = null) {
+            if ($sum === null) {
+                return $cartItem->tax($this->taxAddress());
+            }
+
+            return $sum->add($cartItem->tax($this->taxAddress()));
+        });
+    }
+
+    public function total(): Money
+    {
+        return $this->subTotal()->add($this->tax());
     }
 }

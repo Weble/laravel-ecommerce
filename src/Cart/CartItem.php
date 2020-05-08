@@ -1,13 +1,17 @@
 <?php
 
-
 namespace Weble\LaravelEcommerce\Cart;
 
 use Cknow\Money\Money;
+use CommerceGuys\Addressing\AddressInterface;
+use CommerceGuys\Tax\Model\TaxRateAmount;
+use CommerceGuys\Tax\Resolver\Context;
+use CommerceGuys\Tax\Resolver\TaxResolver;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Collection;
 use Spatie\DataTransferObject\DataTransferObject;
+use Weble\LaravelEcommerce\Address\StoreAddress;
 use Weble\LaravelEcommerce\Purchasable;
 
 class CartItem extends DataTransferObject implements Arrayable, Jsonable
@@ -29,7 +33,6 @@ class CartItem extends DataTransferObject implements Arrayable, Jsonable
         return json_encode($this->toArray(), $options);
     }
 
-
     public static function fromPurchasable(Purchasable $purchasable, float $quantity = 1, ?Collection $attributes = null): self
     {
         if ($attributes === null) {
@@ -46,11 +49,48 @@ class CartItem extends DataTransferObject implements Arrayable, Jsonable
 
     public function getId(): string
     {
-        return sha1($this->product->cartId() . '-' . $this->attributes->toJson());
+        return sha1($this->product->getKey() . '-' . $this->attributes->toJson());
     }
 
     public function subTotal(): Money
     {
         return $this->price->multiply($this->quantity);
+    }
+
+    public function tax(AddressInterface $address): Money
+    {
+        return $this->unitTax($address)->multiply($this->quantity);
+    }
+
+    public function total(AddressInterface $address): Money
+    {
+        return $this->tax($address)->add($this->subTotal());
+    }
+
+    public function unitPrice(): Money
+    {
+        return $this->price;
+    }
+
+    public function unitTax(AddressInterface $address): Money
+    {
+        $currency = $this->price->getMoney()->getCurrency();
+        $context = new Context($address, new StoreAddress());
+
+        /** @var TaxRateAmount[] $amounts */
+        $amounts = app()->make(TaxResolver::class)->resolveAmounts($this->product, $context);
+
+        if (count($amounts) <= 0) {
+            return new Money(0, $currency);
+        }
+
+        $amount = array_shift($amounts)->getAmount();
+
+        return $this->price->multiply($amount);
+    }
+
+    public function unitTotal(AddressInterface $address): Money
+    {
+        return $this->unitPrice()->add($this->unitTax($address));
     }
 }

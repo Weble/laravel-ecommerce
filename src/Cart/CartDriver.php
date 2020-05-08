@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Weble\LaravelEcommerce\Cart;
 
 abstract class CartDriver implements CartDriverInterface

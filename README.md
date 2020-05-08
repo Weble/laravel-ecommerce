@@ -22,6 +22,7 @@ It is **very** opinionated, meaning we put some "assertions" in place to allow u
 
 ### Design Choices
 
+- In v1 we support only the Single Store model. For v2 we plan to add support for Multiple Store, with a Store Provider.
 - Each "thing" you add to the cart is an Eloquent Model. This is done in order to take advantage of the Polymorphic relationships, while keeping the maximum flexibility.
 - Everything related to "prices" is a MoneyPHP object. For now we use the excellent ```cknow/laravel-money``` wrapper for laravel
 - We use ```commerceguys/addressing``` to deal with addresses and zones in general

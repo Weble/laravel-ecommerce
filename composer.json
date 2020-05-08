@@ -23,6 +23,7 @@
     "require": {
         "php": "^7.4",
         "ext-json": "*",
+        "calebporzio/sushi": "^2.0",
         "cknow/laravel-money": "^4.0",
         "commerceguys/tax": "^0.8.2",
         "florianv/laravel-swap": "^2.1",
@@ -66,7 +67,7 @@
                 "Weble\\LaravelEcommerce\\LaravelEcommerceServiceProvider"
             ],
             "aliases": {
-                "LaravelEcommerce": "Weble\\LaravelEcommerce\\LaravelEcommerceFacade"
+                "LaravelEcommerce": "CartFacade"
             }
         }
     },

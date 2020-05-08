@@ -105,6 +105,28 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Store
+    |--------------------------------------------------------------------------
+    |
+    | Details of the store selling the products.
+    */
+    'store' => [
+        'address' => [
+            'country' => 'IT',
+            'city' => 'Vicenza',
+            'zip' => '36100',
+            'state' => 'VI',
+            'address' => 'Via Enrico Fermi, 265',
+            'address2' => '',
+            'organization' => 'Weble Srl',
+            'vat_id' => '03579410246',
+        ],
+
+        'address_for_tax' => \Weble\LaravelEcommerce\Address\AddressType::SHIPPING,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Configurable Classes
     |--------------------------------------------------------------------------
     |

@@ -9,3 +9,13 @@ if (! function_exists('currencyManager')) {
         return app('ecommerce.currencyManager');
     }
 }
+
+if (! function_exists('cartManager')) {
+    /**
+     * @return \Weble\LaravelEcommerce\Cart\CartManager
+     */
+    function cartManager()
+    {
+        return app('ecommerce.cartManager');
+    }
+}

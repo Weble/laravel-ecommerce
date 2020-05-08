@@ -1,13 +1,12 @@
 <?php
 
-
 namespace Weble\LaravelEcommerce\Currency;
 
 use Cknow\Money\Money;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Collection;
 use Money\Converter;
-use Money\Currencies\CurrencyList;
+use Money\Currencies;
 use Money\Currencies\ISOCurrencies;
 use Money\Currency;
 use Money\Exception\UnknownCurrencyException;
@@ -20,7 +19,7 @@ class CurrencyManager
 {
     protected Currency $defaultCurrency;
     protected Currency $userCurrency;
-    protected CurrencyList $availableCurrencies;
+    protected Currencies $availableCurrencies;
     protected Exchange $exchange;
     protected Converter $converter;
     protected Collection $availableCurrenciesCollection;
@@ -28,7 +27,14 @@ class CurrencyManager
     public function __construct(Application $app)
     {
         $this->setupCurrencies();
-        $this->setupCurrencyConversion(app('swap'));
+        $this->setupCurrencyConversion(app()->make(Swap::class));
+    }
+
+    public function fromFloat(float $amount, Currency $currency): Money
+    {
+        $intValue = $amount * pow(10, $this->availableCurrencies()->subunitFor($currency));
+
+        return new Money((int) $intValue, $currency);
     }
 
     public function convert(Money $money, Currency $counterCurrency = null, $roundingMode = \Money\Money::ROUND_HALF_UP): Money
@@ -79,7 +85,7 @@ class CurrencyManager
         throw new UnknownCurrencyException($code);
     }
 
-    public function availableCurrencies(): CurrencyList
+    public function availableCurrencies(): Currencies
     {
         return $this->availableCurrencies;
     }
