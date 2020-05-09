@@ -17,20 +17,23 @@ class CartTest extends TestCase
     }
 
     /** @test */
+    public function can_load_facade()
+    {
+        $this->assertInstanceOf(CartManager::class, \Weble\LaravelEcommerce\Facades\Cart::getFacadeRoot());
+    }
+
+    /** @test */
     public function can_get_cart_instances()
     {
-        /** @var CartManager $cart */
-        $cart = app('ecommerce.cartManager');
-
-        $defaultCart = $cart->instance();
+        $defaultCart = \Weble\LaravelEcommerce\Facades\Cart::instance();
         $this->assertInstanceOf(Cart::class, $defaultCart);
 
-        $defaultCart = $cart->instance('cart');
+        $defaultCart = \Weble\LaravelEcommerce\Facades\Cart::instance('cart');
         $this->assertInstanceOf(Cart::class, $defaultCart);
         $this->assertInstanceOf(CartSessionDriver::class, $defaultCart->driver());
         $this->assertEquals('cart', $defaultCart->driver()->instanceName());
 
-        $wishlist = $cart->instance('wishlist');
+        $wishlist = \Weble\LaravelEcommerce\Facades\Cart::instance('wishlist');
         $this->assertInstanceOf(Cart::class, $wishlist);
         $this->assertInstanceOf(CartSessionDriver::class, $wishlist->driver());
         $this->assertEquals('wishlist', $wishlist->driver()->instanceName());

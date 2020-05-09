@@ -97,12 +97,12 @@ class CurrencyManager
 
     public function defaultCurrency(): Currency
     {
-        return new Currency(config('money.user_default', 'EUR'));
+        return $this->defaultCurrency;
     }
 
     protected function setupCurrencies(): void
     {
-        $currencyListClass = config('ecommerce.currencies', ISOCurrencies::class);
+        $currencyListClass = config('ecommerce.currency.currencies', ISOCurrencies::class);
 
         if (! class_exists($currencyListClass)) {
             $currencyListClass = ISOCurrencies::class;
@@ -112,8 +112,8 @@ class CurrencyManager
         $this->availableCurrenciesCollection = Collection::make($this->availableCurrencies);
         Money::setCurrencies($this->availableCurrencies);
 
-        $this->defaultCurrency = $this->currency(config('ecommerce.currency', 'USD'));
-        $this->userCurrency = $this->currency(config('ecommerce.user_currency', 'USD'));
+        $this->defaultCurrency = $this->currency(config('ecommerce.currency.default', config('money.user_default', 'EUR')));
+        $this->userCurrency = $this->currency(config('ecommerce.currency.user', 'USD'));
     }
 
     protected function setupCurrencyConversion(Swap $swap): void

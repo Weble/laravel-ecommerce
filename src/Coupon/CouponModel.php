@@ -1,13 +1,13 @@
 <?php
 
-namespace Weble\LaravelEcommerce\Cart\Model;
+namespace Weble\LaravelEcommerce\Coupon;
 
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-class CartItemModel extends Model
+class CouponModel extends Model
 {
     protected $guarded = [];
 
@@ -15,7 +15,7 @@ class CartItemModel extends Model
     {
         parent::__construct($attributes);
 
-        $this->setTable(config('ecommerce.cart.table', 'cart_items'));
+        $this->setTable(config('ecommerce.coupon.table', 'coupons'));
     }
 
     public function purchasable(): MorphTo

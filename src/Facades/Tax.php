@@ -4,7 +4,7 @@ namespace Weble\LaravelEcommerce\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class CurrencyFacade extends Facade
+class Tax extends Facade
 {
     /**
      * Get the registered name of the component.
@@ -13,6 +13,6 @@ class CurrencyFacade extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'ecommerce.currencyManager';
+        return 'ecommerce.taxManager';
     }
 }

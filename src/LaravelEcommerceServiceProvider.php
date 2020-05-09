@@ -17,8 +17,8 @@ use CommerceGuys\Tax\Resolver\TaxType\EuTaxTypeResolver;
 use Illuminate\Support\ServiceProvider;
 use Weble\LaravelEcommerce\Cart\CartManager;
 use Weble\LaravelEcommerce\Currency\CurrencyManager;
-use Weble\LaravelEcommerce\Facades\CartFacade;
-use Weble\LaravelEcommerce\Facades\CurrencyFacade;
+use Weble\LaravelEcommerce\Facades\Cart;
+use Weble\LaravelEcommerce\Facades\Currency;
 use Weble\LaravelEcommerce\Tax\TaxManager;
 
 class LaravelEcommerceServiceProvider extends ServiceProvider
@@ -31,7 +31,7 @@ class LaravelEcommerceServiceProvider extends ServiceProvider
         $this->publishResources();
 
         Money::setLocale($this->app->make('config')->get('ecommerce.locale'));
-        Money::setCurrency($this->app->make('config')->get('ecommerce.currency'));
+        Money::setCurrency($this->app->make('config')->get('ecommerce.currency.default'));
     }
 
     /**
@@ -69,7 +69,7 @@ class LaravelEcommerceServiceProvider extends ServiceProvider
 
     protected function registerCartInstances()
     {
-        $instances = array_keys($this->app['config']['ecommerce.cart_instances'] ?? []);
+        $instances = array_keys($this->app['config']['ecommerce.cart.instances'] ?? []);
         foreach ($instances as $instance) {
             $this->app->singleton('ecommerce.cart.instance.' . $instance, function ($app) use ($instance) {
                 return $app['ecommerce.cartManager']->instance($instance);
@@ -142,8 +142,8 @@ class LaravelEcommerceServiceProvider extends ServiceProvider
 
     protected function registerFacades()
     {
-        $this->app->alias('ecommerce.cartManager', CartFacade::class);
-        $this->app->alias('ecommerce.currencyManager', CurrencyFacade::class);
+        $this->app->alias('ecommerce.cartManager', Cart::class);
+        $this->app->alias('ecommerce.currencyManager', Currency::class);
         $this->app->alias('ecommerce.taxManager', TaxManager::class);
     }
 }

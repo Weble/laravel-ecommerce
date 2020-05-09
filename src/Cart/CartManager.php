@@ -33,7 +33,7 @@ class CartManager
 
     public function getDefaultInstance(): string
     {
-        return $this->app['config']['ecommerce.default_cart_instance'] ?? 'cart';
+        return $this->app['config']['ecommerce.cart.default_instance'] ?? 'cart';
     }
 
     public function extend($driver, Closure $callback): self
@@ -90,6 +90,6 @@ class CartManager
 
     protected function getConfig(string $name): array
     {
-        return $this->app['config']["ecommerce.cart_instances.{$name}"] ?: [];
+        return $this->app['config']["ecommerce.cart.instances.{$name}"] ?: [];
     }
 }
