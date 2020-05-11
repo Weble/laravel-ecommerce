@@ -14,13 +14,15 @@ interface CartInterface extends HasTotals
 
     public function instanceName(): string;
 
-    public function get(CartItem $cartItem): CartItem;
+    public function get(string $cartItemId): CartItem;
 
-    public function has(CartItem $cartItem): bool;
+    public function has(string $cartItemId): bool;
 
     public function clear(): CartInterface;
 
     public function add(Purchasable $purchasable, float $quantity = 1, ?Collection $attributes = null): CartItem;
 
     public function remove(CartItem $cartItem): CartInterface;
+
+    public function update(CartItem $cartItem): CartInterface;
 }

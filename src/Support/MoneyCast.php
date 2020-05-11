@@ -10,11 +10,17 @@ class MoneyCast implements CastsAttributes
 {
     private ?string $currencyCode;
     private ?string $currencyField;
+    private Currency $currency;
 
     public function __construct(?string $currencyCode = null, ?string $currencyField = null)
     {
         $this->currencyCode = $currencyCode;
         $this->currencyField = $currencyField;
+        $this->currency = currencyManager()->defaultCurrency();
+
+        if ($this->currencyCode) {
+            $this->currency = currencyManager()->currency($this->currencyCode);
+        }
     }
 
     /**
@@ -32,7 +38,9 @@ class MoneyCast implements CastsAttributes
             return currencyManager()->convert($value, $model->{$this->currencyField} ?: null);
         }
 
-        return currencyManager()->convert($value, currencyManager()->currency($this->currencyCode));
+        $value = new Money($value, $this->currency);
+
+        return currencyManager()->convert($value);
     }
 
     /**
@@ -50,16 +58,16 @@ class MoneyCast implements CastsAttributes
             return null;
         }
 
-        if (! $value instanceof Money) {
+        if (!$value instanceof Money) {
             return $value;
         }
 
         $storeAsCurrency = $this->currencyCode;
-        if (! $storeAsCurrency) {
+        if (!$storeAsCurrency) {
             $storeAsCurrency = $value->getCurrency();
         }
 
-        if (! $storeAsCurrency instanceof Currency) {
+        if (!$storeAsCurrency instanceof Currency) {
             $storeAsCurrency = currencyManager()->currency($storeAsCurrency);
         }
 
@@ -68,7 +76,7 @@ class MoneyCast implements CastsAttributes
         if ($this->currencyField) {
             return [
                 $this->currencyField => $storeAsCurrency,
-                $key => $money,
+                $key                 => $money,
             ];
         }
 

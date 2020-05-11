@@ -8,6 +8,10 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Collection;
 use Spatie\DataTransferObject\DataTransferObject;
+use Weble\LaravelEcommerce\Discount\DiscountInterface;
+use Weble\LaravelEcommerce\Discount\DiscountTarget;
+use Weble\LaravelEcommerce\Discount\InvalidDiscountException;
+use Weble\LaravelEcommerce\Discount\DiscountCollection;
 use Weble\LaravelEcommerce\Purchasable;
 
 class CartItem extends DataTransferObject implements Arrayable, Jsonable
@@ -16,12 +20,25 @@ class CartItem extends DataTransferObject implements Arrayable, Jsonable
     public float $quantity = 1;
     public Money $price;
     public Collection $attributes;
+    public DiscountCollection $discounts;
 
     public function __construct(array $parameters = [])
     {
         $this->attributes = collect([]);
+        $this->discounts = DiscountCollection::make([]);
 
         parent::__construct($parameters);
+    }
+
+    public function withDiscount(DiscountInterface $discount): self
+    {
+        if (! $discount->target()->isEqual(DiscountTarget::item())) {
+            throw new InvalidDiscountException();
+        }
+
+        $this->discounts->add($discount);
+
+        return $this;
     }
 
     public function toJson($options = 0): string
@@ -48,14 +65,24 @@ class CartItem extends DataTransferObject implements Arrayable, Jsonable
         return sha1($this->product->getKey() . '-' . $this->attributes->toJson());
     }
 
-    public function subTotal(): Money
+    public function subTotalWithoutDiscounts(): Money
     {
         return $this->price->multiply($this->quantity);
     }
 
+    public function subTotal(): Money
+    {
+        return $this->subTotalWithoutDiscounts()->subtract($this->discount());
+    }
+
+    public function discount(): Money
+    {
+        return $this->discounts->total($this->subTotalWithoutDiscounts(), DiscountTarget::item())->multiply($this->quantity);
+    }
+
     public function tax(AddressInterface $address): Money
     {
-        return $this->unitTax($address)->multiply($this->quantity);
+        return taxManager()->taxFor($this->product, $this->subTotal(), $address);
     }
 
     public function total(AddressInterface $address): Money
@@ -63,14 +90,24 @@ class CartItem extends DataTransferObject implements Arrayable, Jsonable
         return $this->tax($address)->add($this->subTotal());
     }
 
-    public function unitPrice(): Money
+    public function unitPriceWithoutDiscounts(): Money
     {
         return $this->price;
     }
 
+    public function unitDiscount(): Money
+    {
+        return $this->discounts->total($this->unitPriceWithoutDiscounts(), DiscountTarget::item());
+    }
+
+    public function unitPrice(): Money
+    {
+        return $this->unitPriceWithoutDiscounts()->subtract($this->unitDiscount());
+    }
+
     public function unitTax(AddressInterface $address): Money
     {
-        return taxManager()->taxFor($this->product, $address);
+        return $this->tax($address)->divide($this->quantity);
     }
 
     public function unitTotal(AddressInterface $address): Money

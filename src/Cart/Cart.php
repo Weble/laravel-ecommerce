@@ -5,20 +5,37 @@ namespace Weble\LaravelEcommerce\Cart;
 use Cknow\Money\Money;
 use CommerceGuys\Addressing\AddressInterface;
 use Illuminate\Support\Collection;
+use Spatie\Enum\Exceptions\InvalidValueException;
 use Weble\LaravelEcommerce\Address\AddressType;
 use Weble\LaravelEcommerce\Address\StoreAddress;
+use Weble\LaravelEcommerce\Discount\DiscountInterface;
+use Weble\LaravelEcommerce\Discount\DiscountTarget;
+use Weble\LaravelEcommerce\Discount\InvalidDiscountException;
+use Weble\LaravelEcommerce\Discount\DiscountCollection;
 use Weble\LaravelEcommerce\Purchasable;
 
 class Cart implements CartInterface
 {
     protected CartDriverInterface $driver;
-
     protected ?AddressInterface $billingAddress = null;
     protected ?AddressInterface $shippingAddress = null;
+    protected DiscountCollection $discounts;
 
     public function __construct(CartDriverInterface $driver)
     {
         $this->driver = $driver;
+        $this->discounts = DiscountCollection::make([]);
+    }
+
+    public function withDiscount(DiscountInterface $discount): self
+    {
+        if ($discount->target()->isEqual(DiscountTarget::item())) {
+            throw new InvalidDiscountException();
+        }
+
+        $this->discounts->add($discount);
+
+        return $this;
     }
 
     public function setBillingAddress(AddressInterface $address): self
@@ -57,25 +74,21 @@ class Cart implements CartInterface
 
     public function taxAddress(): AddressInterface
     {
-        $taxAddressType = config('ecommerce.store.address_for_tax', 'shipping');
-
-        $address = new StoreAddress();
-        switch ($taxAddressType) {
-            case AddressType::SHIPPING:
-                if ($this->hasShippingAddress()) {
-                    $address = $this->shippingAddress();
-                }
-
-                break;
-            case AddressType::BILLING:
-                if ($this->hasBillingAddress()) {
-                    $address = $this->billingAddress();
-                }
-
-                break;
+        try {
+            $taxAddressType = AddressType::make(config('ecommerce.tax.address_type', 'shipping'));
+        } catch (InvalidValueException $e) {
+            $taxAddressType = AddressType::shipping();
         }
 
-        return $address;
+        if ($this->hasShippingAddress() && $taxAddressType->isEqual(AddressType::shipping())) {
+            return $this->shippingAddress();
+        }
+
+        if ($this->hasBillingAddress() && $taxAddressType->isEqual(AddressType::billing())) {
+            return $this->billingAddress();
+        }
+
+        return new StoreAddress();
     }
 
     public function driver(): CartDriverInterface
@@ -83,19 +96,26 @@ class Cart implements CartInterface
         return $this->driver;
     }
 
+    public function discounts(): DiscountCollection
+    {
+        return $this->discounts->merge($this->items()->map(function (CartItem $cartItem) {
+            return $cartItem->discounts;
+        })->flatten());
+    }
+
     public function instanceName(): string
     {
         return $this->driver()->instanceName();
     }
 
-    public function get(CartItem $cartItem): CartItem
+    public function get(string $id): CartItem
     {
-        return $this->driver()->get($cartItem);
+        return $this->driver()->get($id);
     }
 
-    public function has(CartItem $cartItem): bool
+    public function has(string $id): bool
     {
-        return $this->driver()->has($cartItem);
+        return $this->driver()->has($id);
     }
 
     public function clear(): self
@@ -113,8 +133,8 @@ class Cart implements CartInterface
 
         $cartItem = CartItem::fromPurchasable($purchasable, $quantity, $attributes);
 
-        if ($this->driver->has($cartItem)) {
-            $cartItem->quantity += $this->driver()->get($cartItem)->quantity;
+        if ($this->driver->has($cartItem->getId())) {
+            $cartItem->quantity += $this->driver()->get($cartItem->getId())->quantity;
         }
 
         $this->driver()->set($cartItem);
@@ -122,9 +142,20 @@ class Cart implements CartInterface
         return $cartItem;
     }
 
+    public function update(CartItem $cartItem): self
+    {
+        if (! $this->driver()->has($cartItem->getId())) {
+            return $this;
+        }
+
+        $this->driver()->set($cartItem);
+
+        return $this;
+    }
+
     public function remove(CartItem $cartItem): self
     {
-        if (! $this->driver()->has($cartItem)) {
+        if (! $this->driver()->has($cartItem->getId())) {
             return $this;
         }
 
@@ -138,7 +169,20 @@ class Cart implements CartInterface
         return $this->driver->items();
     }
 
-    public function subTotal(): Money
+    public function discount(): Money
+    {
+        return Money::sum(
+            $this->discounts->withTarget(DiscountTarget::items())->total($this->itemsSubtotal()),
+            $this->discounts->withTarget(DiscountTarget::subtotal())->total($this->subTotalWithoutDiscounts())
+        );
+    }
+
+    public function subTotalWithoutDiscounts(): Money
+    {
+        return $this->itemsSubtotal();
+    }
+
+    public function itemsSubtotal(): Money
     {
         return $this->items()->reduce(function (?Money $sum = null, ?CartItem $cartItem = null) {
             if ($sum === null) {
@@ -147,6 +191,11 @@ class Cart implements CartInterface
 
             return $sum->add($cartItem->subTotal());
         });
+    }
+
+    public function subTotal(): Money
+    {
+        return $this->subTotalWithoutDiscounts()->subtract($this->discount());
     }
 
     public function tax(): Money

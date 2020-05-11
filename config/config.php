@@ -14,7 +14,7 @@ return [
         | interface. Check http://moneyphp.org/en/stable/features/currencies.html#currencylist
         | for more info.
         */
-        'currencies'    => \Money\Currencies\ISOCurrencies::class,
+        'currencies' => \Money\Currencies\ISOCurrencies::class,
 
         /*
         |--------------------------------------------------------------------------
@@ -28,7 +28,7 @@ return [
         | Falls back to \Cknow\Money config.
         | Needs to be in the list of the available currencies above.
         */
-        'default'      => config('money.currency', config('app.currency', 'USD')),
+        'default' => config('money.currency', config('app.currency', 'USD')),
 
         /*
         |--------------------------------------------------------------------------
@@ -49,7 +49,7 @@ return [
     | Falls back to \Cknow\Money config.
     | Used for formatting prices.
     */
-    'locale'        => config('money.locale', config('app.locale', 'en_US')),
+    'locale' => config('money.locale', config('app.locale', 'en_US')),
 
     /*
     |--------------------------------------------------------------------------
@@ -63,13 +63,13 @@ return [
     | For example, if you want to have N wishlists per user.
     */
 
-    'cart'                  => [
+    'cart' => [
         'instances' => [
             'cart' => [
-                'driver'             => 'session',
+                'driver' => 'session',
                 'session_key_prefix' => 'ecommerce.cart_',
                 // This is specific for some drivers
-                'multiple'           => false,
+                'multiple' => false,
             ],
 
             /*
@@ -82,10 +82,10 @@ return [
             */
 
             'wishlist' => [
-                'driver'             => 'session',
+                'driver' => 'session',
                 'session_key_prefix' => 'wishlist_',
                 // This is specific for some drivers
-                'multiple'           => true,
+                'multiple' => true,
             ],
         ],
 
@@ -106,7 +106,7 @@ return [
         | When using che CartDatabaseDriver, which table name will be used to
         | store the cart contents. Related to the CartItemModel class config
         */
-        'table'            => 'cart_items',
+        'table' => 'cart_items',
     ],
 
     /*
@@ -116,19 +116,47 @@ return [
     |
     | Details of the store selling the products.
     */
-    'store'                 => [
+    'store' => [
         'address' => [
-            'country'      => 'IT',
-            'city'         => 'Vicenza',
-            'zip'          => '36100',
-            'state'        => 'VI',
-            'address'      => 'Via Enrico Fermi, 265',
-            'address2'     => '',
+            'country' => 'IT',
+            'city' => 'Vicenza',
+            'zip' => '36100',
+            'state' => 'VI',
+            'address' => 'Via Enrico Fermi, 265',
+            'address2' => '',
             'organization' => 'Weble Srl',
-            'vat_id'       => '03579410246',
+            'vat_id' => '03579410246',
         ],
+    ],
 
-        'address_for_tax' => \Weble\LaravelEcommerce\Address\AddressType::SHIPPING,
+    /*
+    |--------------------------------------------------------------------------
+    | Taxes
+    |--------------------------------------------------------------------------
+    |
+    | Tax settings
+    */
+
+    'tax' => [
+        /*
+        |--------------------------------------------------------------------------
+        | Address to Use for Taxes
+        |--------------------------------------------------------------------------
+        |
+        | Which address should be used when calculating taxes. "shipping" or "billing"
+        */
+        'address_type' => (string) \Weble\LaravelEcommerce\Address\AddressType::shipping(),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Coupon
+    |--------------------------------------------------------------------------
+    |
+    | Coupon table name
+    */
+    'coupon' => [
+        'table' => 'coupons',
     ],
 
     /*
@@ -138,10 +166,11 @@ return [
     |
     | You can swap our classes with yours here
     */
-    'classes'               => [
+    'classes' => [
         'currencyManager' => \Weble\LaravelEcommerce\Currency\CurrencyManager::class,
-        'cartManager'     => \Weble\LaravelEcommerce\Cart\CartManager::class,
-        'cartItemModel'   => \Weble\LaravelEcommerce\Cart\Model\CartItemModel::class,
-        'cart'            => \Weble\LaravelEcommerce\Cart\Cart::class,
+        'taxManager' => \Weble\LaravelEcommerce\Tax\TaxManager::class,
+        'cartManager' => \Weble\LaravelEcommerce\Cart\CartManager::class,
+        'cartItemModel' => \Weble\LaravelEcommerce\Cart\Model\CartItemModel::class,
+        'cart' => \Weble\LaravelEcommerce\Cart\Cart::class,
     ],
 ];

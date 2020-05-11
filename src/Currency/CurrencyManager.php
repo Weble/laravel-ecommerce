@@ -37,7 +37,7 @@ class CurrencyManager
         return new Money((int) $intValue, $currency);
     }
 
-    public function convert(Money $money, Currency $counterCurrency = null, $roundingMode = \Money\Money::ROUND_HALF_UP): Money
+    public function convert(Money $money, ?Currency $counterCurrency = null, $roundingMode = \Money\Money::ROUND_HALF_UP): Money
     {
         if ($counterCurrency === null) {
             $counterCurrency = $this->userCurrency();

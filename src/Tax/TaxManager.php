@@ -26,14 +26,16 @@ class TaxManager
         return $this->taxResolver;
     }
 
-    public function taxFor(Purchasable $product, ?AddressInterface $address = null): Money
+    public function taxFor(Purchasable $product, ?Money $price = null, ?AddressInterface $address = null): Money
     {
         $storeAddress = new StoreAddress();
         if ($address === null) {
             $address = $storeAddress;
         }
 
-        $currency = $product->cartPrice()->getMoney()->getCurrency();
+        $price = $price ?: $product->cartPrice();
+
+        $currency = $price->getMoney()->getCurrency();
         $context = new Context($address, $storeAddress);
 
         /** @var TaxRateAmount[] $amounts */
@@ -45,6 +47,8 @@ class TaxManager
 
         $amount = array_shift($amounts)->getAmount();
 
-        return $product->cartPrice()->multiply($amount);
+        return $price->multiply($amount);
     }
+
+
 }

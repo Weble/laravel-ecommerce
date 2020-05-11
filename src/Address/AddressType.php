@@ -2,20 +2,13 @@
 
 namespace Weble\LaravelEcommerce\Address;
 
-use CommerceGuys\Addressing\AbstractEnum;
+use Spatie\Enum\Enum;
 
-class AddressType extends AbstractEnum
+/**
+ * @method static self billing()
+ * @method static self shipping()
+ */
+class AddressType extends Enum
 {
-    const BILLING = 'billing';
-    const SHIPPING = 'shipping';
 
-    /**
-     * Gets the default value.
-     *
-     * @return string The default value.
-     */
-    public static function getDefault()
-    {
-        return static::BILLING;
-    }
 }

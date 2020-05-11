@@ -27,14 +27,14 @@ class CartSessionDriver extends CartDriver implements CartDriverInterface
         return $this->setItems($items);
     }
 
-    public function get(CartItem $cartItem): CartItem
+    public function get(string $cartItem): CartItem
     {
-        return $this->items()->get($cartItem->getId());
+        return $this->items()->get($cartItem);
     }
 
-    public function has(CartItem $cartItem): bool
+    public function has(string $cartItem): bool
     {
-        return $this->items()->has($cartItem->getId());
+        return $this->items()->has($cartItem);
     }
 
     public function remove(CartItem $cartItem): CartDriverInterface

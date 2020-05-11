@@ -77,33 +77,6 @@ class LaravelEcommerceServiceProvider extends ServiceProvider
         }
     }
 
-    protected function publishResources(): void
-    {
-        if (! $this->app->runningInConsole()) {
-            return;
-        }
-
-        $this->publishes([
-            __DIR__ . '/../config/config.php' => config_path('ecommerce.php'),
-        ], 'config');
-
-        if (! class_exists('CreateCartitemsTable')) {
-            $timestamp = date('Y_m_d_His', time());
-
-            $this->publishes([
-                __DIR__.'/../database/migrations/0000_00_00_000000_create_cartitems_table.php' => database_path('migrations/'.$timestamp.'_create_cartitems_table.php'),
-            ], 'migrations');
-        }
-
-        /*
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'skeleton');
-
-        $this->publishes([
-            __DIR__.'/../resources/views' => base_path('resources/views/vendor/skeleton'),
-        ], 'views');
-        */
-    }
-
     protected function registerTaxClasses()
     {
         $this->app->singleton('ecommerce.tax.resolver', TaxResolver::class);
@@ -136,7 +109,8 @@ class LaravelEcommerceServiceProvider extends ServiceProvider
             ->give(app('ecommerce.tax.chainTaxRateResolver'));
 
         $this->app->singleton('ecommerce.taxManager', function ($app) {
-            return new TaxManager($app);
+            $class = $this->app['config']['ecommerce.classes.taxManager'] ?? TaxManager::class;
+            return new $class($app);
         });
     }
 
@@ -145,5 +119,32 @@ class LaravelEcommerceServiceProvider extends ServiceProvider
         $this->app->alias('ecommerce.cartManager', Cart::class);
         $this->app->alias('ecommerce.currencyManager', Currency::class);
         $this->app->alias('ecommerce.taxManager', TaxManager::class);
+    }
+
+    protected function publishResources(): void
+    {
+        if (! $this->app->runningInConsole()) {
+            return;
+        }
+
+        $this->publishes([
+            __DIR__ . '/../config/config.php' => config_path('ecommerce.php'),
+        ], 'config');
+
+        if (! class_exists('CreateCartitemsTable')) {
+            $timestamp = date('Y_m_d_His', time());
+
+            $this->publishes([
+                __DIR__.'/../database/migrations/0000_00_00_000000_create_cartitems_table.php' => database_path('migrations/'.$timestamp.'_create_cartitems_table.php'),
+            ], 'migrations');
+        }
+
+        /*
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'skeleton');
+
+        $this->publishes([
+            __DIR__.'/../resources/views' => base_path('resources/views/vendor/skeleton'),
+        ], 'views');
+        */
     }
 }
