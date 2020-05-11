@@ -17,7 +17,7 @@ class Product extends Model implements Purchasable
     public $timestamps = false;
 
     protected $casts = [
-        'price' => MoneyCast::class
+        'price' => MoneyCast::class,
     ];
 
     public function getKey()

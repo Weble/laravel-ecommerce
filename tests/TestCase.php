@@ -4,7 +4,6 @@ namespace Weble\LaravelEcommerce\Tests;
 
 use Cknow\Money\MoneyServiceProvider;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Swap\Laravel\SwapServiceProvider;
 use Weble\LaravelEcommerce\LaravelEcommerceServiceProvider;
 

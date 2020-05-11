@@ -30,7 +30,7 @@ class TaxTest extends TestCase
     {
         // This has IT stadard rate type (22%) and it's a physical product
         $product = new Product([
-            'price' => money(100)
+            'price' => money(100),
         ]);
 
         $customerAddress = (new Address())

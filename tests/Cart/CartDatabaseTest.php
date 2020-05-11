@@ -2,7 +2,6 @@
 
 namespace Weble\LaravelEcommerce\Tests\Cart;
 
-use Illuminate\Support\Facades\DB;
 use Weble\LaravelEcommerce\Cart\Cart;
 use Weble\LaravelEcommerce\Cart\CartDatabaseDriver;
 use Weble\LaravelEcommerce\Cart\CartSessionDriver;
