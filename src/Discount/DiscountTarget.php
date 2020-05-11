@@ -12,5 +12,4 @@ use Spatie\Enum\Enum;
  */
 class DiscountTarget extends Enum
 {
-
 }

@@ -8,10 +8,10 @@ use Illuminate\Support\Collection;
 use Spatie\Enum\Exceptions\InvalidValueException;
 use Weble\LaravelEcommerce\Address\AddressType;
 use Weble\LaravelEcommerce\Address\StoreAddress;
+use Weble\LaravelEcommerce\Discount\DiscountCollection;
 use Weble\LaravelEcommerce\Discount\DiscountInterface;
 use Weble\LaravelEcommerce\Discount\DiscountTarget;
 use Weble\LaravelEcommerce\Discount\InvalidDiscountException;
-use Weble\LaravelEcommerce\Discount\DiscountCollection;
 use Weble\LaravelEcommerce\Purchasable;
 
 class Cart implements CartInterface

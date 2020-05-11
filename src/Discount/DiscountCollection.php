@@ -4,8 +4,6 @@ namespace Weble\LaravelEcommerce\Discount;
 
 use Cknow\Money\Money;
 use Illuminate\Support\Collection;
-use Weble\LaravelEcommerce\Discount\DiscountInterface;
-use Weble\LaravelEcommerce\Discount\DiscountTarget;
 
 class DiscountCollection extends Collection
 {

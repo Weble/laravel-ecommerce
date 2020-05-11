@@ -49,6 +49,4 @@ class TaxManager
 
         return $price->multiply($amount);
     }
-
-
 }

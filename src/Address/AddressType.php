@@ -10,5 +10,4 @@ use Spatie\Enum\Enum;
  */
 class AddressType extends Enum
 {
-
 }

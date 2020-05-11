@@ -110,6 +110,7 @@ class LaravelEcommerceServiceProvider extends ServiceProvider
 
         $this->app->singleton('ecommerce.taxManager', function ($app) {
             $class = $this->app['config']['ecommerce.classes.taxManager'] ?? TaxManager::class;
+
             return new $class($app);
         });
     }

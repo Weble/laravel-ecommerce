@@ -58,16 +58,16 @@ class MoneyCast implements CastsAttributes
             return null;
         }
 
-        if (!$value instanceof Money) {
+        if (! $value instanceof Money) {
             return $value;
         }
 
         $storeAsCurrency = $this->currencyCode;
-        if (!$storeAsCurrency) {
+        if (! $storeAsCurrency) {
             $storeAsCurrency = $value->getCurrency();
         }
 
-        if (!$storeAsCurrency instanceof Currency) {
+        if (! $storeAsCurrency instanceof Currency) {
             $storeAsCurrency = currencyManager()->currency($storeAsCurrency);
         }
 
@@ -76,7 +76,7 @@ class MoneyCast implements CastsAttributes
         if ($this->currencyField) {
             return [
                 $this->currencyField => $storeAsCurrency,
-                $key                 => $money,
+                $key => $money,
             ];
         }
 
