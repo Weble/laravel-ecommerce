@@ -5,19 +5,20 @@ namespace Weble\LaravelEcommerce\Tests\mocks;
 use Cknow\Money\Money;
 use CommerceGuys\Tax\Model\TaxTypeInterface;
 use CommerceGuys\Tax\Repository\TaxTypeRepository;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Weble\LaravelEcommerce\Purchasable;
+use Weble\LaravelEcommerce\Support\MoneyCast;
 
-class Product implements Purchasable
+class Product extends Model implements Purchasable
 {
-    private int $id;
-    private Money $price;
+    protected $guarded = [];
 
-    public function __construct(int $id, Money $price)
-    {
-        $this->id = $id;
-        $this->price = $price;
-    }
+    public $timestamps = false;
+
+    protected $casts = [
+        'price' => MoneyCast::class
+    ];
 
     public function getKey()
     {

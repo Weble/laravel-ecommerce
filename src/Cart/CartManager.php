@@ -83,6 +83,11 @@ class CartManager
         return new CartSessionDriver($instanceName, $config);
     }
 
+    public function createDatabaseDriver(string $instanceName, array $config): CartDatabaseDriver
+    {
+        return new CartDatabaseDriver($instanceName, $config);
+    }
+
     protected function callCustomCreator(string $instanceName, array $config)
     {
         return $this->customCreators[$config['driver']]($this->app, $instanceName, $config);

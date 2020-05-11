@@ -44,7 +44,7 @@ class CartTest extends TestCase
     /** @test */
     public function can_add_to_cart()
     {
-        $product = new Product(1, money(100));
+        $product = new Product(['price' => money(100)]);
 
         /** @var Cart $cart */
         $cart = app('ecommerce.cartManager');
@@ -56,15 +56,14 @@ class CartTest extends TestCase
     /** @test */
     public function can_remove_from_cart()
     {
-        $product = new Product(1, money(100));
-        $product2 = new Product(2, money(200));
+        $product = new Product(['id' => 1, 'price' => money(100)]);
+        $product2 = new Product(['id' => 2, 'price' => money(200)]);
 
         /** @var Cart $cart */
         $cart = app('ecommerce.cartManager');
-        $cart->add($product, 2);
+        $cartItem = $cart->add($product, 2);
         $cart->add($product2, 1);
 
-        $cartItem = $cart->items()->first();
         $cart->remove($cartItem);
 
         $this->assertEquals(1, $cart->items()->total());
@@ -73,8 +72,8 @@ class CartTest extends TestCase
     /** @test */
     public function can_calculate_total()
     {
-        $product = new Product(1, money(100));
-        $product2 = new Product(2, money(200));
+        $product = new Product(['id' => 1, 'price' => money(100)]);
+        $product2 = new Product(['id' => 2, 'price' => money(200)]);
 
         /** @var Cart $cart */
         $cart = app('ecommerce.cartManager');
@@ -88,8 +87,8 @@ class CartTest extends TestCase
     public function can_calculate_tax()
     {
         // These is tested with 22% IT vat
-        $product = new Product(1, money(100));
-        $product2 = new Product(2, money(200));
+        $product = new Product(['id' => 1, 'price' => money(100)]);
+        $product2 = new Product(['id' => 2, 'price' => money(200)]);
 
         /** @var Cart $cart */
         $cart = app('ecommerce.cartManager');
@@ -104,7 +103,7 @@ class CartTest extends TestCase
     public function can_calculate_item_discounts()
     {
         // These is tested with 22% IT vat
-        $product = new Product(1, money(100));
+        $product = new Product(['price' => money(100)]);
 
         /** @var Cart $cart */
         $cart = app('ecommerce.cartManager');
@@ -120,7 +119,7 @@ class CartTest extends TestCase
     public function can_calculate_subtotal_discounts()
     {
         // These is tested with 22% IT vat
-        $product = new Product(1, money(100));
+        $product = new Product(['price' => money(100)]);
 
         /** @var Cart $cart */
         $cart = app('ecommerce.cartManager');
@@ -138,7 +137,7 @@ class CartTest extends TestCase
     public function can_calculate_items_discounts()
     {
         // These is tested with 22% IT vat
-        $product = new Product(1, money(100));
+        $product = new Product(['price' => money(100)]);
 
         /** @var Cart $cart */
         $cart = app('ecommerce.cartManager');

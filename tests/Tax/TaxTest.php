@@ -29,7 +29,9 @@ class TaxTest extends TestCase
     public function can_calculate_tax_for_physical_product()
     {
         // This has IT stadard rate type (22%) and it's a physical product
-        $product = new Product(1, money(100));
+        $product = new Product([
+            'price' => money(100)
+        ]);
 
         $customerAddress = (new Address())
            ->withCountryCode('IT');

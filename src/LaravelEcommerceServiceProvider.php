@@ -138,6 +138,8 @@ class LaravelEcommerceServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__.'/../database/migrations/0000_00_00_000000_create_cartitems_table.php' => database_path('migrations/'.$timestamp.'_create_cartitems_table.php'),
             ], 'migrations');
+
+            $this->loadMigrationsFrom(__DIR__.'/../database/migrations/');
         }
 
         /*

@@ -11,13 +11,14 @@ class CreateCartitemsTable extends Migration
      */
     public function up()
     {
-        Schema::create(config('ecommerce.cart_table', 'cart_items'), function (Blueprint $table) {
-            $table->uuid('uuid')->primary();
+        Schema::create(config('ecommerce.cart.table', 'cart_items'), function (Blueprint $table) {
+            $table->uuid('id')->primary();
             $table->bigInteger('user_id')->nullable();
             $table->string('instance')->index();
             $table->bigInteger('purchasable_id');
             $table->string('purchasable_type');
             $table->bigInteger('price');
+            $table->float('quantity')->default(1);
             $table->json('attributes');
             $table->timestamps();
 
@@ -29,6 +30,7 @@ class CreateCartitemsTable extends Migration
      */
     public function down()
     {
-        Schema::drop(config('ecommerce.cart_table', 'cart_items'));
+        dump(config('ecommerce.cart.table', 'cart_items'), 'DOWN');
+        Schema::drop(config('ecommerce.cart.table', 'cart_items'));
     }
 }
