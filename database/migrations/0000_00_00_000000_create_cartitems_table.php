@@ -30,7 +30,6 @@ class CreateCartitemsTable extends Migration
      */
     public function down()
     {
-        dump(config('ecommerce.cart.table', 'cart_items'), 'DOWN');
         Schema::drop(config('ecommerce.cart.table', 'cart_items'));
     }
 }
