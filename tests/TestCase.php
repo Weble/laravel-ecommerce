@@ -14,8 +14,6 @@ class TestCase extends \Orchestra\Testbench\TestCase
         parent::setUp();
 
         $this->setupDatabase();
-
-        $this->artisan('migrate', ['--database' => 'testing'])->run();
     }
 
     protected function getPackageProviders($app)
@@ -51,6 +49,21 @@ class TestCase extends \Orchestra\Testbench\TestCase
         if (! file_exists($databasePath)) {
             file_put_contents($databasePath, '');
         }
+
+        $this->app['db']->connection()->getSchemaBuilder()->dropIfExists('cart_items');
+        $this->app['db']->connection()->getSchemaBuilder()->create('cart_items', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->bigInteger('user_id')->nullable();
+            $table->string('instance')->index();
+            $table->bigInteger('purchasable_id');
+            $table->string('purchasable_type');
+            $table->bigInteger('price');
+            $table->float('quantity')->default(1);
+            $table->json('attributes');
+            $table->timestamps();
+
+            $table->index(['purchasable_type', 'purchasable_id']);
+        });
 
         $this->app['db']->connection()->getSchemaBuilder()->create('products', function (Blueprint $table) {
             $table->increments('id');
