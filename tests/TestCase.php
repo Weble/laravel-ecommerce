@@ -39,6 +39,9 @@ class TestCase extends \Orchestra\Testbench\TestCase
 
     protected function setupDatabase()
     {
+        if (! file_exists(__DIR__ . '/temp/')) {
+            @mkdir(__DIR__ . '/temp/');
+        }
         $databasePath = __DIR__ . '/temp/database.sqlite';
 
         if (file_exists($databasePath)) {
