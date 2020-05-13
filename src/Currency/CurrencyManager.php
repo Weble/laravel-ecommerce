@@ -23,11 +23,13 @@ class CurrencyManager
     protected Exchange $exchange;
     protected Converter $converter;
     protected Collection $availableCurrenciesCollection;
+    protected Application $app;
 
     public function __construct(Application $app)
     {
+        $this->app = $app;
         $this->setupCurrencies();
-        $this->setupCurrencyConversion(app()->make(Swap::class));
+        $this->setupCurrencyConversion($this->app->make(Swap::class));
     }
 
     public function fromFloat(float $amount, Currency $currency): Money
@@ -108,12 +110,14 @@ class CurrencyManager
             $currencyListClass = ISOCurrencies::class;
         }
 
-        $this->availableCurrencies = app($currencyListClass);
+        $this->availableCurrencies = $this->app->make($currencyListClass);
         $this->availableCurrenciesCollection = Collection::make($this->availableCurrencies);
         Money::setCurrencies($this->availableCurrencies);
 
-        $this->defaultCurrency = $this->currency(config('ecommerce.currency.default', config('money.user_default', 'EUR')));
-        $this->userCurrency = $this->currency(config('ecommerce.currency.user', 'USD'));
+        $sessionCurrency = session(config('ecommerce.currency.session_key', 'ecommerce.currency'), config('ecommerce.currency.user', 'USD'));
+
+        $this->defaultCurrency = $this->currency($sessionCurrency);
+        $this->userCurrency = $this->currency($sessionCurrency);
     }
 
     protected function setupCurrencyConversion(Swap $swap): void

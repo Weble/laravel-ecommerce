@@ -39,17 +39,37 @@ return [
         | the user itself doesn't provide an alternative
         */
         'user' => config('ecommerce.currency', 'USD'),
+
+        /*
+        |--------------------------------------------------------------------------
+        | Session Key
+        |--------------------------------------------------------------------------
+        |
+        | This is the session key used by the system to store the active user's currency
+        */
+        'session_key' => 'ecommerce.currency',
     ],
 
-    /*
-    |--------------------------------------------------------------------------
-    | Default Locale
-    |--------------------------------------------------------------------------
-    |
-    | Falls back to \Cknow\Money config.
-    | Used for formatting prices.
-    */
-    'locale' => config('money.locale', config('app.locale', 'en_US')),
+    'customer' => [
+        /*
+        |--------------------------------------------------------------------------
+        | Default Locale
+        |--------------------------------------------------------------------------
+        |
+        | Falls back to \Cknow\Money config.
+        | Used for formatting prices.
+        */
+        'locale' => config('money.locale', config('app.locale', 'en_US')),
+
+        /*
+        |--------------------------------------------------------------------------
+        | Session Key
+        |--------------------------------------------------------------------------
+        |
+        | This is the session key used by the system to store the active customer data
+        */
+        'session_key' => 'ecommerce.customer',
+    ],
 
     /*
     |--------------------------------------------------------------------------

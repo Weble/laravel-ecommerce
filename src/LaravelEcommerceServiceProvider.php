@@ -30,8 +30,8 @@ class LaravelEcommerceServiceProvider extends ServiceProvider
     {
         $this->publishResources();
 
-        Money::setLocale($this->app->make('config')->get('ecommerce.locale'));
-        Money::setCurrency($this->app->make('config')->get('ecommerce.currency.default'));
+        Money::setLocale($this->app->make('config')->get('ecommerce.customer.locale', 'en_US'));
+        Money::setCurrency($this->app->make('config')->get('ecommerce.currency.default', 'USD'));
     }
 
     /**
