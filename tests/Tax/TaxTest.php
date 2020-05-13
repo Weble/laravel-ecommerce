@@ -22,7 +22,7 @@ class TaxTest extends TestCase
     /** @test */
     public function can_get_tax_manager()
     {
-        $this->assertInstanceOf(TaxManager::class, app('ecommerce.taxManager'));
+        $this->assertInstanceOf(TaxManager::class, app('ecommerce.tax'));
     }
 
     /** @test */

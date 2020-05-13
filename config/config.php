@@ -73,39 +73,72 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Storage Drivers
+    |--------------------------------------------------------------------------
+    |
+    | List of available "Storage Drivers".
+    |
+    | When saving "temporary data", like carts, customer informations, addresses, etc
+    | we use one of these "stores" to persist this data in some way.
+    |
+    | By default we provide "session", "cache" and "eloquent"
+    */
+
+    'storage' => [
+
+        'stores' => [
+
+            'session' => [
+                'prefix' => 'ecommerce.',
+            ],
+
+            'cache' => [
+                // this can be any cache driver you've registered within laravel.
+                // "default" means the default driver used for everything else
+                'driver' => 'default',
+                'prefix' => 'ecommerce.',
+                'session_key' => 'ecommerce.store.cache.',
+            ],
+
+            'eloquent' => [
+                // 'model' => CartItemModel::class
+            ],
+        ],
+
+        'default' => 'session',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Cart instances
     |--------------------------------------------------------------------------
     |
     | List of available "Cart Instances".
     | By default we provide the standard "Cart", plus a secondary one that you
     | can use for a wishlist.
-    | You can also specify if an instance holds multiple instances, or not,
-    | For example, if you want to have N wishlists per user.
+    |
+    | For each instance, you can specify the storage to use in order to
+    | persist the data.
+    |
+    | You can use the same driver for multiple instances
     */
 
     'cart' => [
         'instances' => [
             'cart' => [
-                'driver' => 'session',
-                'session_key_prefix' => 'ecommerce.cart_',
-                // This is specific for some drivers
-                'multiple' => false,
+                'storage' => 'session',
             ],
 
             /*
             'cart' => [
-                'driver' => 'database',
-                'session_key' => 'ecommerce.cart_id',
-                // This is specific for some drivers
-                'multiple' => false,
+                'storage' => 'eloquent',
             ],
             */
 
             'wishlist' => [
-                'driver' => 'session',
-                'session_key_prefix' => 'wishlist_',
-                // This is specific for some drivers
-                'multiple' => true,
+                'storage' => 'session',
+                // Any other option will be passes through to the store driver
+                'prefix' => 'wishlist_',
             ],
         ],
 
@@ -116,7 +149,7 @@ return [
         |
         | When you add something to the cart, which instance gets selected by default
         */
-        'default_instance' => 'cart',
+        'default' => 'cart',
 
         /*
         |--------------------------------------------------------------------------
@@ -165,7 +198,7 @@ return [
         |
         | Which address should be used when calculating taxes. "shipping" or "billing"
         */
-        'address_type' => (string) \Weble\LaravelEcommerce\Address\AddressType::shipping(),
+        'address_type' => (string)\Weble\LaravelEcommerce\Address\AddressType::shipping(),
     ],
 
     /*
@@ -187,6 +220,7 @@ return [
     | You can swap our classes with yours here
     */
     'classes' => [
+        'storageManager' => \Weble\LaravelEcommerce\Storage\StorageManager::class,
         'currencyManager' => \Weble\LaravelEcommerce\Currency\CurrencyManager::class,
         'taxManager' => \Weble\LaravelEcommerce\Tax\TaxManager::class,
         'cartManager' => \Weble\LaravelEcommerce\Cart\CartManager::class,

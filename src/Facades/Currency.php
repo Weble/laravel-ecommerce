@@ -13,6 +13,6 @@ class Currency extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'ecommerce.currencyManager';
+        return 'ecommerce.currency';
     }
 }

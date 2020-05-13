@@ -7,6 +7,8 @@ use Weble\LaravelEcommerce\Cart\CartManager;
 use Weble\LaravelEcommerce\Cart\CartSessionDriver;
 use Weble\LaravelEcommerce\Discount\DiscountTarget;
 use Weble\LaravelEcommerce\Discount\ValueDiscount;
+use Weble\LaravelEcommerce\Storage\CacheStorage;
+use Weble\LaravelEcommerce\Storage\SessionStorage;
 use Weble\LaravelEcommerce\Tests\mocks\Product;
 use Weble\LaravelEcommerce\Tests\TestCase;
 
@@ -15,7 +17,7 @@ class CartTest extends TestCase
     /** @test */
     public function can_get_cart_manager_from_config()
     {
-        $this->assertInstanceOf(CartManager::class, app('ecommerce.cartManager'));
+        $this->assertInstanceOf(CartManager::class, app('ecommerce.cart'));
     }
 
     /** @test */
@@ -24,43 +26,61 @@ class CartTest extends TestCase
         $this->assertInstanceOf(CartManager::class, \Weble\LaravelEcommerce\Facades\Cart::getFacadeRoot());
     }
 
-    /** @test */
-    public function can_get_cart_instances()
+    /**
+     * @test
+     * @dataProvider driversProvider
+     */
+    public function can_get_cart_instances($driver, $expectedStorage)
     {
+        $this->setCartStorageDriver($driver);
+
         $defaultCart = \Weble\LaravelEcommerce\Facades\Cart::instance();
         $this->assertInstanceOf(Cart::class, $defaultCart);
 
+        /** @var Cart $defaultCart */
         $defaultCart = \Weble\LaravelEcommerce\Facades\Cart::instance('cart');
         $this->assertInstanceOf(Cart::class, $defaultCart);
-        $this->assertInstanceOf(CartSessionDriver::class, $defaultCart->driver());
-        $this->assertEquals('cart', $defaultCart->driver()->instanceName());
+        $this->assertInstanceOf($expectedStorage, $defaultCart->storage());
+        $this->assertEquals('cart', $defaultCart->instanceName());
+
+        config()->set('ecommerce.cart.instances.wishlist.storage', $driver);
 
         $wishlist = \Weble\LaravelEcommerce\Facades\Cart::instance('wishlist');
         $this->assertInstanceOf(Cart::class, $wishlist);
-        $this->assertInstanceOf(CartSessionDriver::class, $wishlist->driver());
-        $this->assertEquals('wishlist', $wishlist->driver()->instanceName());
+        $this->assertInstanceOf($expectedStorage, $wishlist->storage());
+        $this->assertEquals('wishlist', $wishlist->instanceName());
     }
 
-    /** @test */
-    public function can_add_to_cart()
+    /**
+     * @test
+     * @dataProvider driversProvider
+     */
+    public function can_add_to_cart($driver)
     {
+        $this->setCartStorageDriver($driver);
+
         $product = new Product(['price' => money(100)]);
 
         /** @var Cart $cart */
-        $cart = app('ecommerce.cartManager');
+        $cart = app('ecommerce.cart');
         $cart->add($product, 2);
 
         $this->assertEquals(2, $cart->items()->total());
     }
 
-    /** @test */
-    public function can_remove_from_cart()
+    /**
+     * @test
+     * @dataProvider driversProvider
+     */
+    public function can_remove_from_cart($driver)
     {
+        $this->setCartStorageDriver($driver);
+
         $product = new Product(['id' => 1, 'price' => money(100)]);
         $product2 = new Product(['id' => 2, 'price' => money(200)]);
 
         /** @var Cart $cart */
-        $cart = app('ecommerce.cartManager');
+        $cart = app('ecommerce.cart');
         $cartItem = $cart->add($product, 2);
         $cart->add($product2, 1);
 
@@ -69,29 +89,39 @@ class CartTest extends TestCase
         $this->assertEquals(1, $cart->items()->total());
     }
 
-    /** @test */
-    public function can_calculate_total()
+    /**
+     * @test
+     * @dataProvider driversProvider
+     */
+    public function can_calculate_total($driver)
     {
+        $this->setCartStorageDriver($driver);
+
         $product = new Product(['id' => 1, 'price' => money(100)]);
         $product2 = new Product(['id' => 2, 'price' => money(200)]);
 
         /** @var Cart $cart */
-        $cart = app('ecommerce.cartManager');
+        $cart = app('ecommerce.cart');
         $cart->add($product, 2);
         $cart->add($product2, 1);
 
         $this->assertTrue($cart->subTotal()->equals(money(400)));
     }
 
-    /** @test */
-    public function can_calculate_tax()
+    /**
+     * @test
+     * @dataProvider driversProvider
+     */
+    public function can_calculate_tax($driver)
     {
+        $this->setCartStorageDriver($driver);
+
         // These is tested with 22% IT vat
         $product = new Product(['id' => 1, 'price' => money(100)]);
         $product2 = new Product(['id' => 2, 'price' => money(200)]);
 
         /** @var Cart $cart */
-        $cart = app('ecommerce.cartManager');
+        $cart = app('ecommerce.cart');
         $cart->add($product, 2);
         $cart->add($product2, 1);
 
@@ -99,14 +129,19 @@ class CartTest extends TestCase
         $this->assertTrue($cart->total()->equals(money(488)));
     }
 
-    /** @test */
-    public function can_calculate_item_discounts()
+    /**
+     * @test
+     * @dataProvider driversProvider
+     */
+    public function can_calculate_item_discounts($driver)
     {
+        $this->setCartStorageDriver($driver);
+
         // These is tested with 22% IT vat
         $product = new Product(['price' => money(100)]);
 
         /** @var Cart $cart */
-        $cart = app('ecommerce.cartManager');
+        $cart = app('ecommerce.cart');
         $cart->add($product, 2)->withDiscount(new ValueDiscount([
             'value' => money(10),
             'target' => DiscountTarget::item(),
@@ -115,14 +150,19 @@ class CartTest extends TestCase
         $this->assertTrue($cart->subTotal()->equals(money(180)));
     }
 
-    /** @test */
-    public function can_calculate_subtotal_discounts()
+    /**
+     * @test
+     * @dataProvider driversProvider
+     */
+    public function can_calculate_subtotal_discounts($driver)
     {
+        $this->setCartStorageDriver($driver);
+
         // These is tested with 22% IT vat
         $product = new Product(['price' => money(100)]);
 
         /** @var Cart $cart */
-        $cart = app('ecommerce.cartManager');
+        $cart = app('ecommerce.cart');
         $cart->add($product, 2);
 
         $cart->withDiscount(new ValueDiscount([
@@ -133,14 +173,19 @@ class CartTest extends TestCase
         $this->assertTrue($cart->subTotal()->equals(money(190)));
     }
 
-    /** @test */
-    public function can_calculate_items_discounts()
+    /**
+     * @test
+     * @dataProvider driversProvider
+     */
+    public function can_calculate_items_discounts($driver)
     {
+        $this->setCartStorageDriver($driver);
+
         // These is tested with 22% IT vat
         $product = new Product(['price' => money(100)]);
 
         /** @var Cart $cart */
-        $cart = app('ecommerce.cartManager');
+        $cart = app('ecommerce.cart');
         $cart->add($product, 2);
 
         $cart->withDiscount(new ValueDiscount([
@@ -149,5 +194,18 @@ class CartTest extends TestCase
         ]));
 
         $this->assertTrue($cart->subTotal()->equals(money(140)));
+    }
+
+    protected function setCartStorageDriver($driver): void
+    {
+        config()->set('ecommerce.cart.instances.cart.storage', $driver);
+    }
+
+    public function driversProvider()
+    {
+        return [
+            ['session', SessionStorage::class],
+            ['cache', CacheStorage::class],
+        ];
     }
 }

@@ -8,10 +8,6 @@ use Weble\LaravelEcommerce\Purchasable;
 
 interface CartInterface extends HasTotals
 {
-    public function __construct(CartDriverInterface $driver);
-
-    public function driver(): CartDriverInterface;
-
     public function instanceName(): string;
 
     public function get(string $cartItemId): CartItem;

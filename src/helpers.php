@@ -6,7 +6,7 @@ if (! function_exists('currencyManager')) {
      */
     function currencyManager()
     {
-        return app('ecommerce.currencyManager');
+        return app('ecommerce.currency');
     }
 }
 
@@ -16,7 +16,7 @@ if (! function_exists('cartManager')) {
      */
     function cartManager()
     {
-        return app('ecommerce.cartManager');
+        return app('ecommerce.cart');
     }
 }
 
@@ -26,6 +26,6 @@ if (! function_exists('taxManager')) {
      */
     function taxManager()
     {
-        return app('ecommerce.taxManager');
+        return app('ecommerce.tax');
     }
 }

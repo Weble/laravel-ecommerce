@@ -13,6 +13,6 @@ class Cart extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return 'ecommerce.cartManager';
+        return 'ecommerce.cart';
     }
 }

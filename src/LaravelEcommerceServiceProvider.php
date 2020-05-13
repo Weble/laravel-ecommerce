@@ -14,14 +14,16 @@ use CommerceGuys\Tax\Resolver\TaxType\ChainTaxTypeResolver;
 use CommerceGuys\Tax\Resolver\TaxType\ChainTaxTypeResolverInterface;
 use CommerceGuys\Tax\Resolver\TaxType\DefaultTaxTypeResolver;
 use CommerceGuys\Tax\Resolver\TaxType\EuTaxTypeResolver;
+use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
 use Weble\LaravelEcommerce\Cart\CartManager;
 use Weble\LaravelEcommerce\Currency\CurrencyManager;
 use Weble\LaravelEcommerce\Facades\Cart;
 use Weble\LaravelEcommerce\Facades\Currency;
+use Weble\LaravelEcommerce\Storage\StorageManager;
 use Weble\LaravelEcommerce\Tax\TaxManager;
 
-class LaravelEcommerceServiceProvider extends ServiceProvider
+class LaravelEcommerceServiceProvider extends ServiceProvider implements DeferrableProvider
 {
     /**
      * Bootstrap the application services.
@@ -41,9 +43,9 @@ class LaravelEcommerceServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/config.php', 'ecommerce');
 
+        $this->registerStorageManager();
         $this->registerCurrencyManager();
         $this->registerTaxClasses();
-        $this->registerCartInstances();
         $this->registerCartManager();
 
         $this->registerFacades();
@@ -51,7 +53,7 @@ class LaravelEcommerceServiceProvider extends ServiceProvider
 
     protected function registerCurrencyManager()
     {
-        $this->app->singleton('ecommerce.currencyManager', function ($app) {
+        $this->app->singleton('ecommerce.currency', function ($app) {
             $class = $this->app['config']['ecommerce.classes.currencyManager'] ?? CurrencyManager::class;
 
             return new $class($app);
@@ -60,32 +62,24 @@ class LaravelEcommerceServiceProvider extends ServiceProvider
 
     protected function registerCartManager()
     {
-        $this->app->singleton('ecommerce.cartManager', function ($app) {
+        $this->app->singleton('ecommerce.cart', function ($app) {
             $class = $this->app['config']['ecommerce.classes.cartManager'] ?? CartManager::class;
 
             return new $class($app);
         });
     }
 
-    protected function registerCartInstances()
-    {
-        $instances = array_keys($this->app['config']['ecommerce.cart.instances'] ?? []);
-        foreach ($instances as $instance) {
-            $this->app->singleton('ecommerce.cart.instance.' . $instance, function ($app) use ($instance) {
-                return $app['ecommerce.cartManager']->instance($instance);
-            });
-        }
-    }
-
     protected function registerTaxClasses()
     {
         $this->app->singleton('ecommerce.tax.resolver', TaxResolver::class);
+
         $this->app->singleton('ecommerce.tax.chainTaxRateResolver', function ($app) {
             $chainTaxRateResolver = new ChainTaxRateResolver();
             $chainTaxRateResolver->addResolver(new DefaultTaxRateResolver());
 
             return $chainTaxRateResolver;
         });
+
         $this->app->singleton('ecommerce.tax.chainTaxTypeResolver', function ($app) {
             $taxTypeRepository = new TaxTypeRepository();
             $chainTaxTypeResolver = new ChainTaxTypeResolver();
@@ -108,8 +102,17 @@ class LaravelEcommerceServiceProvider extends ServiceProvider
             ->needs('$chainTaxRateResolver')
             ->give(app('ecommerce.tax.chainTaxRateResolver'));
 
-        $this->app->singleton('ecommerce.taxManager', function ($app) {
+        $this->app->singleton('ecommerce.tax', function ($app) {
             $class = $this->app['config']['ecommerce.classes.taxManager'] ?? TaxManager::class;
+
+            return new $class($app);
+        });
+    }
+
+    private function registerStorageManager()
+    {
+        $this->app->singleton('ecommerce.storage', function ($app) {
+            $class = $this->app['config']['ecommerce.classes.storageManager'] ?? StorageManager::class;
 
             return new $class($app);
         });
@@ -117,9 +120,20 @@ class LaravelEcommerceServiceProvider extends ServiceProvider
 
     protected function registerFacades()
     {
-        $this->app->alias('ecommerce.cartManager', Cart::class);
-        $this->app->alias('ecommerce.currencyManager', Currency::class);
-        $this->app->alias('ecommerce.taxManager', TaxManager::class);
+        $this->app->alias('ecommerce.storage', Cart::class);
+        $this->app->alias('ecommerce.cart', Cart::class);
+        $this->app->alias('ecommerce.currency', Currency::class);
+        $this->app->alias('ecommerce.tax', TaxManager::class);
+    }
+
+    public function provides()
+    {
+        return [
+            'ecommerce.storage',
+            'ecommerce.cart',
+            'ecommerce.currency',
+            'ecommerce.tax',
+        ];
     }
 
     protected function publishResources(): void

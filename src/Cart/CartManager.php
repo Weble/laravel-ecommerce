@@ -33,14 +33,7 @@ class CartManager
 
     public function getDefaultInstance(): string
     {
-        return $this->app['config']['ecommerce.cart.default_instance'] ?? 'cart';
-    }
-
-    public function extend($driver, Closure $callback): self
-    {
-        $this->customCreators[$driver] = $callback;
-
-        return $this;
+        return $this->app['config']['ecommerce.cart.default'] ?? 'cart';
     }
 
     public function __call($method, $parameters)
@@ -52,30 +45,15 @@ class CartManager
     {
         $class = $this->app['config']['ecommerce.classes.cart'];
 
-        return $this->instances[$name] ?? new $class($this->resolve($name));
+        return $this->instances[$name] ?? new $class($this->resolve($name), $name);
     }
 
     protected function resolve($name)
     {
         $config = $this->getConfig($name);
+        $storage = $config['storage'] ?? $this->app['config']['ecommerce.storage.default'] ?? 'session';
 
-        if (empty($config['driver'])) {
-            throw new InvalidArgumentException("Instance [{$name}] does not have a configured driver.");
-        }
-
-        $driver = $config['driver'];
-
-        if (isset($this->customCreators[$driver])) {
-            return $this->callCustomCreator($name, $config);
-        }
-
-        $driverMethod = 'create' . ucfirst($driver) . 'Driver';
-
-        if (method_exists($this, $driverMethod)) {
-            return $this->{$driverMethod}($name, $config);
-        } else {
-            throw new InvalidArgumentException("Driver [{$driver}] is not supported.");
-        }
+        return $this->app['ecommerce.storage']->store($storage, $name);
     }
 
     public function createSessionDriver(string $instanceName, array $config): CartSessionDriver
