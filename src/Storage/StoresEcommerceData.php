@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Weble\LaravelEcommerce\Storage;
-
 
 use Illuminate\Database\Eloquent\Builder;
 use Spatie\DataTransferObject\DataTransferObject;

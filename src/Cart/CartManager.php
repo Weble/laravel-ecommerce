@@ -2,9 +2,7 @@
 
 namespace Weble\LaravelEcommerce\Cart;
 
-use Closure;
 use Illuminate\Foundation\Application;
-use InvalidArgumentException;
 
 class CartManager
 {

@@ -8,12 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Support\Collection;
 use Spatie\DataTransferObject\DataTransferObject;
 use Weble\LaravelEcommerce\Discount\Discount;
 use Weble\LaravelEcommerce\Discount\DiscountCollection;
-use Weble\LaravelEcommerce\Discount\DiscountTarget;
-use Weble\LaravelEcommerce\Discount\DiscountType;
 use Weble\LaravelEcommerce\Storage\StoresEcommerceData;
 use Weble\LaravelEcommerce\Support\MoneyCast;
 
@@ -68,6 +65,7 @@ class CartItemModel extends Model implements StoresEcommerceData
     public function getDiscountsAttribute($discounts): DiscountCollection
     {
         $discounts = $this->castAttribute('discounts', $discounts);
+
         return DiscountCollection::make($discounts->map(function ($discount) {
             return Discount::fromArray($discount);
         }));

@@ -19,18 +19,21 @@ class StorageManager extends Manager
     public function createSessionDriver(): SessionStorage
     {
         $config = $this->getConfig('session');
+
         return new SessionStorage($config);
     }
 
     public function createCacheDriver(): CacheStorage
     {
         $config = $this->getConfig('cache');
+
         return new CacheStorage($config);
     }
 
     public function createEloquentDriver(): EloquentStorage
     {
         $config = $this->getConfig('eloquent');
+
         return new EloquentStorage($config);
     }
 

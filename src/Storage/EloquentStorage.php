@@ -5,6 +5,7 @@ namespace Weble\LaravelEcommerce\Storage;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+
 class EloquentStorage implements StorageInterface
 {
     protected array $modelClasses = [

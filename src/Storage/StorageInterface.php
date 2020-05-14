@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Weble\LaravelEcommerce\Storage;
 
 interface StorageInterface

@@ -30,7 +30,6 @@ if (! function_exists('taxManager')) {
     }
 }
 
-
 if (! function_exists('storageManager')) {
     /**
      * @return \Weble\LaravelEcommerce\Storage\StorageManager
