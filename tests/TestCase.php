@@ -16,8 +16,8 @@ class TestCase extends \Orchestra\Testbench\TestCase
     {
         parent::setUp();
 
+        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations/');
         $this->setupDatabase();
-
         $this->withFactories(__DIR__.'/factories');
     }
 
@@ -53,23 +53,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
 
     protected function setupDatabase()
     {
-        $this->app['db']->connection()->getSchemaBuilder()->dropIfExists('cart_items');
-        $this->app['db']->connection()->getSchemaBuilder()->create('cart_items', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->bigInteger('user_id')->nullable();
-            $table->uuid('cart_key');
-            $table->string('instance')->index();
-            $table->bigInteger('purchasable_id');
-            $table->string('purchasable_type');
-            $table->bigInteger('price');
-            $table->float('quantity')->default(1);
-            $table->json('product_attributes');
-            $table->json('discounts');
-            $table->timestamps();
-
-            $table->index(['cart_key']);
-            $table->index(['purchasable_type', 'purchasable_id']);
-        });
+        $this->loadLaravelMigrations();
 
         $this->app['db']->connection()->getSchemaBuilder()->create('products', function (Blueprint $table) {
             $table->increments('id');

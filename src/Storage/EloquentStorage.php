@@ -26,7 +26,11 @@ class EloquentStorage implements StorageInterface
         $this->fallbackStorage = storageManager()->store($config['fallback'] ?? 'session');
 
         $sessionKey = $config['session_key'] ?? 'ecommerce.store.eloquent.';
-        $modelKey = session()->get($sessionKey, Str::uuid());
+        $modelKey = session()->get($sessionKey);
+        if (! $modelKey) {
+            $modelKey = Str::uuid();
+            session()->put($sessionKey, $modelKey);
+        }
 
         $this->modelKey = $modelKey;
     }

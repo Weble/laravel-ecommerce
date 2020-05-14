@@ -105,8 +105,8 @@ return [
                 'session_key' => 'ecommerce.store.eloquent.',
                 'models' => [
                     'items' => \Weble\LaravelEcommerce\Cart\CartItemModel::class,
-                    /*'discounts' => \Weble\LaravelEcommerce\Discount\DiscountModel::class,
                     'customer' => \Weble\LaravelEcommerce\Customer\CustomerModel::class,
+                    /*'discounts' => \Weble\LaravelEcommerce\Discount\DiscountModel::class,
                     'address' => \Weble\LaravelEcommerce\Address\AddressModel::class,*/
                 ],
             ],
@@ -234,5 +234,7 @@ return [
     */
     'tables' => [
         'items' => 'cart_items',
+        'customers' => 'cart_customers',
+        'discounts' => 'cart_discounts',
     ],
 ];

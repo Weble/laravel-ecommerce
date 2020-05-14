@@ -2,9 +2,11 @@
 
 namespace Weble\LaravelEcommerce\Tests\Cart;
 
+use CommerceGuys\Addressing\Address;
 use Weble\LaravelEcommerce\Cart\Cart;
 use Weble\LaravelEcommerce\Cart\CartItemModel;
 use Weble\LaravelEcommerce\Cart\CartManager;
+use Weble\LaravelEcommerce\Customer\Customer;
 use Weble\LaravelEcommerce\Discount\Discount;
 use Weble\LaravelEcommerce\Discount\DiscountTarget;
 use Weble\LaravelEcommerce\Discount\DiscountType;
@@ -216,6 +218,32 @@ class CartTest extends TestCase
         ]));
 
         $this->assertTrue($cart->subTotal()->equals(money(140)));
+    }
+
+    /**
+     * @test
+     * @dataProvider driversProvider
+     */
+    public function can_attach_customer_to_cart($driver)
+    {
+        $this->setCartStorageDriver($driver);
+
+        // These is tested with 22% IT vat
+        $product = factory(Product::class)->create(['price' => money(100)]);
+
+        /** @var Cart $cart */
+        $cart = app('ecommerce.cart');
+        $cart->add($product, 2);
+
+        $this->assertTrue(! $cart->tax()->isZero());
+
+        $customer = new Customer([]);
+        $customer->billingAddress = new Address("IT", "VI");
+        $customer->shippingAddress = new Address("US", "NY");
+
+        $cart->forCustomer($customer);
+
+        $this->assertTrue($cart->tax()->isZero());
     }
 
     protected function setCartStorageDriver($driver): void

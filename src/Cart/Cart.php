@@ -30,6 +30,13 @@ class Cart implements CartInterface, Arrayable, Jsonable
         $this->customer = new Customer();
     }
 
+    public function forCustomer(Customer $customer): self
+    {
+        $this->customer = $customer;
+
+        return $this->persist("customer", $this->customer());
+    }
+
     public function withDiscount(Discount $discount): self
     {
         if ($discount->target()->isEqual(DiscountTarget::item())) {
@@ -56,6 +63,11 @@ class Cart implements CartInterface, Arrayable, Jsonable
         return $this->discounts->merge($this->items()->map(function (CartItem $cartItem) {
             return $cartItem->discounts;
         })->flatten());
+    }
+
+    public function customer(): Customer
+    {
+        return $this->customer;
     }
 
     public function get(string $id): CartItem
@@ -140,6 +152,10 @@ class Cart implements CartInterface, Arrayable, Jsonable
 
     public function itemsSubtotal(): Money
     {
+        if ($this->items()->count() <= 0) {
+            return money(0);
+        }
+
         return $this->items()->reduce(function (?Money $sum = null, ?CartItem $cartItem = null) {
             if ($sum === null) {
                 return $cartItem->subTotal();
@@ -156,6 +172,10 @@ class Cart implements CartInterface, Arrayable, Jsonable
 
     public function tax(): Money
     {
+        if ($this->items()->count() <= 0) {
+            return money(0);
+        }
+
         return $this->items()->reduce(function (?Money $sum = null, ?CartItem $cartItem = null) {
             if ($sum === null) {
                 return $cartItem->tax($this->customer->taxAddress());
