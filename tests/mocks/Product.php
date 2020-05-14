@@ -20,11 +20,6 @@ class Product extends Model implements Purchasable
         'price' => MoneyCast::class,
     ];
 
-    public function getKey()
-    {
-        return $this->id;
-    }
-
     public function cartTaxType(): TaxTypeInterface
     {
         return (new TaxTypeRepository())->get('it_vat_standard');

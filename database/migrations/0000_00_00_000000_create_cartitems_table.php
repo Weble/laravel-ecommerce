@@ -11,17 +11,19 @@ class CreateCartitemsTable extends Migration
      */
     public function up()
     {
-        Schema::create(config('ecommerce.cart.table', 'cart_items'), function (Blueprint $table) {
+        Schema::create(config('ecommerce.tables.items', 'cart_items'), function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->uuid('cart_key');
             $table->bigInteger('user_id')->nullable();
             $table->string('instance')->index();
             $table->bigInteger('purchasable_id');
             $table->string('purchasable_type');
             $table->bigInteger('price');
             $table->float('quantity')->default(1);
-            $table->json('attributes');
+            $table->json('product_attributes');
             $table->timestamps();
 
+            $table->index(['cart_key']);
             $table->index(['purchasable_type', 'purchasable_id']);
         });
     }

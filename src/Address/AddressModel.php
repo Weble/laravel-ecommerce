@@ -1,10 +1,10 @@
 <?php
 
-namespace Weble\LaravelEcommerce\Discount;
+namespace Weble\LaravelEcommerce\Address;
 
 use Illuminate\Database\Eloquent\Model;
 
-class CouponModel extends Model
+class AddressModel extends Model
 {
     protected $guarded = [];
 
@@ -12,6 +12,6 @@ class CouponModel extends Model
     {
         parent::__construct($attributes);
 
-        $this->setTable(config('ecommerce.coupon.table', 'coupons'));
+        $this->setTable(config('ecommerce.customer.table', 'coupons'));
     }
 }

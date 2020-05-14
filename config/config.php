@@ -101,7 +101,14 @@ return [
             ],
 
             'eloquent' => [
-                // 'model' => CartItemModel::class
+                'fallback' => 'session',
+                'session_key' => 'ecommerce.store.eloquent.',
+                'models' => [
+                    'items' => \Weble\LaravelEcommerce\Cart\CartItemModel::class,
+                    'discounts' => \Weble\LaravelEcommerce\Discount\DiscountModel::class,
+                    'customer' => \Weble\LaravelEcommerce\Customer\CustomerModel::class,
+                    'address' => \Weble\LaravelEcommerce\Address\AddressModel::class,
+                ],
             ],
         ],
 
@@ -150,16 +157,6 @@ return [
         | When you add something to the cart, which instance gets selected by default
         */
         'default' => 'cart',
-
-        /*
-        |--------------------------------------------------------------------------
-        | Cart Database Table
-        |--------------------------------------------------------------------------
-        |
-        | When using che CartDatabaseDriver, which table name will be used to
-        | store the cart contents. Related to the CartItemModel class config
-        */
-        'table' => 'cart_items',
     ],
 
     /*
@@ -224,7 +221,18 @@ return [
         'currencyManager' => \Weble\LaravelEcommerce\Currency\CurrencyManager::class,
         'taxManager' => \Weble\LaravelEcommerce\Tax\TaxManager::class,
         'cartManager' => \Weble\LaravelEcommerce\Cart\CartManager::class,
-        'cartItemModel' => \Weble\LaravelEcommerce\Cart\Model\CartItemModel::class,
+        'cartItemModel' => \Weble\LaravelEcommerce\Cart\CartItemModel::class,
         'cart' => \Weble\LaravelEcommerce\Cart\Cart::class,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Configurable Table names
+    |--------------------------------------------------------------------------
+    |
+    | When using the eloquent storage, by default we'll use these table names
+    */
+    'tables' => [
+        'items' => 'cart_items',
     ],
 ];

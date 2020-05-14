@@ -29,3 +29,14 @@ if (! function_exists('taxManager')) {
         return app('ecommerce.tax');
     }
 }
+
+
+if (! function_exists('storageManager')) {
+    /**
+     * @return \Weble\LaravelEcommerce\Storage\StorageManager
+     */
+    function storageManager()
+    {
+        return app('ecommerce.storage');
+    }
+}

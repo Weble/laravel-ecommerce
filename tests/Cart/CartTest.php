@@ -3,11 +3,12 @@
 namespace Weble\LaravelEcommerce\Tests\Cart;
 
 use Weble\LaravelEcommerce\Cart\Cart;
+use Weble\LaravelEcommerce\Cart\CartItemModel;
 use Weble\LaravelEcommerce\Cart\CartManager;
-use Weble\LaravelEcommerce\Cart\CartSessionDriver;
 use Weble\LaravelEcommerce\Discount\DiscountTarget;
 use Weble\LaravelEcommerce\Discount\ValueDiscount;
 use Weble\LaravelEcommerce\Storage\CacheStorage;
+use Weble\LaravelEcommerce\Storage\EloquentStorage;
 use Weble\LaravelEcommerce\Storage\SessionStorage;
 use Weble\LaravelEcommerce\Tests\mocks\Product;
 use Weble\LaravelEcommerce\Tests\TestCase;
@@ -53,13 +54,30 @@ class CartTest extends TestCase
 
     /**
      * @test
+     */
+    public function can_generate_cart_items_ids_consistently()
+    {
+        $product = factory(Product::class)->create(['price' => money(100)]);
+
+        /** @var Cart $cart */
+        $cart = app('ecommerce.cart');
+        $cartItem = $cart->add($product);
+
+        $restoredCartitem = (new CartItemModel())->fromCartValue($cartItem, 'ecommerce', 'cart')->toCartValue();
+
+        $this->assertEquals($cartItem->getId(), $restoredCartitem->getId());
+        $this->assertEquals($cartItem->toArray(), $restoredCartitem->toArray());
+    }
+
+    /**
+     * @test
      * @dataProvider driversProvider
      */
     public function can_add_to_cart($driver)
     {
         $this->setCartStorageDriver($driver);
 
-        $product = new Product(['price' => money(100)]);
+        $product = factory(Product::class)->create(['price' => money(100)]);
 
         /** @var Cart $cart */
         $cart = app('ecommerce.cart');
@@ -76,14 +94,13 @@ class CartTest extends TestCase
     {
         $this->setCartStorageDriver($driver);
 
-        $product = new Product(['id' => 1, 'price' => money(100)]);
-        $product2 = new Product(['id' => 2, 'price' => money(200)]);
+        $product = factory(Product::class)->create(['price' => money(100)]);
+        $product2 = factory(Product::class)->create(['price' => money(200)]);
 
         /** @var Cart $cart */
         $cart = app('ecommerce.cart');
         $cartItem = $cart->add($product, 2);
         $cart->add($product2, 1);
-
         $cart->remove($cartItem);
 
         $this->assertEquals(1, $cart->items()->total());
@@ -97,15 +114,15 @@ class CartTest extends TestCase
     {
         $this->setCartStorageDriver($driver);
 
-        $product = new Product(['id' => 1, 'price' => money(100)]);
-        $product2 = new Product(['id' => 2, 'price' => money(200)]);
+        $product = factory(Product::class)->create(['price' => money(100)]);
+        $product2 = factory(Product::class)->create(['price' => money(200)]);
 
         /** @var Cart $cart */
         $cart = app('ecommerce.cart');
         $cart->add($product, 2);
         $cart->add($product2, 1);
 
-        $this->assertTrue($cart->subTotal()->equals(money(400)));
+        $this->assertTrue($cart->subTotal()->equals(money(400)), $cart->subTotal());
     }
 
     /**
@@ -117,8 +134,8 @@ class CartTest extends TestCase
         $this->setCartStorageDriver($driver);
 
         // These is tested with 22% IT vat
-        $product = new Product(['id' => 1, 'price' => money(100)]);
-        $product2 = new Product(['id' => 2, 'price' => money(200)]);
+        $product = factory(Product::class)->create(['price' => money(100)]);
+        $product2 = factory(Product::class)->create(['price' => money(200)]);
 
         /** @var Cart $cart */
         $cart = app('ecommerce.cart');
@@ -138,7 +155,7 @@ class CartTest extends TestCase
         $this->setCartStorageDriver($driver);
 
         // These is tested with 22% IT vat
-        $product = new Product(['price' => money(100)]);
+        $product = factory(Product::class)->create(['price' => money(100)]);
 
         /** @var Cart $cart */
         $cart = app('ecommerce.cart');
@@ -147,7 +164,7 @@ class CartTest extends TestCase
             'target' => DiscountTarget::item(),
         ]));
 
-        $this->assertTrue($cart->subTotal()->equals(money(180)));
+        $this->assertTrue($cart->subTotal()->equals(money(180)), $cart->subTotal());
     }
 
     /**
@@ -159,7 +176,7 @@ class CartTest extends TestCase
         $this->setCartStorageDriver($driver);
 
         // These is tested with 22% IT vat
-        $product = new Product(['price' => money(100)]);
+        $product = factory(Product::class)->create(['price' => money(100)]);
 
         /** @var Cart $cart */
         $cart = app('ecommerce.cart');
@@ -182,7 +199,7 @@ class CartTest extends TestCase
         $this->setCartStorageDriver($driver);
 
         // These is tested with 22% IT vat
-        $product = new Product(['price' => money(100)]);
+        $product = factory(Product::class)->create(['price' => money(100)]);
 
         /** @var Cart $cart */
         $cart = app('ecommerce.cart');
@@ -206,6 +223,7 @@ class CartTest extends TestCase
         return [
             ['session', SessionStorage::class],
             ['cache', CacheStorage::class],
+            ['eloquent', EloquentStorage::class],
         ];
     }
 }

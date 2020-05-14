@@ -5,7 +5,6 @@ namespace Weble\LaravelEcommerce\Cart;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Str;
-use Weble\LaravelEcommerce\Cart\Model\CartItemModel;
 
 class CartDatabaseDriver extends CartDriver implements CartDriverInterface
 {

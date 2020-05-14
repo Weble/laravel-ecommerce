@@ -10,6 +10,7 @@ class CacheStorage implements StorageInterface
 {
     protected Repository $cache;
     protected string $prefix;
+    protected string $instanceName;
 
     public function __construct(array $config = [])
     {
@@ -25,6 +26,14 @@ class CacheStorage implements StorageInterface
 
         $this->cache = Cache::store($driver);
         $this->prefix = $sessionPrefix . "." . ($config['prefix'] ?? 'ecommerce.');
+    }
+
+    public function setInstanceName(string $name): StorageInterface
+    {
+        $this->instanceName = $name;
+        $this->prefix .= '.' . $this->instanceName;
+
+        return $this;
     }
 
     public function set(string $key, $value): StorageInterface

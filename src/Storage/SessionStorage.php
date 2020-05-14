@@ -9,6 +9,7 @@ class SessionStorage implements StorageInterface
 {
     protected Store $session;
     protected string $prefix;
+    protected string $instanceName;
 
     public function __construct(array $config = [])
     {
@@ -20,6 +21,14 @@ class SessionStorage implements StorageInterface
 
         $this->session = app()->make(SessionManager::class)->driver($driver);
         $this->prefix = $config['prefix'] ?? 'ecommerce.';
+    }
+
+    public function setInstanceName(string $name): StorageInterface
+    {
+        $this->instanceName = $name;
+        $this->prefix .= '.' . $this->instanceName;
+
+        return $this;
     }
 
     public function set(string $key, $value): self

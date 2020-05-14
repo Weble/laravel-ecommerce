@@ -12,4 +12,6 @@ interface StorageInterface
     public function has(string $key): bool;
 
     public function remove(string $key): self;
+
+    public function setInstanceName(string $name): self;
 }

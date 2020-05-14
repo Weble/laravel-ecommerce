@@ -4,16 +4,21 @@ namespace Weble\LaravelEcommerce\Tests;
 
 use Cknow\Money\MoneyServiceProvider;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Swap\Laravel\SwapServiceProvider;
 use Weble\LaravelEcommerce\LaravelEcommerceServiceProvider;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
+    use DatabaseTransactions;
+
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->setupDatabase();
+
+        $this->withFactories(__DIR__.'/factories');
     }
 
     protected function getPackageProviders($app)
@@ -54,14 +59,16 @@ class TestCase extends \Orchestra\Testbench\TestCase
         $this->app['db']->connection()->getSchemaBuilder()->create('cart_items', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->bigInteger('user_id')->nullable();
+            $table->uuid('cart_key');
             $table->string('instance')->index();
             $table->bigInteger('purchasable_id');
             $table->string('purchasable_type');
             $table->bigInteger('price');
             $table->float('quantity')->default(1);
-            $table->json('attributes');
+            $table->json('product_attributes');
             $table->timestamps();
 
+            $table->index(['cart_key']);
             $table->index(['purchasable_type', 'purchasable_id']);
         });
 

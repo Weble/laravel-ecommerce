@@ -3,6 +3,8 @@
 namespace Weble\LaravelEcommerce\Cart;
 
 use Cknow\Money\Money;
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Collection;
 use Weble\LaravelEcommerce\Customer\Customer;
 use Weble\LaravelEcommerce\Discount\DiscountCollection;
@@ -12,7 +14,7 @@ use Weble\LaravelEcommerce\Discount\InvalidDiscountException;
 use Weble\LaravelEcommerce\Purchasable;
 use Weble\LaravelEcommerce\Storage\StorageInterface;
 
-class Cart implements CartInterface
+class Cart implements CartInterface, Arrayable, Jsonable
 {
     protected StorageInterface $storage;
     protected Customer $customer;
@@ -22,6 +24,7 @@ class Cart implements CartInterface
     public function __construct(StorageInterface $storage, string $instanceName = 'cart')
     {
         $this->storage = $storage;
+        $this->storage()->setInstanceName($instanceName);
         $this->instanceName = $instanceName;
         $this->discounts = DiscountCollection::make([]);
         $this->customer = new Customer();
@@ -119,7 +122,7 @@ class Cart implements CartInterface
 
     public function items(): CartItemCollection
     {
-        return CartItemCollection::make($this->storage()->get("{$this->instanceName()}.items", []));
+        return CartItemCollection::make($this->storage()->get("{$this->instanceName()}.items", []))->keyBy(fn (CartItem  $item) => $item->getId());
     }
 
     public function discount(): Money
@@ -172,5 +175,21 @@ class Cart implements CartInterface
         $this->storage()->set("{$this->instanceName()}.{$key}", $value);
 
         return $this;
+    }
+
+    public function toArray()
+    {
+        return [
+            'items' => $this->items()->toArray(),
+            'discounts' => $this->discounts()->toArray(),
+            'subtotal' => $this->subTotal()->toArray(),
+            'tax' => $this->tax()->toArray(),
+            'total' => $this->tax()->toArray(),
+        ];
+    }
+
+    public function toJson($options = 0)
+    {
+        return json_encode($this->toArray(), $options);
     }
 }
