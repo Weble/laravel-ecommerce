@@ -2,7 +2,6 @@
 
 namespace Weble\LaravelEcommerce\Customer;
 
-use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -22,10 +21,10 @@ class CustomerModel extends Model implements StoresEcommerceData
         $this->setTable(config('ecommerce.tables.customers', 'cart_customers'));
     }
 
-/*    public function user(): BelongsTo
-    {
-        $this->belongsTo(config('auth.providers.users.model', User::class));
-    }*/
+    /*    public function user(): BelongsTo
+        {
+            $this->belongsTo(config('auth.providers.users.model', User::class));
+        }*/
 
     public function scopeWithCartKey(Builder $query, string $key): self
     {
@@ -64,6 +63,4 @@ class CustomerModel extends Model implements StoresEcommerceData
             'billingAddress' => json_decode($this->billing_address, true),
         ]);
     }
-
-
 }
