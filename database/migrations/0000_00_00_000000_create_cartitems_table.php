@@ -21,6 +21,7 @@ class CreateCartitemsTable extends Migration
             $table->bigInteger('price');
             $table->float('quantity')->default(1);
             $table->json('product_attributes');
+            $table->json('discounts');
             $table->timestamps();
 
             $table->index(['cart_key']);

@@ -7,8 +7,8 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Collection;
 use Weble\LaravelEcommerce\Customer\Customer;
+use Weble\LaravelEcommerce\Discount\Discount;
 use Weble\LaravelEcommerce\Discount\DiscountCollection;
-use Weble\LaravelEcommerce\Discount\DiscountInterface;
 use Weble\LaravelEcommerce\Discount\DiscountTarget;
 use Weble\LaravelEcommerce\Discount\InvalidDiscountException;
 use Weble\LaravelEcommerce\Purchasable;
@@ -30,7 +30,7 @@ class Cart implements CartInterface, Arrayable, Jsonable
         $this->customer = new Customer();
     }
 
-    public function withDiscount(DiscountInterface $discount): self
+    public function withDiscount(Discount $discount): self
     {
         if ($discount->target()->isEqual(DiscountTarget::item())) {
             throw new InvalidDiscountException();

@@ -8,7 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Collection;
 use Spatie\DataTransferObject\DataTransferObject;
+use Weble\LaravelEcommerce\Discount\Discount;
+use Weble\LaravelEcommerce\Discount\DiscountCollection;
+use Weble\LaravelEcommerce\Discount\DiscountTarget;
+use Weble\LaravelEcommerce\Discount\DiscountType;
 use Weble\LaravelEcommerce\Storage\StoresEcommerceData;
 use Weble\LaravelEcommerce\Support\MoneyCast;
 
@@ -20,6 +25,7 @@ class CartItemModel extends Model implements StoresEcommerceData
         'cart_key' => 'uuid',
         'price' => MoneyCast::class,
         'product_attributes' => 'collection',
+        'discounts' => 'collection',
         'quantity' => 'float',
     ];
 
@@ -59,6 +65,14 @@ class CartItemModel extends Model implements StoresEcommerceData
         return $this;
     }
 
+    public function getDiscountsAttribute($discounts): DiscountCollection
+    {
+        $discounts = $this->castAttribute('discounts', $discounts);
+        return DiscountCollection::make($discounts->map(function ($discount) {
+            return Discount::fromArray($discount);
+        }));
+    }
+
     /**
      * @param CartItem $cartItem
      * @param string $key
@@ -75,6 +89,7 @@ class CartItemModel extends Model implements StoresEcommerceData
                     'instance' => $instanceName,
                     'price' => $cartItem->price,
                     'product_attributes' => $cartItem->attributes,
+                    'discounts' => $cartItem->discounts->toArray(),
                     'quantity' => $cartItem->quantity,
                 ])->product()->associate($cartItem->product);
         } catch (ModelNotFoundException $e) {
@@ -84,6 +99,7 @@ class CartItemModel extends Model implements StoresEcommerceData
                 'instance' => $instanceName,
                 'price' => $cartItem->price,
                 'product_attributes' => $cartItem->attributes,
+                'discounts' => $cartItem->discounts->toArray(),
                 'quantity' => $cartItem->quantity,
             ]))->product()->associate($cartItem->product);
         }
@@ -94,6 +110,7 @@ class CartItemModel extends Model implements StoresEcommerceData
         return new CartItem([
             'price' => $this->price,
             'attributes' => $this->product_attributes,
+            'discounts' => DiscountCollection::make($this->discounts),
             'product' => $this->product,
             'quantity' => $this->quantity,
         ]);

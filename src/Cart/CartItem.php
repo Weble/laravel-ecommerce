@@ -8,8 +8,8 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Collection;
 use Spatie\DataTransferObject\DataTransferObject;
+use Weble\LaravelEcommerce\Discount\Discount;
 use Weble\LaravelEcommerce\Discount\DiscountCollection;
-use Weble\LaravelEcommerce\Discount\DiscountInterface;
 use Weble\LaravelEcommerce\Discount\DiscountTarget;
 use Weble\LaravelEcommerce\Discount\InvalidDiscountException;
 use Weble\LaravelEcommerce\Purchasable;
@@ -30,7 +30,7 @@ class CartItem extends DataTransferObject implements Arrayable, Jsonable
         parent::__construct($parameters);
     }
 
-    public function withDiscount(DiscountInterface $discount): self
+    public function withDiscount(Discount $discount): self
     {
         if (! $discount->target()->isEqual(DiscountTarget::item())) {
             throw new InvalidDiscountException();

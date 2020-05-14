@@ -5,18 +5,10 @@ namespace Weble\LaravelEcommerce\Storage;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use Weble\LaravelEcommerce\Address\AddressModel;
-use Weble\LaravelEcommerce\Cart\CartItemModel;
-use Weble\LaravelEcommerce\Customer\CustomerModel;
-use Weble\LaravelEcommerce\Discount\DiscountModel;
-
 class EloquentStorage implements StorageInterface
 {
     protected array $modelClasses = [
-        'items' => CartItemModel::class,
-        'discounts' => DiscountModel::class,
-        'customer' => CustomerModel::class,
-        'address' => AddressModel::class,
+
     ];
 
     protected StorageInterface $fallbackStorage;

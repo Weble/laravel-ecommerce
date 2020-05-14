@@ -5,8 +5,9 @@ namespace Weble\LaravelEcommerce\Tests\Cart;
 use Weble\LaravelEcommerce\Cart\Cart;
 use Weble\LaravelEcommerce\Cart\CartItemModel;
 use Weble\LaravelEcommerce\Cart\CartManager;
+use Weble\LaravelEcommerce\Discount\Discount;
 use Weble\LaravelEcommerce\Discount\DiscountTarget;
-use Weble\LaravelEcommerce\Discount\ValueDiscount;
+use Weble\LaravelEcommerce\Discount\DiscountType;
 use Weble\LaravelEcommerce\Storage\CacheStorage;
 use Weble\LaravelEcommerce\Storage\EloquentStorage;
 use Weble\LaravelEcommerce\Storage\SessionStorage;
@@ -159,10 +160,12 @@ class CartTest extends TestCase
 
         /** @var Cart $cart */
         $cart = app('ecommerce.cart');
-        $cart->add($product, 2)->withDiscount(new ValueDiscount([
+        $cartItem = $cart->add($product, 2)->withDiscount(new Discount([
             'value' => money(10),
+            'type' => DiscountType::value(),
             'target' => DiscountTarget::item(),
         ]));
+        $cart->update($cartItem);
 
         $this->assertTrue($cart->subTotal()->equals(money(180)), $cart->subTotal());
     }
@@ -182,8 +185,9 @@ class CartTest extends TestCase
         $cart = app('ecommerce.cart');
         $cart->add($product, 2);
 
-        $cart->withDiscount(new ValueDiscount([
+        $cart->withDiscount(new Discount([
             'value' => money(10),
+            'type' => DiscountType::value(),
             'target' => DiscountTarget::subtotal(),
         ]));
 
@@ -205,7 +209,8 @@ class CartTest extends TestCase
         $cart = app('ecommerce.cart');
         $cart->add($product, 2);
 
-        $cart->withDiscount(new ValueDiscount([
+        $cart->withDiscount(new Discount([
+            'type' => DiscountType::value(),
             'value' => money(60),
             'target' => DiscountTarget::items(),
         ]));
