@@ -3,6 +3,7 @@
 namespace Weble\LaravelEcommerce;
 
 use Cknow\Money\Money;
+use CommerceGuys\Addressing\Country\CountryRepository;
 use CommerceGuys\Tax\Repository\TaxTypeRepository;
 use CommerceGuys\Tax\Resolver\TaxRate\ChainTaxRateResolver;
 use CommerceGuys\Tax\Resolver\TaxRate\ChainTaxRateResolverInterface;
@@ -46,6 +47,7 @@ class LaravelEcommerceServiceProvider extends ServiceProvider implements Deferra
         $this->registerStorageManager();
         $this->registerCurrencyManager();
         $this->registerTaxClasses();
+        $this->registerAddressClasses();
         $this->registerCartManager();
 
         $this->registerFacades();
@@ -109,7 +111,12 @@ class LaravelEcommerceServiceProvider extends ServiceProvider implements Deferra
         });
     }
 
-    private function registerStorageManager()
+    protected function registerAddressClasses()
+    {
+        $this->app->singleton('ecommerce.countryRepository', CountryRepository::class);
+    }
+
+    protected function registerStorageManager()
     {
         $this->app->singleton('ecommerce.storage', function ($app) {
             $class = $this->app['config']['ecommerce.classes.storageManager'] ?? StorageManager::class;

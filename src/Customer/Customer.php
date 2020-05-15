@@ -7,23 +7,26 @@ use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Support\Jsonable;
 use Spatie\DataTransferObject\DataTransferObject;
 use Spatie\Enum\Exceptions\InvalidValueException;
+use Weble\LaravelEcommerce\Address\Address;
 use Weble\LaravelEcommerce\Address\AddressType;
 use Weble\LaravelEcommerce\Address\StoreAddress;
 
 class Customer extends DataTransferObject implements Jsonable
 {
     public ?Authenticatable $user = null;
-    public ?AddressInterface $billingAddress = null;
-    public ?AddressInterface $shippingAddress = null;
+    public ?Address $billingAddress;
+    public ?Address $shippingAddress;
 
-    public function hasBillingAddress(): bool
+    public function __construct(array $parameters = [])
     {
-        return $this->billingAddress !== null;
-    }
+        $parameters['billingAddress'] ??= new Address([
+            'type' => AddressType::billing(),
+        ]);
+        $parameters['shippingAddress'] ??= new Address([
+            'type' => AddressType::shipping(),
+        ]);
 
-    public function hasShippingAddress(): bool
-    {
-        return $this->shippingAddress !== null;
+        parent::__construct($parameters);
     }
 
     public function taxAddress(): AddressInterface
@@ -34,11 +37,11 @@ class Customer extends DataTransferObject implements Jsonable
             $taxAddressType = AddressType::shipping();
         }
 
-        if ($this->hasShippingAddress() && $taxAddressType->isEqual(AddressType::shipping())) {
+        if ($taxAddressType->isEqual(AddressType::shipping())) {
             return $this->shippingAddress;
         }
 
-        if ($this->hasBillingAddress() && $taxAddressType->isEqual(AddressType::billing())) {
+        if ($taxAddressType->isEqual(AddressType::billing())) {
             return $this->billingAddress;
         }
 

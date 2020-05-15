@@ -26,7 +26,7 @@ class SessionStorage implements StorageInterface
     public function setInstanceName(string $name): StorageInterface
     {
         $this->instanceName = $name;
-        $this->prefix .= '.' . $this->instanceName;
+        $this->prefix .= $this->instanceName . '.';
 
         return $this;
     }

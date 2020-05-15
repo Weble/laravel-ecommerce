@@ -4,6 +4,9 @@ namespace Weble\LaravelEcommerce\Cart;
 
 use Illuminate\Foundation\Application;
 
+/**
+ * @mixin Cart
+ */
 class CartManager
 {
     protected Application $app;

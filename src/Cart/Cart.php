@@ -6,6 +6,8 @@ use Cknow\Money\Money;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Collection;
+use Weble\LaravelEcommerce\Address\Address;
+use Weble\LaravelEcommerce\Address\AddressType;
 use Weble\LaravelEcommerce\Customer\Customer;
 use Weble\LaravelEcommerce\Discount\Discount;
 use Weble\LaravelEcommerce\Discount\DiscountCollection;
@@ -26,8 +28,8 @@ class Cart implements CartInterface, Arrayable, Jsonable
         $this->storage = $storage;
         $this->storage()->setInstanceName($instanceName);
         $this->instanceName = $instanceName;
-        $this->discounts = DiscountCollection::make([]);
-        $this->customer = new Customer();
+        $this->discounts = $this->loadDiscounts();
+        $this->customer = $this->loadCustomer();
     }
 
     public function forCustomer(Customer $customer): self
@@ -134,7 +136,7 @@ class Cart implements CartInterface, Arrayable, Jsonable
 
     public function items(): CartItemCollection
     {
-        return CartItemCollection::make($this->storage()->get("{$this->instanceName()}.items", []))->keyBy(fn (CartItem  $item) => $item->getId());
+        return CartItemCollection::make($this->storage()->get("{$this->instanceName()}.items", []))->keyBy(fn (CartItem $item) => $item->getId());
     }
 
     public function discount(): Money
@@ -211,5 +213,28 @@ class Cart implements CartInterface, Arrayable, Jsonable
     public function toJson($options = 0)
     {
         return json_encode($this->toArray(), $options);
+    }
+
+    protected function loadDiscounts(): DiscountCollection
+    {
+        return $this->storage()->get(
+            "{$this->instanceName()}.discounts",
+            DiscountCollection::make(),
+        );
+    }
+
+    protected function loadCustomer(): Customer
+    {
+        return $this->storage()->get(
+            "{$this->instanceName()}.customer",
+            new Customer([
+                'shippingAddress' => new Address([
+                    'type' => AddressType::shipping(),
+                ]),
+                'billingAddress' => new Address([
+                    'type' => AddressType::billing(),
+                ]),
+            ])
+        );
     }
 }
