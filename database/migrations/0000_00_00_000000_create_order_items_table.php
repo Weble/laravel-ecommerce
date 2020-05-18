@@ -4,27 +4,31 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCartitemsTable extends Migration
+class CreateOrderItemsTable extends Migration
 {
     /**
      * Run the migrations.
      */
     public function up()
     {
-        Schema::create(config('ecommerce.tables.items', 'cart_items'), function (Blueprint $table) {
+        Schema::create(config('ecommerce.tables.order_items', 'order_items'), function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('cart_key');
-            $table->bigInteger('user_id')->nullable();
-            $table->string('instance')->index();
+            $table->uuid('order_id');
+
             $table->bigInteger('purchasable_id');
             $table->string('purchasable_type');
-            $table->bigInteger('price');
+            $table->json('purchasable_data');
             $table->float('quantity')->default(1);
             $table->json('product_attributes');
             $table->json('discounts');
+
+            $table->bigInteger('unit_price');
+            $table->bigInteger('discounts_subtotal');
+            $table->bigInteger('subtotal');
+
             $table->timestamps();
 
-            $table->index(['cart_key']);
+            $table->index(['order_id']);
             $table->index(['purchasable_type', 'purchasable_id']);
         });
     }
@@ -33,6 +37,6 @@ class CreateCartitemsTable extends Migration
      */
     public function down()
     {
-        Schema::drop(config('ecommerce.tables.items', 'cart_items'));
+        Schema::drop(config('ecommerce.cart.order_items', 'order_items'));
     }
 }

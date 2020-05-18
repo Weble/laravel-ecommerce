@@ -40,11 +40,6 @@ class CartItemModel extends Model implements StoresEcommerceData
         $this->setTable(config('ecommerce.tables.items', 'cart_items'));
     }
 
-    public function purchasable(): MorphTo
-    {
-        return $this->morphTo('purchasable');
-    }
-
     public function user(): BelongsTo
     {
         $this->belongsTo(Authenticatable::class);

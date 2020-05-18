@@ -223,6 +223,8 @@ return [
         'cartManager' => \Weble\LaravelEcommerce\Cart\CartManager::class,
         'cartItemModel' => \Weble\LaravelEcommerce\Cart\CartItemModel::class,
         'cart' => \Weble\LaravelEcommerce\Cart\Cart::class,
+        'orderModel' => \Weble\LaravelEcommerce\Order\Order::class,
+        'orderItemModel' => \Weble\LaravelEcommerce\Order\OrderItem::class,
     ],
 
     /*
@@ -236,5 +238,7 @@ return [
         'items' => 'cart_items',
         'customers' => 'cart_customers',
         'discounts' => 'cart_discounts',
+        'orders' => 'orders',
+        'order_items' => 'order_items',
     ],
 ];

@@ -59,6 +59,7 @@ class CustomerModel extends Model implements StoresEcommerceData
     public function toCartValue(): DataTransferObject
     {
         return new Customer([
+            'id' => $this->getKey(),
             'shippingAddress' => json_decode($this->shipping_address, true),
             'billingAddress' => json_decode($this->billing_address, true),
         ]);

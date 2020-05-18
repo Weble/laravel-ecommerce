@@ -4,15 +4,18 @@ namespace Weble\LaravelEcommerce\Customer;
 
 use CommerceGuys\Addressing\AddressInterface;
 use Illuminate\Auth\Authenticatable;
+use Illuminate\Contracts\Database\Eloquent\Castable;
 use Illuminate\Contracts\Support\Jsonable;
 use Spatie\DataTransferObject\DataTransferObject;
 use Spatie\Enum\Exceptions\InvalidValueException;
 use Weble\LaravelEcommerce\Address\Address;
 use Weble\LaravelEcommerce\Address\AddressType;
 use Weble\LaravelEcommerce\Address\StoreAddress;
+use Weble\LaravelEcommerce\Support\DTOCast;
 
-class Customer extends DataTransferObject implements Jsonable
+class Customer extends DataTransferObject implements Jsonable, Castable
 {
+    public string $id;
     public ?Authenticatable $user = null;
     public ?Address $billingAddress;
     public ?Address $shippingAddress;
@@ -27,6 +30,17 @@ class Customer extends DataTransferObject implements Jsonable
         ]);
 
         parent::__construct($parameters);
+    }
+
+    public static function castUsing()
+    {
+        return DTOCast::class;
+    }
+
+
+    public function getId(): string
+    {
+        return $this->id;
     }
 
     public function taxAddress(): AddressInterface
