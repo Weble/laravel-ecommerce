@@ -6,8 +6,7 @@ use Cknow\Money\Money;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Collection;
-use Weble\LaravelEcommerce\Address\Address;
-use Weble\LaravelEcommerce\Address\AddressType;
+use Weble\LaravelEcommerce\Cart\Concern\InteractsWithStorage;
 use Weble\LaravelEcommerce\Customer\Customer;
 use Weble\LaravelEcommerce\Discount\Discount;
 use Weble\LaravelEcommerce\Discount\DiscountCollection;
@@ -18,36 +17,20 @@ use Weble\LaravelEcommerce\Storage\StorageInterface;
 
 class Cart implements CartInterface, Arrayable, Jsonable
 {
-    protected StorageInterface $storage;
+    use InteractsWithStorage;
+
+    protected CartItemCollection $items;
     protected Customer $customer;
     protected DiscountCollection $discounts;
     protected string $instanceName;
 
     public function __construct(StorageInterface $storage, string $instanceName = 'cart')
     {
+        $this->instanceName = $instanceName;
+
         $this->storage = $storage;
         $this->storage()->setInstanceName($instanceName);
-        $this->instanceName = $instanceName;
-        $this->discounts = $this->loadDiscounts();
-        $this->customer = $this->loadCustomer();
-    }
-
-    public function forCustomer(Customer $customer): self
-    {
-        $this->customer = $customer;
-
-        return $this->persist("customer", $this->customer());
-    }
-
-    public function withDiscount(Discount $discount): self
-    {
-        if ($discount->target()->isEqual(DiscountTarget::item())) {
-            throw new InvalidDiscountException();
-        }
-
-        $this->discounts->add($discount);
-
-        return $this->persist("discounts", $this->discounts());
+        $this->loadFromStorage();
     }
 
     public function instanceName(): string
@@ -55,9 +38,9 @@ class Cart implements CartInterface, Arrayable, Jsonable
         return $this->instanceName;
     }
 
-    public function storage(): StorageInterface
+    public function items(): CartItemCollection
     {
-        return $this->storage;
+        return $this->items;
     }
 
     public function discounts(): DiscountCollection
@@ -71,6 +54,7 @@ class Cart implements CartInterface, Arrayable, Jsonable
     {
         return $this->customer;
     }
+
 
     public function get(string $id): CartItem
     {
@@ -123,20 +107,32 @@ class Cart implements CartInterface, Arrayable, Jsonable
 
     public function remove(CartItem $cartItem): self
     {
-        $items = $this->items();
-        if (! $items->has($cartItem->getId())) {
+        if (! $this->items()->has($cartItem->getId())) {
             return $this;
         }
 
-        $items = $items->except($cartItem->getId());
-        $this->persist("items", $items);
+        $this->items = $this->items()->except($cartItem->getId());
+        $this->persist("items", $this->items());
 
         return $this;
     }
 
-    public function items(): CartItemCollection
+    public function forCustomer(Customer $customer): self
     {
-        return CartItemCollection::make($this->storage()->get("{$this->instanceName()}.items", []))->keyBy(fn (CartItem $item) => $item->getId());
+        $this->customer = $customer;
+
+        return $this->persist("customer", $this->customer());
+    }
+
+    public function withDiscount(Discount $discount): self
+    {
+        if ($discount->target()->isEqual(DiscountTarget::item())) {
+            throw new InvalidDiscountException();
+        }
+
+        $this->discounts->add($discount);
+
+        return $this->persist("discounts", $this->discounts());
     }
 
     public function discount(): Money
@@ -192,13 +188,6 @@ class Cart implements CartInterface, Arrayable, Jsonable
         return $this->subTotal()->add($this->tax());
     }
 
-    protected function persist(string $key, $value): self
-    {
-        $this->storage()->set("{$this->instanceName()}.{$key}", $value);
-
-        return $this;
-    }
-
     public function toArray()
     {
         return [
@@ -213,28 +202,5 @@ class Cart implements CartInterface, Arrayable, Jsonable
     public function toJson($options = 0)
     {
         return json_encode($this->toArray(), $options);
-    }
-
-    protected function loadDiscounts(): DiscountCollection
-    {
-        return $this->storage()->get(
-            "{$this->instanceName()}.discounts",
-            DiscountCollection::make(),
-        );
-    }
-
-    protected function loadCustomer(): Customer
-    {
-        return $this->storage()->get(
-            "{$this->instanceName()}.customer",
-            new Customer([
-                'shippingAddress' => new Address([
-                    'type' => AddressType::shipping(),
-                ]),
-                'billingAddress' => new Address([
-                    'type' => AddressType::billing(),
-                ]),
-            ])
-        );
     }
 }

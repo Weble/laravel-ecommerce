@@ -2,7 +2,7 @@
 
 namespace Weble\LaravelEcommerce\Tests\Cart;
 
-use CommerceGuys\Addressing\Address;
+use Weble\LaravelEcommerce\Address\Address;
 use Weble\LaravelEcommerce\Cart\Cart;
 use Weble\LaravelEcommerce\Cart\CartItemModel;
 use Weble\LaravelEcommerce\Cart\CartManager;
@@ -238,8 +238,14 @@ class CartTest extends TestCase
         $this->assertTrue(! $cart->tax()->isZero());
 
         $customer = new Customer([]);
-        $customer->billingAddress = new Address("IT", "VI");
-        $customer->shippingAddress = new Address("US", "NY");
+        $customer->billingAddress = new Address([
+            'country' => 'IT',
+            'state' => 'VI',
+        ]);
+        $customer->shippingAddress = new Address([
+            'country' => 'US',
+            'state' => 'NY',
+        ]);
 
         $cart->forCustomer($customer);
 

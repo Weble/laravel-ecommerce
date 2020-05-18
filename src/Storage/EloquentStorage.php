@@ -3,15 +3,13 @@
 namespace Weble\LaravelEcommerce\Storage;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class EloquentStorage implements StorageInterface
 {
-    protected array $modelClasses = [
-
-    ];
-
+    protected array $modelClasses = [];
     protected StorageInterface $fallbackStorage;
     protected string $modelKey;
     protected string $instanceName;
@@ -76,9 +74,23 @@ class EloquentStorage implements StorageInterface
             return $this->fallbackStorage->get($key, $default);
         }
 
-        return $this->modelFor($key)->get()->map(function ($model) {
-            return $model->toCartValue();
-        });
+        if ($key === 'items') {
+            $items = $this->modelFor($key)->get();
+
+            if ($items->count() <= 0) {
+                return $default;
+            }
+
+            return $items->map(function ($model) {
+                return $model->toCartValue();
+            });
+        }
+
+        try {
+            return $this->modelFor($key)->firstOrFail()->toCartValue();
+        } catch (ModelNotFoundException $e) {
+            return $default;
+        }
     }
 
     public function has(string $key): bool
