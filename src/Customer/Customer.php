@@ -37,7 +37,6 @@ class Customer extends DataTransferObject implements Jsonable, Castable
         return DTOCast::class;
     }
 
-
     public function getId(): string
     {
         return $this->id;

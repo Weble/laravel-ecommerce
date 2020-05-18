@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Weble\LaravelEcommerce\Tests\Order;
-
 
 use Weble\LaravelEcommerce\Cart\Cart;
 use Weble\LaravelEcommerce\Order\Order;
@@ -28,5 +26,4 @@ class OrderTest extends TestCase
         $this->assertEquals(1, $order->items->count());
         $this->assertEquals($product->getKey(), $order->items->first()->product->getKey());
     }
-
 }

@@ -3,8 +3,6 @@
 namespace Weble\LaravelEcommerce\Discount;
 
 use Cknow\Money\Money;
-use Illuminate\Contracts\Database\Eloquent\Castable;
-use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 use Illuminate\Support\Collection;
 
 class DiscountCollection extends Collection

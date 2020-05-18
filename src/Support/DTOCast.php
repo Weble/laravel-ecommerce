@@ -9,6 +9,7 @@ class DTOCast implements CastsAttributes
     public function get($model, string $key, $value, array $attributes)
     {
         dd($attributes);
+
         return (new $class($value));
     }
 
