@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Weble\LaravelEcommerce\Cart\Concern;
-
 
 use Weble\LaravelEcommerce\Address\Address;
 use Weble\LaravelEcommerce\Address\AddressType;
@@ -64,5 +62,4 @@ trait InteractsWithStorage
             ])
         );
     }
-
 }

@@ -55,7 +55,6 @@ class Cart implements CartInterface, Arrayable, Jsonable
         return $this->customer;
     }
 
-
     public function get(string $id): CartItem
     {
         return new CartItem($this->storage()->get($id));
