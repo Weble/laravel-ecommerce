@@ -19,7 +19,7 @@ class OrderItemBuilder
     {
         $this->orderItem
             ->fill([
-                'id'                 => Str::uuid(),
+                'id'                 => Str::orderedUuid(),
                 'quantity'           => $cartItem->quantity,
                 'product_attributes' => $cartItem->attributes,
                 'purchasable_data'   => $cartItem->product->toJson(),

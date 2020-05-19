@@ -22,7 +22,7 @@ class CartDatabaseDriver extends CartDriver implements CartDriverInterface
         $this->model = app()->make(config('ecommerce.classes.cartItemModel', CartItemModel::class));
 
         $sessionKey = $config['session_key'] ?? 'ecommerce.cart_id';
-        $this->uuid = session()->get($sessionKey, Str::uuid());
+        $this->uuid = session()->get($sessionKey, Str::orderedUuid());
 
         $this->model->whereUuid($this->uuid);
     }

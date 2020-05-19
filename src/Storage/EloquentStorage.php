@@ -26,7 +26,7 @@ class EloquentStorage implements StorageInterface
         $sessionKey = $config['session_key'] ?? 'ecommerce.store.eloquent.';
         $modelKey   = session()->get($sessionKey);
         if (! $modelKey) {
-            $modelKey = Str::uuid();
+            $modelKey = Str::orderedUuid();
             session()->put($sessionKey, $modelKey);
         }
 

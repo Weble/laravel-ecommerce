@@ -37,6 +37,6 @@ class CreateOrderItemsTable extends Migration
      */
     public function down()
     {
-        Schema::drop(config('ecommerce.cart.order_items', 'order_items'));
+        Schema::drop(config('ecommerce.tables.order_items', 'order_items'));
     }
 }

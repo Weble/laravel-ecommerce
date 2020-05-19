@@ -16,6 +16,7 @@ class Customer extends DataTransferObject implements Jsonable
 {
     public string $id;
     public ?Authenticatable $user = null;
+    public ?string $email;
     public ?Address $billingAddress;
     public ?Address $shippingAddress;
 
@@ -28,7 +29,7 @@ class Customer extends DataTransferObject implements Jsonable
             'type' => AddressType::shipping(),
         ]);
 
-        $parameters['id'] ??= (string)Str::uuid();
+        $parameters['id'] ??= (string)Str::orderedUuid();
 
         parent::__construct($parameters);
     }

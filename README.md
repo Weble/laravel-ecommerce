@@ -28,6 +28,7 @@ It is **very** opinionated, meaning we put some "assertions" in place to allow u
 - We use ```commerceguys/addressing``` to deal with addresses and zones in general
 - We use ```commerceguys/tax``` to deal with taxes
 - We use ```iben12/laravel-statable``` to deal with order management through a state machine.
+- We use ```barryvdh/laravel-omnipay``` to deal with payment gateways.
 - We provide Laravel Nova Fields / Resources / Tools as an optional way to interact with the package resources.
 - We provide views / assets / etc that can be used to speed up the frontend work
 - We provide default emails to be sent on specific events

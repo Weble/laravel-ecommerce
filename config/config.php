@@ -265,6 +265,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Payment Gateways
+    |--------------------------------------------------------------------------
+    |
+    | Details of the payment gateways. Falls back to omnipay's configuration
+    */
+    'payment' => [
+        'gateway' => config('omnipay.gateway', env('OMNIPAY_GATEWAY', 'PayPal_Express')),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Taxes
     |--------------------------------------------------------------------------
     |
@@ -309,6 +320,7 @@ return [
         'cart'            => \Weble\LaravelEcommerce\Cart\Cart::class,
         'orderModel'      => \Weble\LaravelEcommerce\Order\Order::class,
         'orderItemModel'  => \Weble\LaravelEcommerce\Order\OrderItem::class,
+        'orderHistoryModel' => \Weble\LaravelEcommerce\Order\OrderHistory::class,
     ],
 
     /*
@@ -324,5 +336,6 @@ return [
         'discounts'   => 'cart_discounts',
         'orders'      => 'orders',
         'order_items' => 'order_items',
+        'order_history' => 'order_history',
     ],
 ];

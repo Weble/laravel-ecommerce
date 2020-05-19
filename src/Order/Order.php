@@ -10,15 +10,17 @@ use Illuminate\Support\Str;
 use Weble\LaravelEcommerce\Cart\Cart;
 use Weble\LaravelEcommerce\Customer\Customer;
 use Weble\LaravelEcommerce\Order\Concern\InteractsWithStateMachine;
+use Weble\LaravelEcommerce\Order\Concern\Payable;
 use Weble\LaravelEcommerce\Support\CurrencyCast;
 use Weble\LaravelEcommerce\Support\DTOCast;
 use Weble\LaravelEcommerce\Support\MoneyCast;
 
 class Order extends Model
 {
-    use InteractsWithStateMachine;
+    use InteractsWithStateMachine, Payable;
 
     protected $guarded = [];
+
     protected $casts = [
         'customer'           => DTOCast::class . ':' . Customer::class,
         'currency'           => CurrencyCast::class,
@@ -30,6 +32,7 @@ class Order extends Model
         'tax'                => MoneyCast::class . ':,currency',
         'total'              => MoneyCast::class . ':,currency',
     ];
+
     protected $keyType = 'uuid';
 
     public function __construct(array $attributes = [])
@@ -43,7 +46,7 @@ class Order extends Model
     {
         return (new static())
             ->fill([
-                'id'                 => Str::uuid(),
+                'id'                 => Str::orderedUuid(),
                 'user_id'            => $cart->customer()->user ? $cart->customer()->user->id : null,
                 'customer_id'        => $cart->customer()->getId() ?: null,
                 'customer'           => $cart->customer(),

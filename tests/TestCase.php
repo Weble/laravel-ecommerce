@@ -28,6 +28,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
             MoneyServiceProvider::class,
             \Sebdesign\SM\ServiceProvider::class,
             \Iben\Statable\ServiceProvider::class,
+            \Barryvdh\Omnipay\ServiceProvider::class,
             LaravelEcommerceServiceProvider::class,
         ];
     }

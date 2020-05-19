@@ -36,11 +36,9 @@ class LaravelEcommerceServiceProvider extends ServiceProvider implements Deferra
 
         /** @var Repository $config */
         $config = $this->app->make('config');
-        Money::setLocale($config->get('ecommerce.customer.locale', 'en_US'));
-        Money::setCurrency($config->get('ecommerce.currency.default', 'USD'));
 
-        $key = config('ecommerce.order.workflow.graph', 'ecommerce-order');
-        $config->set('state-machine.' . $key, $config->get('ecommerce.order.workflow'));
+        $this->addMoneyConfig($config);
+        $this->addStateMachineConfig($config);
     }
 
     /**
@@ -176,5 +174,20 @@ class LaravelEcommerceServiceProvider extends ServiceProvider implements Deferra
             __DIR__.'/../resources/views' => base_path('resources/views/vendor/skeleton'),
         ], 'views');
         */
+    }
+
+    protected function addStateMachineConfig(Repository $config): void
+    {
+        $key = config('ecommerce.order.workflow.graph', 'ecommerce-order');
+        $config->set('state-machine.' . $key, $config->get('ecommerce.order.workflow'));
+    }
+
+    /**
+     * @param Repository $config
+     */
+    protected function addMoneyConfig(Repository $config): void
+    {
+        Money::setLocale($config->get('ecommerce.customer.locale', 'en_US'));
+        Money::setCurrency($config->get('ecommerce.currency.default', 'USD'));
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Weble\LaravelEcommerce\Tests\Order;
 
+use Omnipay\Common\Message\ResponseInterface;
 use Weble\LaravelEcommerce\Cart\Cart;
 use Weble\LaravelEcommerce\Order\OrderBuilder;
 use Weble\LaravelEcommerce\Tests\mocks\Product;
@@ -72,6 +73,24 @@ class OrderTest extends TestCase
         $order2->apply('readyForPayment');
         $this->assertEquals(1, $order2->stateHistory()->get()->count());
         $this->assertEquals(1, $order->stateHistory()->get()->count());
-        $this->assertDatabaseCount('state_history', 2);
+        $this->assertDatabaseCount('order_history', 2);
+    }
+
+    /** @test */
+    public function order_can_be_payed()
+    {
+        $product = factory(Product::class)->create(['price' => money(100)]);
+
+        /** @var Cart $cart */
+        $cart     = app('ecommerce.cart')->instance();
+        $cartItem = $cart->add($product);
+
+        $order = (new OrderBuilder())
+            ->fromCart($cart)
+            ->create();
+
+        $response = $order->pay();
+
+        $this->assertInstanceOf(ResponseInterface::class, $response);
     }
 }

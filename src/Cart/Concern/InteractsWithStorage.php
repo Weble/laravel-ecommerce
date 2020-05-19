@@ -54,7 +54,7 @@ trait InteractsWithStorage
         $this->customer = $this->storage()->get(
             "{$this->instanceName()}.customer",
             new Customer([
-                'id'              => (string) Str::uuid(),
+                'id'              => (string) Str::orderedUuid(),
                 'shippingAddress' => new Address([
                     'type' => AddressType::shipping(),
                 ]),
