@@ -9,14 +9,17 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 use Weble\LaravelEcommerce\Cart\Cart;
 use Weble\LaravelEcommerce\Customer\Customer;
+use Weble\LaravelEcommerce\Order\Concern\InteractsWithStateMachine;
 use Weble\LaravelEcommerce\Support\CurrencyCast;
 use Weble\LaravelEcommerce\Support\DTOCast;
 use Weble\LaravelEcommerce\Support\MoneyCast;
 
 class Order extends Model
 {
+    use InteractsWithStateMachine;
+
     protected $guarded = [];
-    protected $casts   = [
+    protected $casts = [
         'customer'           => DTOCast::class . ':' . Customer::class,
         'currency'           => CurrencyCast::class,
         'discounts'          => 'collection',

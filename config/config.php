@@ -14,7 +14,7 @@ return [
         | interface. Check http://moneyphp.org/en/stable/features/currencies.html#currencylist
         | for more info.
         */
-        'currencies' => \Money\Currencies\ISOCurrencies::class,
+        'currencies'  => \Money\Currencies\ISOCurrencies::class,
 
         /*
         |--------------------------------------------------------------------------
@@ -28,7 +28,7 @@ return [
         | Falls back to \Cknow\Money config.
         | Needs to be in the list of the available currencies above.
         */
-        'default' => config('money.currency', config('app.currency', 'USD')),
+        'default'     => config('money.currency', config('app.currency', 'USD')),
 
         /*
         |--------------------------------------------------------------------------
@@ -38,7 +38,7 @@ return [
         | This is the default currency used to print out money values to the user when
         | the user itself doesn't provide an alternative
         */
-        'user' => config('ecommerce.currency', 'USD'),
+        'user'        => config('ecommerce.currency', 'USD'),
 
         /*
         |--------------------------------------------------------------------------
@@ -59,7 +59,7 @@ return [
         | Falls back to \Cknow\Money config.
         | Used for formatting prices.
         */
-        'locale' => config('money.locale', config('app.locale', 'en_US')),
+        'locale'      => config('money.locale', config('app.locale', 'en_US')),
 
         /*
         |--------------------------------------------------------------------------
@@ -130,7 +130,7 @@ return [
     | You can use the same driver for multiple instances
     */
 
-    'cart' => [
+    'cart'  => [
         'instances' => [
             'cart' => [
                 'storage' => 'session',
@@ -145,7 +145,7 @@ return [
             'wishlist' => [
                 'storage' => 'session',
                 // Any other option will be passes through to the store driver
-                'prefix' => 'wishlist_',
+                'prefix'  => 'wishlist_',
             ],
         ],
 
@@ -156,7 +156,7 @@ return [
         |
         | When you add something to the cart, which instance gets selected by default
         */
-        'default' => 'cart',
+        'default'   => 'cart',
     ],
 
     /*
@@ -181,13 +181,97 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Order
+    |--------------------------------------------------------------------------
+    |
+    | Details of the store selling the products.
+    */
+    'order' => [
+        'workflow'    => [
+            'class' => config('ecommerce.classes.orderModel', \Weble\LaravelEcommerce\Order\Order::class),
+            'graph' => 'ecommerce-order',
+            // Name of the graph passed down to winzou/state-machine
+
+            'property_path' => 'state', // should exist on model
+
+            'states'      => [
+                'created',
+                'waiting_for_payment',
+                'payed',
+                'payment_failed',
+                'canceled',
+                'shipping',
+                'shipped',
+                'delivered',
+                'refunded',
+            ],
+            'transitions' => [
+                'readyForPayment' => [
+                    'from' => [
+                        'created',
+                        'payment_failed',
+                    ],
+                    'to'   => 'waiting_for_payment',
+                ],
+                'markAsPayed'     => [
+                    'from' => [
+                        'waiting_for_payment',
+                        'payment_failed',
+                    ],
+                    'to'   => 'payed',
+                ],
+                'paymentFailed'   => [
+                    'from' => [
+                        'waiting_for_payment',
+                    ],
+                    'to'   => 'payment_failed',
+                ],
+                'cancel'       => [
+                    'from' => ['created', 'payment_failed', 'waiting_for_payment'],
+                    'to'   => 'canceled',
+                ],
+                'prepareForShipment'   => [
+                    'from' => [
+                        'payed',
+                    ],
+                    'to'   => 'shipping',
+                ],
+                'ship'   => [
+                    'from' => [
+                        'shipping',
+                    ],
+                    'to'   => 'shipped',
+                ],
+                'markAsDelivered'   => [
+                    'from' => [
+                        'shipped',
+                    ],
+                    'to'   => 'delivered',
+                ],
+                'refunded'       => [
+                    'from' => ['payed', 'shipping', 'shipped', 'delivered'],
+                    'to'   => 'refunded',
+                ],
+            ],
+            'callbacks'   => [
+                'after' => [
+                    'history' => [
+                        'do' => 'StateHistoryManager@storeHistory',
+                    ],
+                ],
+            ],
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Taxes
     |--------------------------------------------------------------------------
     |
     | Tax settings
     */
 
-    'tax' => [
+    'tax'     => [
         /*
         |--------------------------------------------------------------------------
         | Address to Use for Taxes
@@ -205,7 +289,7 @@ return [
     |
     | Coupon table name
     */
-    'coupon' => [
+    'coupon'  => [
         'table' => 'coupons',
     ],
 
@@ -234,7 +318,7 @@ return [
     |
     | When using the eloquent storage, by default we'll use these table names
     */
-    'tables' => [
+    'tables'  => [
         'items'       => 'cart_items',
         'customers'   => 'cart_customers',
         'discounts'   => 'cart_discounts',

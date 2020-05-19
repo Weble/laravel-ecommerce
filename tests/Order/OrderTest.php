@@ -27,4 +27,51 @@ class OrderTest extends TestCase
         $this->assertEquals(1, $order->items->count());
         $this->assertEquals($product->getKey(), $order->items->first()->product->getKey());
     }
+
+    /** @test */
+    public function uses_state_machine_to_manage_order()
+    {
+        $product = factory(Product::class)->create(['price' => money(100)]);
+
+        /** @var Cart $cart */
+        $cart     = app('ecommerce.cart')->instance();
+        $cartItem = $cart->add($product);
+
+        $order = (new OrderBuilder())
+            ->fromCart($cart)
+            ->create();
+
+        $this->assertEquals('created', $order->stateIs());
+
+        $order->apply('readyForPayment');
+
+        $this->assertEquals('waiting_for_payment', $order->stateIs());
+    }
+
+    /** @test */
+    public function order_history_is_stored_correctly()
+    {
+        $product = factory(Product::class)->create(['price' => money(100)]);
+
+        /** @var Cart $cart */
+        $cart     = app('ecommerce.cart')->instance();
+        $cartItem = $cart->add($product);
+
+        $order = (new OrderBuilder())
+            ->fromCart($cart)
+            ->create();
+
+        $order->apply('readyForPayment');
+
+        $this->assertEquals(1, $order->stateHistory()->get()->count());
+
+        $order2 = (new OrderBuilder())
+            ->fromCart($cart)
+            ->create();
+
+        $order2->apply('readyForPayment');
+        $this->assertEquals(1, $order2->stateHistory()->get()->count());
+        $this->assertEquals(1, $order->stateHistory()->get()->count());
+        $this->assertDatabaseCount('state_history', 2);
+    }
 }

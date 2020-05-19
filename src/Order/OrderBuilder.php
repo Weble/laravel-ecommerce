@@ -36,6 +36,7 @@ class OrderBuilder
                 'subtotal'           => $cart->subTotal(),
                 'tax'                => $cart->tax(),
                 'total'              => $cart->total(),
+                'state'              => 'created',
             ]);
 
         $this->items = $cart->items()->map(function (CartItem $item) {

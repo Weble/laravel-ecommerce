@@ -15,6 +15,7 @@ use CommerceGuys\Tax\Resolver\TaxType\ChainTaxTypeResolver;
 use CommerceGuys\Tax\Resolver\TaxType\ChainTaxTypeResolverInterface;
 use CommerceGuys\Tax\Resolver\TaxType\DefaultTaxTypeResolver;
 use CommerceGuys\Tax\Resolver\TaxType\EuTaxTypeResolver;
+use Illuminate\Config\Repository;
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
 use Weble\LaravelEcommerce\Cart\CartManager;
@@ -33,8 +34,13 @@ class LaravelEcommerceServiceProvider extends ServiceProvider implements Deferra
     {
         $this->publishResources();
 
-        Money::setLocale($this->app->make('config')->get('ecommerce.customer.locale', 'en_US'));
-        Money::setCurrency($this->app->make('config')->get('ecommerce.currency.default', 'USD'));
+        /** @var Repository $config */
+        $config = $this->app->make('config');
+        Money::setLocale($config->get('ecommerce.customer.locale', 'en_US'));
+        Money::setCurrency($config->get('ecommerce.currency.default', 'USD'));
+
+        $key = config('ecommerce.order.workflow.graph', 'ecommerce-order');
+        $config->set('state-machine.' . $key, $config->get('ecommerce.order.workflow'));
     }
 
     /**

@@ -28,6 +28,7 @@
         "commerceguys/addressing": "^1.0",
         "commerceguys/tax": "^0.8.2",
         "florianv/laravel-swap": "^2.1",
+        "iben12/laravel-statable": "^1.4",
         "illuminate/database": "^7.0",
         "nyholm/psr7": "^1.2",
         "php-http/curl-client": "^2.1",
@@ -63,6 +64,12 @@
     "config": {
         "sort-packages": true
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/sebdesign/state-machine"
+        }
+    ],
     "extra": {
         "laravel": {
             "providers": [

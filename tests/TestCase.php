@@ -18,7 +18,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
 
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations/');
         $this->setupDatabase();
-        $this->withFactories(__DIR__.'/factories');
+        $this->withFactories(__DIR__ . '/factories');
     }
 
     protected function getPackageProviders($app)
@@ -26,6 +26,8 @@ class TestCase extends \Orchestra\Testbench\TestCase
         return [
             SwapServiceProvider::class,
             MoneyServiceProvider::class,
+            \Sebdesign\SM\ServiceProvider::class,
+            \Iben\Statable\ServiceProvider::class,
             LaravelEcommerceServiceProvider::class,
         ];
     }
@@ -39,7 +41,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
             unlink($databasePath);
         }
 
-        if (! file_exists($databasePath)) {
+        if (!file_exists($databasePath)) {
             file_put_contents($databasePath, '');
         }
 
@@ -54,6 +56,16 @@ class TestCase extends \Orchestra\Testbench\TestCase
     protected function setupDatabase()
     {
         $this->loadLaravelMigrations();
+
+        $this->app['db']->connection()->getSchemaBuilder()->create('state_history', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('transition');
+            $table->string('from');
+            $table->string('to');
+            $table->integer('actor_id')->nullable();
+            $table->morphs('statable');
+            $table->timestamps();
+        });
 
         $this->app['db']->connection()->getSchemaBuilder()->create('products', function (Blueprint $table) {
             $table->increments('id');
