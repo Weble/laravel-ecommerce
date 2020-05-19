@@ -38,6 +38,7 @@
         "spatie/laravel-enum": "^1.6"
     },
     "require-dev": {
+        "brainmaestro/composer-git-hooks": "^2.8",
         "darryldecode/cart": "^4.1",
         "friendsofphp/php-cs-fixer": "^2.16",
         "omnipay/paypal": "^3.0",
@@ -80,6 +81,11 @@
             "aliases": {
                 "LaravelEcommerce": "CartFacade"
             }
+        },
+        "hooks": {
+            "pre-commit": [
+                "php-cs-fixer fix"
+            ]
         }
     },
     "minimum-stability": "dev",
