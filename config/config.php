@@ -95,16 +95,16 @@ return [
             'cache' => [
                 // this can be any cache driver you've registered within laravel.
                 // "default" means the default driver used for everything else
-                'driver' => 'default',
-                'prefix' => 'ecommerce.',
+                'driver'      => 'default',
+                'prefix'      => 'ecommerce.',
                 'session_key' => 'ecommerce.store.cache.',
             ],
 
             'eloquent' => [
-                'fallback' => 'session',
+                'fallback'    => 'session',
                 'session_key' => 'ecommerce.store.eloquent.',
-                'models' => [
-                    'items' => \Weble\LaravelEcommerce\Cart\CartItemModel::class,
+                'models'      => [
+                    'items'    => \Weble\LaravelEcommerce\Cart\CartItemModel::class,
                     'customer' => \Weble\LaravelEcommerce\Customer\CustomerModel::class,
                     /*'discounts' => \Weble\LaravelEcommerce\Discount\DiscountModel::class,
                     'address' => \Weble\LaravelEcommerce\Address\AddressModel::class,*/
@@ -168,14 +168,14 @@ return [
     */
     'store' => [
         'address' => [
-            'country' => 'IT',
-            'city' => 'Vicenza',
-            'zip' => '36100',
-            'state' => 'VI',
-            'address' => 'Via Enrico Fermi, 265',
-            'address2' => '',
+            'country'      => 'IT',
+            'city'         => 'Vicenza',
+            'zip'          => '36100',
+            'state'        => 'VI',
+            'address'      => 'Via Enrico Fermi, 265',
+            'address2'     => '',
             'organization' => 'Weble Srl',
-            'vat_id' => '03579410246',
+            'vat_id'       => '03579410246',
         ],
     ],
 
@@ -217,14 +217,14 @@ return [
     | You can swap our classes with yours here
     */
     'classes' => [
-        'storageManager' => \Weble\LaravelEcommerce\Storage\StorageManager::class,
+        'storageManager'  => \Weble\LaravelEcommerce\Storage\StorageManager::class,
         'currencyManager' => \Weble\LaravelEcommerce\Currency\CurrencyManager::class,
-        'taxManager' => \Weble\LaravelEcommerce\Tax\TaxManager::class,
-        'cartManager' => \Weble\LaravelEcommerce\Cart\CartManager::class,
-        'cartItemModel' => \Weble\LaravelEcommerce\Cart\CartItemModel::class,
-        'cart' => \Weble\LaravelEcommerce\Cart\Cart::class,
-        'orderModel' => \Weble\LaravelEcommerce\Order\Order::class,
-        'orderItemModel' => \Weble\LaravelEcommerce\Order\OrderItem::class,
+        'taxManager'      => \Weble\LaravelEcommerce\Tax\TaxManager::class,
+        'cartManager'     => \Weble\LaravelEcommerce\Cart\CartManager::class,
+        'cartItemModel'   => \Weble\LaravelEcommerce\Cart\CartItemModel::class,
+        'cart'            => \Weble\LaravelEcommerce\Cart\Cart::class,
+        'orderModel'      => \Weble\LaravelEcommerce\Order\Order::class,
+        'orderItemModel'  => \Weble\LaravelEcommerce\Order\OrderItem::class,
     ],
 
     /*
@@ -235,10 +235,10 @@ return [
     | When using the eloquent storage, by default we'll use these table names
     */
     'tables' => [
-        'items' => 'cart_items',
-        'customers' => 'cart_customers',
-        'discounts' => 'cart_discounts',
-        'orders' => 'orders',
+        'items'       => 'cart_items',
+        'customers'   => 'cart_customers',
+        'discounts'   => 'cart_discounts',
+        'orders'      => 'orders',
         'order_items' => 'order_items',
     ],
 ];

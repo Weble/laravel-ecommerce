@@ -12,21 +12,22 @@ use Weble\LaravelEcommerce\Cart\Cart;
 use Weble\LaravelEcommerce\Cart\CartItem;
 use Weble\LaravelEcommerce\Customer\Customer;
 use Weble\LaravelEcommerce\Support\CurrencyCast;
+use Weble\LaravelEcommerce\Support\DTOCast;
 use Weble\LaravelEcommerce\Support\MoneyCast;
 
 class Order extends Model
 {
     protected $guarded = [];
-    protected $casts = [
-        'customer' => Customer::class,
-        'currency' => CurrencyCast::class,
-        'discounts' => 'collection',
+    protected $casts   = [
+        'customer'           => DTOCast::class . ':' . Customer::class,
+        'currency'           => CurrencyCast::class,
+        'discounts'          => 'collection',
         'discounts_subtotal' => MoneyCast::class . ':,currency',
-        'items_subtotal' => MoneyCast::class . ':,currency',
-        'items_total' => MoneyCast::class . ':,currency',
-        'subtotal' => MoneyCast::class . ':,currency',
-        'tax' => MoneyCast::class . ':,currency',
-        'total' => MoneyCast::class . ':,currency',
+        'items_subtotal'     => MoneyCast::class . ':,currency',
+        'items_total'        => MoneyCast::class . ':,currency',
+        'subtotal'           => MoneyCast::class . ':,currency',
+        'tax'                => MoneyCast::class . ':,currency',
+        'total'              => MoneyCast::class . ':,currency',
     ];
     protected $keyType = 'uuid';
 
@@ -41,18 +42,18 @@ class Order extends Model
     {
         return (new static())
             ->fill([
-                'id' => Str::uuid(),
-                'user_id' => $cart->customer()->user ? $cart->customer()->user->id : null,
-                'customer_id' => $cart->customer()->getId() ?: null,
-                'customer' => $cart->customer(),
-                'currency' => $cart->total()->getMoney()->getCurrency()->getCode(),
-                'discounts' => $cart->discounts(),
+                'id'                 => Str::uuid(),
+                'user_id'            => $cart->customer()->user ? $cart->customer()->user->id : null,
+                'customer_id'        => $cart->customer()->getId() ?: null,
+                'customer'           => $cart->customer(),
+                'currency'           => $cart->total()->getMoney()->getCurrency()->getCode(),
+                'discounts'          => $cart->discounts(),
                 'discounts_subtotal' => $cart->discount(),
-                'items_subtotal' => $cart->itemsSubtotal(),
-                'items_total' => $cart->items(),
-                'subtotal' => $cart->subTotal(),
-                'tax' => $cart->tax(),
-                'total' => $cart->total(),
+                'items_subtotal'     => $cart->itemsSubtotal(),
+                'items_total'        => $cart->items(),
+                'subtotal'           => $cart->subTotal(),
+                'tax'                => $cart->tax(),
+                'total'              => $cart->total(),
             ]);
     }
 
@@ -64,22 +65,5 @@ class Order extends Model
     public function user(): BelongsTo
     {
         $this->belongsTo(Authenticatable::class);
-    }
-
-    public static function createFromCart(Cart $cart): self
-    {
-        return DB::transaction(function () use ($cart) {
-            $order = self::fromCart($cart);
-            $order->save();
-
-            $cart->items()->each(function (CartItem $item) use ($order) {
-                OrderItem::fromCartItem($item)
-                    ->order()
-                    ->associate($order)
-                    ->save();
-            });
-
-            return $order;
-        });
     }
 }

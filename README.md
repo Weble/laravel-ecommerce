@@ -9,16 +9,16 @@ Opinionated ecommerce tools for laravel
 ## Introduction
 In a lot of projects, we encounter the same dilemma: we need to provide a customer with an "Ecommerce" website (basically, he needs to sell either a product or a service) which doesn't "fit" in the standard definition of ecommerce (ie: what you can easily build on top of the popular ecommerce CMSes, like Prestashop, Magento, Woocommerce, etc), or with the usual SaaS (Shopify, Webflow, etc)
 
-The natural question that arises for us is then: do we customize these CMSes to suite the particular business case of the client, or build a custom Laravel application while having to deal with all the standard (and always "exptected") ecommerce features, like cart, orders, notifications, inventory, coupons, taxes, customers, etc?
+The natural question that arises for us is then: do we customize these CMSes to suite the particular business case of the client, or build a custom Laravel application while having to deal with all the standard (and always "expected") ecommerce features, like cart, orders, notifications, inventory, coupons, taxes, customers, etc?
 
-This is why Laravel Ecommerce was born: to provide all (or some) of these standard ecommerce features to whatever Laravel Application needs them, allowing us to leverage them, without having to rebuild them from scratch every time.
+This is why Laravel Ecommerce was born: to provide most of these standard ecommerce features to whatever Laravel Application needs them, allowing us to leverage them, without having to rebuild them from scratch every time.
 It is **very** opinionated, meaning we put some "assertions" in place to allow us to build upon a few "certainties".
 
 ### Prerequisites
 
-1. Everything you sell is an Eloquent Model
-2. Everything you sell needs to be added to the cart in order to be purchased
-3. Everything you sell has a price.
+1. Everything you sell is an Eloquent Model.
+1. Everything you sell needs to be added to the cart in order to be purchased.
+1. Everything you sell has a price, and the model itself is able to calculate it.
 
 ### Design Choices
 

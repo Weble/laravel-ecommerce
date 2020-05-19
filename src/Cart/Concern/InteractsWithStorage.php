@@ -2,6 +2,7 @@
 
 namespace Weble\LaravelEcommerce\Cart\Concern;
 
+use Illuminate\Support\Str;
 use Weble\LaravelEcommerce\Address\Address;
 use Weble\LaravelEcommerce\Address\AddressType;
 use Weble\LaravelEcommerce\Cart\CartItem;
@@ -53,6 +54,7 @@ trait InteractsWithStorage
         $this->customer = $this->storage()->get(
             "{$this->instanceName()}.customer",
             new Customer([
+                'id'              => (string) Str::uuid(),
                 'shippingAddress' => new Address([
                     'type' => AddressType::shipping(),
                 ]),
