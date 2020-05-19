@@ -25,7 +25,7 @@ class CartItem extends DataTransferObject implements Arrayable, Jsonable
     public function __construct(array $parameters = [])
     {
         $this->attributes = collect([]);
-        $this->discounts = DiscountCollection::make([]);
+        $this->discounts  = DiscountCollection::make([]);
 
         parent::__construct($parameters);
     }
@@ -53,10 +53,10 @@ class CartItem extends DataTransferObject implements Arrayable, Jsonable
         }
 
         return new static([
-            'product' => $purchasable,
+            'product'    => $purchasable,
             'attributes' => $attributes,
-            'quantity' => $quantity,
-            'price' => $purchasable->cartPrice($attributes),
+            'quantity'   => $quantity,
+            'price'      => $purchasable->cartPrice($attributes),
         ]);
     }
 

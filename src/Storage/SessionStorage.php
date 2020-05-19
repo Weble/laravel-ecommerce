@@ -20,7 +20,7 @@ class SessionStorage implements StorageInterface
         }
 
         $this->session = app()->make(SessionManager::class)->driver($driver);
-        $this->prefix = $config['prefix'] ?? 'ecommerce.';
+        $this->prefix  = $config['prefix'] ?? 'ecommerce.';
     }
 
     public function setInstanceName(string $name): StorageInterface

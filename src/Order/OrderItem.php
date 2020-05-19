@@ -14,8 +14,8 @@ class OrderItem extends Model
 
     protected $casts = [
         'product_attributes' => 'collection',
-        'discounts' => 'collection',
-        'quantity' => 'float',
+        'discounts'          => 'collection',
+        'quantity'           => 'float',
     ];
 
     protected $keyType = 'uuid';
@@ -30,14 +30,14 @@ class OrderItem extends Model
     public static function fromCartItem(CartItem $cartItem): self
     {
         return (new static())->fill([
-            'id' => Str::uuid(),
-            'quantity' => $cartItem->quantity,
+            'id'                 => Str::uuid(),
+            'quantity'           => $cartItem->quantity,
             'product_attributes' => $cartItem->attributes,
-            'purchasable_data' => $cartItem->product->toJson(),
-            'discounts' => $cartItem->discounts,
-            'unit_price' => $cartItem->unitPrice(),
+            'purchasable_data'   => $cartItem->product->toJson(),
+            'discounts'          => $cartItem->discounts,
+            'unit_price'         => $cartItem->unitPrice(),
             'discounts_subtotal' => $cartItem->discount(),
-            'subtotal' => $cartItem->subTotal(),
+            'subtotal'           => $cartItem->subTotal(),
         ])
             ->product()
             ->associate($cartItem->product);

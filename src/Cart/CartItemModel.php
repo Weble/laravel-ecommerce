@@ -19,11 +19,11 @@ class CartItemModel extends Model implements StoresEcommerceData
     protected $guarded = [];
 
     protected $casts = [
-        'cart_key' => 'uuid',
-        'price' => MoneyCast::class,
+        'cart_key'           => 'uuid',
+        'price'              => MoneyCast::class,
         'product_attributes' => 'collection',
-        'discounts' => 'collection',
-        'quantity' => 'float',
+        'discounts'          => 'collection',
+        'quantity'           => 'float',
     ];
 
     protected $keyType = 'uuid';
@@ -77,23 +77,23 @@ class CartItemModel extends Model implements StoresEcommerceData
         try {
             return self::where($this->getKeyName(), '=', $cartItem->getId())->firstOrFail()
                 ->fill([
-                    'id' => $cartItem->getId(),
-                    'cart_key' => $key,
-                    'instance' => $instanceName,
-                    'price' => $cartItem->price,
+                    'id'                 => $cartItem->getId(),
+                    'cart_key'           => $key,
+                    'instance'           => $instanceName,
+                    'price'              => $cartItem->price,
                     'product_attributes' => $cartItem->attributes,
-                    'discounts' => $cartItem->discounts->toArray(),
-                    'quantity' => $cartItem->quantity,
+                    'discounts'          => $cartItem->discounts->toArray(),
+                    'quantity'           => $cartItem->quantity,
                 ])->product()->associate($cartItem->product);
         } catch (ModelNotFoundException $e) {
             return (new self([
-                'id' => $cartItem->getId(),
-                'cart_key' => $key,
-                'instance' => $instanceName,
-                'price' => $cartItem->price,
+                'id'                 => $cartItem->getId(),
+                'cart_key'           => $key,
+                'instance'           => $instanceName,
+                'price'              => $cartItem->price,
                 'product_attributes' => $cartItem->attributes,
-                'discounts' => $cartItem->discounts->toArray(),
-                'quantity' => $cartItem->quantity,
+                'discounts'          => $cartItem->discounts->toArray(),
+                'quantity'           => $cartItem->quantity,
             ]))->product()->associate($cartItem->product);
         }
     }
@@ -101,11 +101,11 @@ class CartItemModel extends Model implements StoresEcommerceData
     public function toCartValue(): DataTransferObject
     {
         return new CartItem([
-            'price' => $this->price,
+            'price'      => $this->price,
             'attributes' => $this->product_attributes,
-            'discounts' => DiscountCollection::make($this->discounts),
-            'product' => $this->product,
-            'quantity' => $this->quantity,
+            'discounts'  => DiscountCollection::make($this->discounts),
+            'product'    => $this->product,
+            'quantity'   => $this->quantity,
         ]);
     }
 }

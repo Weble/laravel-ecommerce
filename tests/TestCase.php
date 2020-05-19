@@ -45,9 +45,9 @@ class TestCase extends \Orchestra\Testbench\TestCase
 
         $app['config']->set('database.default', 'testing');
         $app['config']->set('database.connections.testing', [
-            'driver' => 'sqlite',
+            'driver'   => 'sqlite',
             'database' => __DIR__ . '/temp/database.sqlite',
-            'prefix' => '',
+            'prefix'   => '',
         ]);
     }
 

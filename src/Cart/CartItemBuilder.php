@@ -16,15 +16,15 @@ use Weble\LaravelEcommerce\Purchasable;
 class CartItemBuilder
 {
     protected Purchasable $product;
-    protected float $quantity = 1.0;
-    protected ?Money $price = null;
+    protected float $quantity   = 1.0;
+    protected ?Money $price     = null;
     protected array $attributes = [];
     protected Cart $cart;
 
     public function __construct()
     {
         $this->cart = $cart;
-        $this->id = (string)Str::uuid();
+        $this->id   = (string)Str::uuid();
     }
 
     public function withId(string $id): self
@@ -79,8 +79,8 @@ class CartItemBuilder
                 'required',
                 'uuid',
             ],
-            'product' => ['required'],
-            'price' => ['required'],
+            'product'  => ['required'],
+            'price'    => ['required'],
             'quantity' => [
                 'required',
                 'numeric',
@@ -94,10 +94,10 @@ class CartItemBuilder
         }
 
         return new CartItem([
-            'id' => $this->id,
-            'product' => $this->product,
-            'price' => $this->price,
-            'quantity' => $this->quantity,
+            'id'         => $this->id,
+            'product'    => $this->product,
+            'price'      => $this->price,
+            'quantity'   => $this->quantity,
             'attributes' => $this->attributes,
         ]);
     }

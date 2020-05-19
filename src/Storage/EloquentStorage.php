@@ -24,7 +24,7 @@ class EloquentStorage implements StorageInterface
         $this->fallbackStorage = storageManager()->store($config['fallback'] ?? 'session');
 
         $sessionKey = $config['session_key'] ?? 'ecommerce.store.eloquent.';
-        $modelKey = session()->get($sessionKey);
+        $modelKey   = session()->get($sessionKey);
         if (! $modelKey) {
             $modelKey = Str::uuid();
             session()->put($sessionKey, $modelKey);
@@ -47,9 +47,9 @@ class EloquentStorage implements StorageInterface
         }
 
         if ($value instanceof Collection) {
-            $model = $this->modelFor($key);
-            $oldKeys = $model->get()->pluck($model->getKeyName());
-            $newKeys = $value->pluck($model->getKeyName());
+            $model        = $this->modelFor($key);
+            $oldKeys      = $model->get()->pluck($model->getKeyName());
+            $newKeys      = $value->pluck($model->getKeyName());
             $keysToDelete = $oldKeys->except($newKeys);
 
             if ($keysToDelete->count() > 0) {

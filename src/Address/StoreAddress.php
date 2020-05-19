@@ -28,7 +28,7 @@ class StoreAddress extends Address implements AddressInterface
 
     public function withVatId(string $string): self
     {
-        $new = clone $this;
+        $new        = clone $this;
         $new->vatId = $string;
 
         return $new;

@@ -24,7 +24,7 @@ class CacheStorage implements StorageInterface
 
         $sessionPrefix = session()->get($sessionKey, Str::uuid());
 
-        $this->cache = Cache::store($driver);
+        $this->cache  = Cache::store($driver);
         $this->prefix = $sessionPrefix . "." . ($config['prefix'] ?? 'ecommerce.');
     }
 

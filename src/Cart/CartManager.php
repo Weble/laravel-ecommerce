@@ -10,7 +10,7 @@ use Illuminate\Foundation\Application;
 class CartManager
 {
     protected Application $app;
-    protected array $instances = [];
+    protected array $instances      = [];
     protected array $customCreators = [];
 
     public function __construct(Application $app)
@@ -51,7 +51,7 @@ class CartManager
 
     protected function resolve($name)
     {
-        $config = $this->getConfig($name);
+        $config  = $this->getConfig($name);
         $storage = $config['storage'] ?? $this->app['config']['ecommerce.storage.default'] ?? 'session';
 
         return $this->app['ecommerce.storage']->store($storage, $name);

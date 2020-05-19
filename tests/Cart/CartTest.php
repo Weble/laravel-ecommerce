@@ -63,7 +63,7 @@ class CartTest extends TestCase
         $product = factory(Product::class)->create(['price' => money(100)]);
 
         /** @var Cart $cart */
-        $cart = app('ecommerce.cart');
+        $cart     = app('ecommerce.cart');
         $cartItem = $cart->add($product);
 
         $restoredCartitem = (new CartItemModel())->fromCartValue($cartItem, 'ecommerce', 'cart')->toCartValue();
@@ -97,11 +97,11 @@ class CartTest extends TestCase
     {
         $this->setCartStorageDriver($driver);
 
-        $product = factory(Product::class)->create(['price' => money(100)]);
+        $product  = factory(Product::class)->create(['price' => money(100)]);
         $product2 = factory(Product::class)->create(['price' => money(200)]);
 
         /** @var Cart $cart */
-        $cart = app('ecommerce.cart');
+        $cart     = app('ecommerce.cart');
         $cartItem = $cart->add($product, 2);
         $cart->add($product2, 1);
         $cart->remove($cartItem);
@@ -117,7 +117,7 @@ class CartTest extends TestCase
     {
         $this->setCartStorageDriver($driver);
 
-        $product = factory(Product::class)->create(['price' => money(100)]);
+        $product  = factory(Product::class)->create(['price' => money(100)]);
         $product2 = factory(Product::class)->create(['price' => money(200)]);
 
         /** @var Cart $cart */
@@ -137,7 +137,7 @@ class CartTest extends TestCase
         $this->setCartStorageDriver($driver);
 
         // These is tested with 22% IT vat
-        $product = factory(Product::class)->create(['price' => money(100)]);
+        $product  = factory(Product::class)->create(['price' => money(100)]);
         $product2 = factory(Product::class)->create(['price' => money(200)]);
 
         /** @var Cart $cart */
@@ -161,10 +161,10 @@ class CartTest extends TestCase
         $product = factory(Product::class)->create(['price' => money(100)]);
 
         /** @var Cart $cart */
-        $cart = app('ecommerce.cart');
+        $cart     = app('ecommerce.cart');
         $cartItem = $cart->add($product, 2)->withDiscount(new Discount([
-            'value' => money(10),
-            'type' => DiscountType::value(),
+            'value'  => money(10),
+            'type'   => DiscountType::value(),
             'target' => DiscountTarget::item(),
         ]));
         $cart->update($cartItem);
@@ -188,8 +188,8 @@ class CartTest extends TestCase
         $cart->add($product, 2);
 
         $cart->withDiscount(new Discount([
-            'value' => money(10),
-            'type' => DiscountType::value(),
+            'value'  => money(10),
+            'type'   => DiscountType::value(),
             'target' => DiscountTarget::subtotal(),
         ]));
 
@@ -212,8 +212,8 @@ class CartTest extends TestCase
         $cart->add($product, 2);
 
         $cart->withDiscount(new Discount([
-            'type' => DiscountType::value(),
-            'value' => money(60),
+            'type'   => DiscountType::value(),
+            'value'  => money(60),
             'target' => DiscountTarget::items(),
         ]));
 
@@ -237,14 +237,14 @@ class CartTest extends TestCase
 
         $this->assertTrue(! $cart->tax()->isZero());
 
-        $customer = new Customer([]);
+        $customer                 = new Customer([]);
         $customer->billingAddress = new Address([
             'country' => 'IT',
-            'state' => 'VI',
+            'state'   => 'VI',
         ]);
         $customer->shippingAddress = new Address([
             'country' => 'US',
-            'state' => 'NY',
+            'state'   => 'NY',
         ]);
 
         $cart->forCustomer($customer);

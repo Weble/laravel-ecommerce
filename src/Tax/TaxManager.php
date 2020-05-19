@@ -36,7 +36,7 @@ class TaxManager
         $price = $price ?: $product->cartPrice();
 
         $currency = $price->getMoney()->getCurrency();
-        $context = new Context($address, $storeAddress);
+        $context  = new Context($address, $storeAddress);
 
         /** @var TaxRateAmount[] $amounts */
         $amounts = app()->make(TaxResolver::class)->resolveAmounts($product, $context);

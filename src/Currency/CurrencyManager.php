@@ -110,14 +110,14 @@ class CurrencyManager
             $currencyListClass = ISOCurrencies::class;
         }
 
-        $this->availableCurrencies = $this->app->make($currencyListClass);
+        $this->availableCurrencies           = $this->app->make($currencyListClass);
         $this->availableCurrenciesCollection = Collection::make($this->availableCurrencies);
         Money::setCurrencies($this->availableCurrencies);
 
         $sessionCurrency = session(config('ecommerce.currency.session_key', 'ecommerce.currency'), config('ecommerce.currency.user', 'USD'));
 
         $this->defaultCurrency = $this->currency($sessionCurrency);
-        $this->userCurrency = $this->currency($sessionCurrency);
+        $this->userCurrency    = $this->currency($sessionCurrency);
     }
 
     protected function setupCurrencyConversion(Swap $swap): void

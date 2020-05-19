@@ -190,11 +190,11 @@ class Cart implements CartInterface, Arrayable, Jsonable
     public function toArray()
     {
         return [
-            'items' => $this->items()->toArray(),
+            'items'     => $this->items()->toArray(),
             'discounts' => $this->discounts()->toArray(),
-            'subtotal' => $this->subTotal()->toArray(),
-            'tax' => $this->tax()->toArray(),
-            'total' => $this->tax()->toArray(),
+            'subtotal'  => $this->subTotal()->toArray(),
+            'tax'       => $this->tax()->toArray(),
+            'total'     => $this->tax()->toArray(),
         ];
     }
 

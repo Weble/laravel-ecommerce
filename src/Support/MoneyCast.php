@@ -14,9 +14,9 @@ class MoneyCast implements CastsAttributes
 
     public function __construct(?string $currencyCode = null, ?string $currencyField = null)
     {
-        $this->currencyCode = $currencyCode;
+        $this->currencyCode  = $currencyCode;
         $this->currencyField = $currencyField;
-        $this->currency = currencyManager()->defaultCurrency();
+        $this->currency      = currencyManager()->defaultCurrency();
 
         if ($this->currencyCode) {
             $this->currency = currencyManager()->currency($this->currencyCode);
@@ -76,7 +76,7 @@ class MoneyCast implements CastsAttributes
         if ($this->currencyField) {
             return [
                 $this->currencyField => $storeAsCurrency,
-                $key => $money,
+                $key                 => $money,
             ];
         }
 

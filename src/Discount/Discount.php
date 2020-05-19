@@ -38,9 +38,9 @@ class Discount extends DataTransferObject implements Arrayable, Jsonable
         $type = DiscountType::make($discount['type']);
 
         return new Discount([
-            'type' => $type,
+            'type'   => $type,
             'target' => DiscountTarget::make($discount['target']),
-            'value' => $type->isEqual(DiscountType::value()) ? money($discount['value']['amount'] ?? 0, $discount['value']['currency'] ?? 'USD') : (float) $discount['value'],
+            'value'  => $type->isEqual(DiscountType::value()) ? money($discount['value']['amount'] ?? 0, $discount['value']['currency'] ?? 'USD') : (float) $discount['value'],
         ]);
     }
 }

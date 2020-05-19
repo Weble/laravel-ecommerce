@@ -34,16 +34,16 @@ class TaxTest extends TestCase
         ]);
 
         $customerAddress = (new Address())
-           ->withCountryCode('IT');
+            ->withCountryCode('IT');
 
         $storeAddress = (new Address())
-           ->withCountryCode('IT');
+            ->withCountryCode('IT');
 
         $context = new Context($customerAddress, $storeAddress);
 
         /** @var TaxRateAmount[] $amounts */
         $amounts = app()->make(TaxResolver::class)->resolveAmounts($product, $context);
-        $tax = $amounts[0]->getAmount();
+        $tax     = $amounts[0]->getAmount();
 
         $tax = money($tax * 100);
         $this->assertTrue(money(22)->equals($tax));

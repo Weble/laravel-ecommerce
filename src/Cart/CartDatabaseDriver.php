@@ -30,7 +30,7 @@ class CartDatabaseDriver extends CartDriver implements CartDriverInterface
     public function set(CartItem $cartItem): CartDriverInterface
     {
         $class = get_class($this->model);
-        $item = $class::fromCartItem($cartItem)->fill([
+        $item  = $class::fromCartItem($cartItem)->fill([
             'instance' => $this->instanceName(),
         ]);
 

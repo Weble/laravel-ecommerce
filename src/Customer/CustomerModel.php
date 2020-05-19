@@ -45,13 +45,13 @@ class CustomerModel extends Model implements StoresEcommerceData
             return self::where($this->getKeyName(), '=', $key)->firstOrFail()
                 ->fill([
                     'shipping_address' => json_encode($customer->shippingAddress),
-                    'billing_address' => json_encode($customer->billingAddress),
+                    'billing_address'  => json_encode($customer->billingAddress),
                 ]);
         } catch (ModelNotFoundException $e) {
             return (new self([
-                'id' => $key,
+                'id'               => $key,
                 'shipping_address' => json_encode($customer->shippingAddress),
-                'billing_address' => json_encode($customer->billingAddress),
+                'billing_address'  => json_encode($customer->billingAddress),
             ]));
         }
     }
@@ -59,9 +59,9 @@ class CustomerModel extends Model implements StoresEcommerceData
     public function toCartValue(): DataTransferObject
     {
         return new Customer([
-            'id' => $this->getKey(),
+            'id'              => $this->getKey(),
             'shippingAddress' => json_decode($this->shipping_address, true),
-            'billingAddress' => json_decode($this->billing_address, true),
+            'billingAddress'  => json_decode($this->billing_address, true),
         ]);
     }
 }
