@@ -10,8 +10,8 @@ class PaymentData extends CreditCard
     public static function fromCustomer(Customer $customer): self
     {
         return new static([
-            'firstName'        => $customer->billingAddress->getGivenName(),
-            'lastName'         => $customer->billingAddress->getFamilyName(),
+            'firstName'        => $customer->billingAddress->name,
+            'lastName'         => $customer->billingAddress->surname,
             'billingAddress1'  => $customer->billingAddress->street,
             'billingCity'      => $customer->billingAddress->city,
             'billingPostcode'  => $customer->billingAddress->zip,
