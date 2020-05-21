@@ -43,6 +43,14 @@ You can install the package via composer:
 composer require weble/laravel-ecommerce
 ```
 
+
+# Notes
+
+- Using more than 1 currency => publish swap config and configure it (add cache probably)
+- Want nova? Install weble/laravel-ecommerce-nova
+- TODO: migrations (publish vs load from)
+- BEWARE: of changing the default currency if you don't store the currency itself in the db too
+
 ## Usage
 
 ``` php

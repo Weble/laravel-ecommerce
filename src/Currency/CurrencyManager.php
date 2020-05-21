@@ -114,9 +114,9 @@ class CurrencyManager
         $this->availableCurrenciesCollection = Collection::make($this->availableCurrencies);
         Money::setCurrencies($this->availableCurrencies);
 
-        $sessionCurrency = session(config('ecommerce.currency.session_key', 'ecommerce.currency'), config('ecommerce.currency.user', 'USD'));
+        $sessionCurrency = session(config('ecommerce.currency.session_key', 'ecommerce.currency'), config('ecommerce.currency.user', config('ecommerce.currency.default', 'USD')));
 
-        $this->defaultCurrency = $this->currency($sessionCurrency);
+        $this->defaultCurrency = $this->currency(config('ecommerce.currency.default', 'USD'));
         $this->userCurrency    = $this->currency($sessionCurrency);
     }
 
