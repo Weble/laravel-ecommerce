@@ -36,7 +36,6 @@ class OrderBuilder
                 'discounts'          => $cart->discounts(),
                 'discounts_subtotal' => $cart->discount(),
                 'items_subtotal'     => $cart->itemsSubtotal(),
-                'items_total'        => $cart->items(),
                 'subtotal'           => $cart->subTotal(),
                 'tax'                => $cart->tax(),
                 'total'              => $cart->total(),
@@ -45,6 +44,7 @@ class OrderBuilder
 
         $this->items = $cart->items()->map(function (CartItem $item) {
             return OrderItem::fromCartItem($item)
+                ->make()
                 ->order()
                 ->associate($this->order);
         })->toBase();

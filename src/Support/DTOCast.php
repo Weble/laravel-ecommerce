@@ -6,11 +6,16 @@ use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
 
 class DTOCast implements CastsAttributes
 {
+    protected string $class;
+
+    public function __construct(string $class)
+    {
+        $this->class = $class;
+    }
+
     public function get($model, string $key, $value, array $attributes)
     {
-        dd($attributes);
-
-        return (new $class($value));
+        return (new $this->class(json_decode($value, true)));
     }
 
     public function set($model, string $key, $value, array $attributes)

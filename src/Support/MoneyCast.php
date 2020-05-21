@@ -34,11 +34,11 @@ class MoneyCast implements CastsAttributes
      */
     public function get($model, $key, $value, $attributes)
     {
+        $value = new Money($value, $this->currency);
+
         if ($this->currencyField) {
             return currencyManager()->convert($value, $model->{$this->currencyField} ?: null);
         }
-
-        $value = new Money($value, $this->currency);
 
         return currencyManager()->convert($value);
     }

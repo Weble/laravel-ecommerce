@@ -15,7 +15,7 @@ class OrderItemBuilder
         $this->orderItem = new $class;
     }
 
-    public function fromCartItem(CartItem $cartItem): OrderItem
+    public function fromCartItem(CartItem $cartItem): OrderItemBuilder
     {
         $this->orderItem
             ->fill([
@@ -33,7 +33,7 @@ class OrderItemBuilder
             ->product()
             ->associate($cartItem->product);
 
-        return $this->orderItem;
+        return $this;
     }
 
     public function make(): OrderItem

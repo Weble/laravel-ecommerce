@@ -5,8 +5,8 @@ namespace Weble\LaravelEcommerce\Order;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Support\Str;
 use Weble\LaravelEcommerce\Cart\CartItem;
+use Weble\LaravelEcommerce\Support\MoneyCast;
 
 class OrderItem extends Model
 {
@@ -16,6 +16,9 @@ class OrderItem extends Model
         'product_attributes' => 'collection',
         'discounts'          => 'collection',
         'quantity'           => 'float',
+        'unit_price'         => MoneyCast::class,
+        'discounts_subtotal' => MoneyCast::class,
+        'subtotal'           => MoneyCast::class,
     ];
 
     protected $keyType = 'uuid';
@@ -27,20 +30,9 @@ class OrderItem extends Model
         $this->setTable(config('ecommerce.tables.order_items', 'order_items'));
     }
 
-    public static function fromCartItem(CartItem $cartItem): self
+    public static function fromCartItem(CartItem $cartItem): OrderItemBuilder
     {
-        return (new static())->fill([
-            'id'                 => Str::uuid(),
-            'quantity'           => $cartItem->quantity,
-            'product_attributes' => $cartItem->attributes,
-            'purchasable_data'   => $cartItem->product->toJson(),
-            'discounts'          => $cartItem->discounts,
-            'unit_price'         => $cartItem->unitPrice(),
-            'discounts_subtotal' => $cartItem->discount(),
-            'subtotal'           => $cartItem->subTotal(),
-        ])
-            ->product()
-            ->associate($cartItem->product);
+        return (new OrderItemBuilder())->fromCartItem($cartItem);
     }
 
     public function order(): BelongsTo

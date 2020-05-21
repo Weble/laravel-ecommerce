@@ -211,7 +211,11 @@ return [
                         'created',
                         'payment_failed',
                     ],
-                    'to'   => 'waiting_for_payment',
+                    'to'       => 'waiting_for_payment',
+                    'metadata' => [
+                        'title'   => 'Ready for Payment',
+                        'classes' => 'btn btn-default btn-primary',
+                    ],
                 ],
                 'markAsPayed'     => [
                     'from' => [
@@ -227,8 +231,12 @@ return [
                     'to'   => 'payment_failed',
                 ],
                 'cancel'       => [
-                    'from' => ['created', 'payment_failed', 'waiting_for_payment'],
-                    'to'   => 'canceled',
+                    'from'     => ['created', 'payment_failed', 'waiting_for_payment'],
+                    'to'       => 'canceled',
+                    'metadata' => [
+                        'title'   => 'Cancel',
+                        'classes' => 'btn btn-default btn-danger',
+                    ],
                 ],
                 'prepareForShipment'   => [
                     'from' => [
@@ -248,7 +256,7 @@ return [
                     ],
                     'to'   => 'delivered',
                 ],
-                'refunded'       => [
+                'refund'       => [
                     'from' => ['payed', 'shipping', 'shipped', 'delivered'],
                     'to'   => 'refunded',
                 ],
@@ -312,14 +320,14 @@ return [
     | You can swap our classes with yours here
     */
     'classes' => [
-        'storageManager'  => \Weble\LaravelEcommerce\Storage\StorageManager::class,
-        'currencyManager' => \Weble\LaravelEcommerce\Currency\CurrencyManager::class,
-        'taxManager'      => \Weble\LaravelEcommerce\Tax\TaxManager::class,
-        'cartManager'     => \Weble\LaravelEcommerce\Cart\CartManager::class,
-        'cartItemModel'   => \Weble\LaravelEcommerce\Cart\CartItemModel::class,
-        'cart'            => \Weble\LaravelEcommerce\Cart\Cart::class,
-        'orderModel'      => \Weble\LaravelEcommerce\Order\Order::class,
-        'orderItemModel'  => \Weble\LaravelEcommerce\Order\OrderItem::class,
+        'storageManager'    => \Weble\LaravelEcommerce\Storage\StorageManager::class,
+        'currencyManager'   => \Weble\LaravelEcommerce\Currency\CurrencyManager::class,
+        'taxManager'        => \Weble\LaravelEcommerce\Tax\TaxManager::class,
+        'cartManager'       => \Weble\LaravelEcommerce\Cart\CartManager::class,
+        'cartItemModel'     => \Weble\LaravelEcommerce\Cart\CartItemModel::class,
+        'cart'              => \Weble\LaravelEcommerce\Cart\Cart::class,
+        'orderModel'        => \Weble\LaravelEcommerce\Order\Order::class,
+        'orderItemModel'    => \Weble\LaravelEcommerce\Order\OrderItem::class,
         'orderHistoryModel' => \Weble\LaravelEcommerce\Order\OrderHistory::class,
     ],
 
@@ -331,11 +339,11 @@ return [
     | When using the eloquent storage, by default we'll use these table names
     */
     'tables'  => [
-        'items'       => 'cart_items',
-        'customers'   => 'cart_customers',
-        'discounts'   => 'cart_discounts',
-        'orders'      => 'orders',
-        'order_items' => 'order_items',
+        'items'         => 'cart_items',
+        'customers'     => 'cart_customers',
+        'discounts'     => 'cart_discounts',
+        'orders'        => 'orders',
+        'order_items'   => 'order_items',
         'order_history' => 'order_history',
     ],
 ];

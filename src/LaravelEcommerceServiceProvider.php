@@ -3,7 +3,13 @@
 namespace Weble\LaravelEcommerce;
 
 use Cknow\Money\Money;
+use CommerceGuys\Addressing\AddressFormat\AddressFormatRepository;
+use CommerceGuys\Addressing\AddressFormat\AddressFormatRepositoryInterface;
 use CommerceGuys\Addressing\Country\CountryRepository;
+use CommerceGuys\Addressing\Country\CountryRepositoryInterface;
+use CommerceGuys\Addressing\Formatter\PostalLabelFormatter;
+use CommerceGuys\Addressing\Subdivision\SubdivisionRepository;
+use CommerceGuys\Addressing\Subdivision\SubdivisionRepositoryInterface;
 use CommerceGuys\Tax\Repository\TaxTypeRepository;
 use CommerceGuys\Tax\Resolver\TaxRate\ChainTaxRateResolver;
 use CommerceGuys\Tax\Resolver\TaxRate\ChainTaxRateResolverInterface;
@@ -15,8 +21,6 @@ use CommerceGuys\Tax\Resolver\TaxType\ChainTaxTypeResolver;
 use CommerceGuys\Tax\Resolver\TaxType\ChainTaxTypeResolverInterface;
 use CommerceGuys\Tax\Resolver\TaxType\DefaultTaxTypeResolver;
 use CommerceGuys\Tax\Resolver\TaxType\EuTaxTypeResolver;
-use Illuminate\Config\Repository;
-use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
 use Weble\LaravelEcommerce\Cart\CartManager;
 use Weble\LaravelEcommerce\Currency\CurrencyManager;
@@ -25,20 +29,17 @@ use Weble\LaravelEcommerce\Facades\Currency;
 use Weble\LaravelEcommerce\Storage\StorageManager;
 use Weble\LaravelEcommerce\Tax\TaxManager;
 
-class LaravelEcommerceServiceProvider extends ServiceProvider implements DeferrableProvider
+class LaravelEcommerceServiceProvider extends ServiceProvider
 {
+
     /**
      * Bootstrap the application services.
      */
     public function boot()
     {
         $this->publishResources();
-
-        /** @var Repository $config */
-        $config = $this->app->make('config');
-
-        $this->addMoneyConfig($config);
-        $this->addStateMachineConfig($config);
+        $this->addMoneyConfig();
+        $this->addStateMachineConfig();
     }
 
     /**
@@ -48,6 +49,7 @@ class LaravelEcommerceServiceProvider extends ServiceProvider implements Deferra
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/config.php', 'ecommerce');
 
+        $this->addStateMachineConfig();
         $this->registerStorageManager();
         $this->registerCurrencyManager();
         $this->registerTaxClasses();
@@ -117,7 +119,19 @@ class LaravelEcommerceServiceProvider extends ServiceProvider implements Deferra
 
     protected function registerAddressClasses()
     {
+        $this->app->bind(AddressFormatRepositoryInterface::class, AddressFormatRepository::class);
+        $this->app->bind(CountryRepositoryInterface::class, CountryRepository::class);
+        $this->app->bind(SubdivisionRepositoryInterface::class, SubdivisionRepository::class);
+
+        $this->app->singleton('ecommerce.addressFormatRepository', AddressFormatRepository::class);
         $this->app->singleton('ecommerce.countryRepository', CountryRepository::class);
+        $this->app->singleton('ecommerce.subdivisionRepository', SubdivisionRepository::class);
+
+        $this->app->when(PostalLabelFormatter::class)
+            ->needs('$defaultOptions')
+            ->give([
+                'origin_country' => config('ecommerce.store.address.country', 'IT'),
+            ]);
     }
 
     protected function registerStorageManager()
@@ -161,10 +175,10 @@ class LaravelEcommerceServiceProvider extends ServiceProvider implements Deferra
             $timestamp = date('Y_m_d_His', time());
 
             $this->publishes([
-                __DIR__.'/../database/migrations/0000_00_00_000000_create_cartitems_table.php' => database_path('migrations/'.$timestamp.'_create_cartitems_table.php'),
+                __DIR__ . '/../database/migrations/0000_00_00_000000_create_cartitems_table.php' => database_path('migrations/' . $timestamp . '_create_cartitems_table.php'),
             ], 'migrations');
 
-            $this->loadMigrationsFrom(__DIR__.'/../database/migrations/');
+            $this->loadMigrationsFrom(__DIR__ . '/../database/migrations/');
         }
 
         /*
@@ -176,18 +190,25 @@ class LaravelEcommerceServiceProvider extends ServiceProvider implements Deferra
         */
     }
 
-    protected function addStateMachineConfig(Repository $config): void
+    protected function addStateMachineConfig(): void
     {
         $key = config('ecommerce.order.workflow.graph', 'ecommerce-order');
-        $config->set('state-machine.' . $key, $config->get('ecommerce.order.workflow'));
+        config()->set('state-machine.' . $key, config()->get('ecommerce.order.workflow'));
+
+        $this->app->extend('sm.factory', function ($service, $app) use ($key) {
+            $service->addConfig(config()->get('ecommerce.order.workflow'), $key);
+
+            return $service;
+        });
+
+        $this->app->resolving('sm.factory', function ($service, $app) use ($key) {
+            $service->addConfig(config()->get('ecommerce.order.workflow'), $key);
+        });
     }
 
-    /**
-     * @param Repository $config
-     */
-    protected function addMoneyConfig(Repository $config): void
+    protected function addMoneyConfig(): void
     {
-        Money::setLocale($config->get('ecommerce.customer.locale', 'en_US'));
-        Money::setCurrency($config->get('ecommerce.currency.default', 'USD'));
+        Money::setLocale(config()->get('ecommerce.customer.locale', 'en_US'));
+        Money::setCurrency(config()->get('ecommerce.currency.default', 'USD'));
     }
 }
