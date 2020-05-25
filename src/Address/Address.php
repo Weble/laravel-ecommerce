@@ -24,7 +24,14 @@ class Address extends DataTransferObject implements AddressInterface
     public function __construct(array $parameters = [])
     {
         $parameters['country'] ??= config('ecommerce.store.address.country', 'IT');
-        $parameters['type'] = AddressType::make($parameters['type'] ?? AddressType::shipping());
+
+        $type = $parameters['type'] ?? AddressType::shipping();
+
+        if (! $type instanceof AddressType) {
+            $type = AddressType::make($type);
+        }
+
+        $parameters['type'] = $type;
 
         parent::__construct($parameters);
     }

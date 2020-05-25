@@ -184,9 +184,20 @@ return [
     | Order
     |--------------------------------------------------------------------------
     |
-    | Details of the store selling the products.
+    | Order Settings, like hash generation and State Machine for managing the order workflow
     */
     'order' => [
+
+        'hash_length' => 8,
+
+        /*
+        |--------------------------------------------------------------------------
+        | Order Workflow
+        |--------------------------------------------------------------------------
+        |
+        | Order management workflow, as a state machine
+        | See docs for details.
+        */
         'workflow'    => [
             'class' => config('ecommerce.classes.orderModel', \Weble\LaravelEcommerce\Order\Order::class),
             'graph' => 'ecommerce-order',

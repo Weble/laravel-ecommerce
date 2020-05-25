@@ -13,6 +13,7 @@ class CreateOrdersTable extends Migration
     {
         Schema::create(config('ecommerce.tables.orders', 'orders'), function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->string('hash')->unique();
             $table->uuid('customer_id')->nullable();
             $table->uuid('cart_id')->nullable();
             $table->bigInteger('user_id')->nullable();

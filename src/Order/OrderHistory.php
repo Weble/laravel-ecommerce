@@ -4,6 +4,7 @@ namespace Weble\LaravelEcommerce\Order;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Str;
 
 class OrderHistory extends Model
@@ -33,5 +34,10 @@ class OrderHistory extends Model
     public function statable()
     {
         return $this->order();
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'actor_id');
     }
 }

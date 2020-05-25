@@ -6,6 +6,7 @@ use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 use Weble\LaravelEcommerce\Cart\Cart;
 use Weble\LaravelEcommerce\Customer\Customer;
 use Weble\LaravelEcommerce\Order\Concern\InteractsWithStateMachine;
@@ -41,6 +42,18 @@ class Order extends Model
         $this->setTable(config('ecommerce.tables.orders', 'orders'));
     }
 
+    protected static function booted()
+    {
+        static::creating(function (Order $order) {
+            $order->generateUniqueHash();
+        });
+
+        static::updating(function (Order $order) {
+
+            $order->generateUniqueHash();
+        });
+    }
+
     public static function fromCart(Cart $cart): OrderBuilder
     {
         return (new OrderBuilder())->fromCart($cart);
@@ -54,5 +67,24 @@ class Order extends Model
     public function user(): BelongsTo
     {
         $this->belongsTo(Authenticatable::class);
+    }
+
+    protected function generateUniqueHash()
+    {
+        if ($this->hash) {
+            return;
+        }
+
+        $hash = $this->generateHash();
+        while (self::whereHash($hash)->count() > 0) {
+            $hash = $this->generateHash();
+        }
+
+        $this->hash = $hash;
+    }
+
+    protected function generateHash(): string
+    {
+        return Str::random(config('ecommerce.order.hash_length', 8));
     }
 }
