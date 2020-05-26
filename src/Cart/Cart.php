@@ -7,6 +7,9 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Collection;
 use Weble\LaravelEcommerce\Cart\Concern\InteractsWithStorage;
+use Weble\LaravelEcommerce\Cart\Event\CartItemAdded;
+use Weble\LaravelEcommerce\Cart\Event\CartItemRemoved;
+use Weble\LaravelEcommerce\Cart\Event\CartItemUpdated;
 use Weble\LaravelEcommerce\Customer\Customer;
 use Weble\LaravelEcommerce\Discount\Discount;
 use Weble\LaravelEcommerce\Discount\DiscountCollection;
@@ -15,7 +18,7 @@ use Weble\LaravelEcommerce\Discount\InvalidDiscountException;
 use Weble\LaravelEcommerce\Purchasable;
 use Weble\LaravelEcommerce\Storage\StorageInterface;
 
-class Cart implements CartInterface, Arrayable, Jsonable
+class Cart implements CartInterface, Jsonable
 {
     use InteractsWithStorage;
 
@@ -57,17 +60,17 @@ class Cart implements CartInterface, Arrayable, Jsonable
 
     public function get(string $id): CartItem
     {
-        return new CartItem($this->storage()->get($id));
+        return $this->items()->get($id);
     }
 
     public function has(string $id): bool
     {
-        return $this->storage()->has($id);
+        return $this->storage()->get('items')->has($id);
     }
 
     public function clear(): self
     {
-        $this->storage()->remove($this->instanceName());
+        $this->storage()->remove('items');
 
         return $this;
     }
@@ -80,26 +83,29 @@ class Cart implements CartInterface, Arrayable, Jsonable
 
         $cartItem = CartItem::fromPurchasable($purchasable, $quantity, $attributes);
 
-        $items = $this->items();
-        if ($items->has($cartItem->getId())) {
-            $cartItem->quantity += $items->get($cartItem->getId())->quantity;
+        $this->items();
+        if ($this->items()->has($cartItem->getId())) {
+            $cartItem->quantity += $this->items()->get($cartItem->getId())->quantity;
         }
 
-        $items->put($cartItem->getId(), $cartItem);
-        $this->persist("items", $items);
+        $this->items()->put($cartItem->getId(), $cartItem);
+        $this->persist("items", $this->items());
+
+        event(new CartItemAdded($cartItem, $this->instanceName()));
 
         return $cartItem;
     }
 
     public function update(CartItem $cartItem): self
     {
-        $items = $this->items();
-        if (! $items->has($cartItem->getId())) {
+        if (! $this->items()->has($cartItem->getId())) {
             return $this;
         }
 
-        $items->put($cartItem->getId(), $cartItem);
-        $this->persist("items", $items);
+        $this->items()->put($cartItem->getId(), $cartItem);
+        $this->persist("items", $this->items());
+
+        event(new CartItemUpdated($cartItem, $this->instanceName()));
 
         return $this;
     }
@@ -112,6 +118,8 @@ class Cart implements CartInterface, Arrayable, Jsonable
 
         $this->items = $this->items()->except($cartItem->getId());
         $this->persist("items", $this->items());
+
+        event(new CartItemRemoved($cartItem, $this->instanceName()));
 
         return $this;
     }
@@ -190,6 +198,7 @@ class Cart implements CartInterface, Arrayable, Jsonable
     public function toArray()
     {
         return [
+            'instance'  => $this->instanceName(),
             'items'     => $this->items()->toArray(),
             'discounts' => $this->discounts()->toArray(),
             'subtotal'  => $this->subTotal()->toArray(),

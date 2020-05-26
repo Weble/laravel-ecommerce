@@ -2,11 +2,12 @@
 
 namespace Weble\LaravelEcommerce\Cart;
 
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Collection;
 use Weble\LaravelEcommerce\Price\HasTotals;
 use Weble\LaravelEcommerce\Purchasable;
 
-interface CartInterface extends HasTotals
+interface CartInterface extends HasTotals, Arrayable
 {
     public function instanceName(): string;
 

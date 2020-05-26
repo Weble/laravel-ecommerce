@@ -13,6 +13,7 @@ class OrderItem extends Model
     protected $guarded = [];
 
     protected $casts = [
+        'order_id'           => 'uuid',
         'product_attributes' => 'collection',
         'discounts'          => 'collection',
         'quantity'           => 'float',
@@ -22,6 +23,7 @@ class OrderItem extends Model
     ];
 
     protected $keyType = 'uuid';
+    public $incrementing = false;
 
     public function __construct(array $attributes = [])
     {

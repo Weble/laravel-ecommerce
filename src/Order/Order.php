@@ -33,6 +33,7 @@ class Order extends Model
         'total'              => MoneyCast::class . ':,currency',
     ];
 
+    public $incrementing = false;
     protected $keyType = 'uuid';
 
     public function __construct(array $attributes = [])

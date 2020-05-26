@@ -43,10 +43,11 @@ class OrderBuilder
             ]);
 
         $this->items = $cart->items()->map(function (CartItem $item) {
-            return OrderItem::fromCartItem($item)
-                ->make()
-                ->order()
-                ->associate($this->order);
+            $item = OrderItem::fromCartItem($item)
+                ->make();
+            $item->order_id = (string) $this->order->id;
+
+            return $item;
         })->toBase();
 
         return $this;
@@ -70,12 +71,12 @@ class OrderBuilder
     {
         DB::transaction(function () {
             $this->order->save();
-            $this->items->each(function (OrderItem $item) {
-                $item->order()->associate($this->order)->save();
-
-                return $item;
-            });
+            $this->items->each->save();
         });
+
+        if (config('ecommerce.order.clear_cart', true)) {
+            cartManager()->clear();
+        }
 
         return $this->order;
     }

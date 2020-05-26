@@ -84,9 +84,13 @@ class CartTest extends TestCase
 
         /** @var Cart $cart */
         $cart = app('ecommerce.cart');
-        $cart->add($product, 2);
+        $cartItem = $cart->add($product, 2);
 
         $this->assertEquals(2, $cart->items()->total());
+
+        $retrievedCartItem = $cart->get($cartItem->getId());
+
+        $this->assertEquals($cartItem, $retrievedCartItem);
     }
 
     /**

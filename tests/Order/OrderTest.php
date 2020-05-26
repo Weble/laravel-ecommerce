@@ -48,6 +48,35 @@ class OrderTest extends TestCase
     }
 
     /** @test */
+    public function order_items_are_stored_correctly()
+    {
+        $product = factory(Product::class)->create(['price' => money(100)]);
+
+        /** @var Cart $cart */
+        $cart     = app('ecommerce.cart')->instance();
+        $cartItem = $cart->add($product);
+
+        $order = (new OrderBuilder())
+            ->fromCart($cart)
+            ->create();
+
+        $this->assertDatabaseCount('order_items', 1);
+
+        $this->assertEquals(1, $order->items->count());
+
+        $cart->clear();
+        $cartItem = $cart->add($product);
+
+        $order2 = (new OrderBuilder())
+            ->fromCart($cart)
+            ->create();
+
+        $this->assertEquals(1, $order2->items()->get()->count());
+        $this->assertEquals(1, $order->items()->get()->count());
+        $this->assertDatabaseCount('order_items', 2);
+    }
+
+    /** @test */
     public function uses_state_machine_to_manage_order()
     {
         $product = factory(Product::class)->create(['price' => money(100)]);
@@ -93,7 +122,6 @@ class OrderTest extends TestCase
         $this->assertEquals(1, $order->stateHistory()->get()->count());
         $this->assertDatabaseCount('order_history', 2);
     }
-
 
     public function order_can_be_payed()
     {

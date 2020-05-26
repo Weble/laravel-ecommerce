@@ -22,7 +22,7 @@ trait InteractsWithStorage
 
     protected function persist(string $key, $value): self
     {
-        $this->storage()->set("{$this->instanceName()}.{$key}", $value);
+        $this->storage()->set($key, $value);
 
         return $this;
     }
@@ -37,14 +37,14 @@ trait InteractsWithStorage
     protected function loadItemsFromStorage(): void
     {
         $this->items = CartItemCollection::make(
-            $this->storage()->get("{$this->instanceName()}.items", [])
+            $this->storage()->get("items", [])
         )->keyBy(fn (CartItem $item) => $item->getId());
     }
 
     protected function loadDiscountsFromStorage(): void
     {
         $this->discounts = $this->storage()->get(
-            "{$this->instanceName()}.discounts",
+            "discounts",
             DiscountCollection::make(),
         );
     }
@@ -52,7 +52,7 @@ trait InteractsWithStorage
     protected function loadCustomerFromStorage(): void
     {
         $this->customer = $this->storage()->get(
-            "{$this->instanceName()}.customer",
+            "customer",
             new Customer([
                 'id'              => (string) Str::orderedUuid(),
                 'shippingAddress' => new Address([
