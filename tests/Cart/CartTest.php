@@ -83,7 +83,7 @@ class CartTest extends TestCase
         $product = factory(Product::class)->create(['price' => money(100)]);
 
         /** @var Cart $cart */
-        $cart = app('ecommerce.cart');
+        $cart     = app('ecommerce.cart');
         $cartItem = $cart->add($product, 2);
 
         $this->assertEquals(2, $cart->items()->total());

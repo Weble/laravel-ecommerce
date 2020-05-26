@@ -34,7 +34,7 @@ class Order extends Model
     ];
 
     public $incrementing = false;
-    protected $keyType = 'uuid';
+    protected $keyType   = 'uuid';
 
     public function __construct(array $attributes = [])
     {
@@ -50,7 +50,6 @@ class Order extends Model
         });
 
         static::updating(function (Order $order) {
-
             $order->generateUniqueHash();
         });
     }

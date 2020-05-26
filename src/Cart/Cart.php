@@ -3,7 +3,6 @@
 namespace Weble\LaravelEcommerce\Cart;
 
 use Cknow\Money\Money;
-use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Collection;
 use Weble\LaravelEcommerce\Cart\Concern\InteractsWithStorage;

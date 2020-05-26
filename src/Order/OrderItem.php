@@ -22,7 +22,7 @@ class OrderItem extends Model
         'subtotal'           => MoneyCast::class,
     ];
 
-    protected $keyType = 'uuid';
+    protected $keyType   = 'uuid';
     public $incrementing = false;
 
     public function __construct(array $attributes = [])
