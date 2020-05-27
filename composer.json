@@ -23,8 +23,6 @@
     "require": {
         "php": "^7.4",
         "ext-json": "*",
-        "barryvdh/laravel-omnipay": "^0.2.2",
-        "calebporzio/sushi": "^2.0",
         "cknow/laravel-money": "^4.0",
         "commerceguys/addressing": "^1.0",
         "commerceguys/tax": "^0.8.2",
@@ -41,7 +39,6 @@
         "brainmaestro/composer-git-hooks": "^2.8",
         "darryldecode/cart": "^4.1",
         "friendsofphp/php-cs-fixer": "^2.16",
-        "omnipay/paypal": "^3.0",
         "orchestra/testbench": "^5.2",
         "phpunit/phpunit": "^9.0",
         "symfony/var-dumper": "^5.0"

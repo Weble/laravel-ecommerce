@@ -122,21 +122,4 @@ class OrderTest extends TestCase
         $this->assertEquals(1, $order->stateHistory()->get()->count());
         $this->assertDatabaseCount('order_history', 2);
     }
-
-    public function order_can_be_payed()
-    {
-        $product = factory(Product::class)->create(['price' => money(100)]);
-
-        /** @var Cart $cart */
-        $cart     = app('ecommerce.cart')->instance();
-        $cartItem = $cart->add($product);
-
-        $order = (new OrderBuilder())
-            ->fromCart($cart)
-            ->create();
-
-        $response = $order->pay();
-
-        $this->assertInstanceOf(ResponseInterface::class, $response);
-    }
 }
