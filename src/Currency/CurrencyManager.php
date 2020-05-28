@@ -39,6 +39,11 @@ class CurrencyManager
         return new Money((int) $intValue, $currency);
     }
 
+    public function toFloat(Money $amount): float
+    {
+        return (float) ($amount->getAmount() / pow(10, $this->availableCurrencies()->subunitFor($amount->getMoney()->getCurrency())));
+    }
+
     public function convert(Money $money, ?Currency $counterCurrency = null, $roundingMode = \Money\Money::ROUND_HALF_UP): Money
     {
         if ($counterCurrency === null) {
