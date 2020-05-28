@@ -41,7 +41,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
             unlink($databasePath);
         }
 
-        if (!file_exists($databasePath)) {
+        if (! file_exists($databasePath)) {
             file_put_contents($databasePath, '');
         }
 

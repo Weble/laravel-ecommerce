@@ -9,5 +9,4 @@ use Weble\LaravelEcommerce\Order\Order;
  */
 trait Payable
 {
-
 }

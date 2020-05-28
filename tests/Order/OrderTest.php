@@ -2,7 +2,6 @@
 
 namespace Weble\LaravelEcommerce\Tests\Order;
 
-use Omnipay\Common\Message\ResponseInterface;
 use Weble\LaravelEcommerce\Cart\Cart;
 use Weble\LaravelEcommerce\Order\Order;
 use Weble\LaravelEcommerce\Order\OrderBuilder;
