@@ -2,6 +2,7 @@
 
 namespace Weble\LaravelEcommerce\Cart;
 
+use Cknow\Money\MoneyCast;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -12,21 +13,19 @@ use Spatie\DataTransferObject\DataTransferObject;
 use Weble\LaravelEcommerce\Discount\Discount;
 use Weble\LaravelEcommerce\Discount\DiscountCollection;
 use Weble\LaravelEcommerce\Storage\StoresEcommerceData;
-use Weble\LaravelEcommerce\Support\MoneyCast;
 
 class CartItemModel extends Model implements StoresEcommerceData
 {
     protected $guarded = [];
 
     protected $casts = [
-        'cart_key'           => 'uuid',
         'price'              => MoneyCast::class,
         'product_attributes' => 'collection',
         'discounts'          => 'collection',
         'quantity'           => 'float',
     ];
 
-    protected $keyType = 'uuid';
+    protected $keyType = 'string';
 
     /**
      * @var mixed|string

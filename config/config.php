@@ -130,7 +130,7 @@ return [
     | You can use the same driver for multiple instances
     */
 
-    'cart'  => [
+    'cart'    => [
         'instances' => [
             'cart' => [
                 'storage' => 'session',
@@ -166,7 +166,7 @@ return [
     |
     | Details of the store selling the products.
     */
-    'store' => [
+    'store'   => [
         'address' => [
             'country'      => 'IT',
             'city'         => 'Vicenza',
@@ -186,7 +186,7 @@ return [
     |
     | Order Settings, like hash generation and State Machine for managing the order workflow
     */
-    'order' => [
+    'order'   => [
 
         'hash_length' => 8,
 
@@ -200,12 +200,13 @@ return [
         | Order management workflow, as a state machine
         | See docs for details.
         */
-        'workflow'    => [
+        'workflow'   => [
             'class' => config('ecommerce.classes.orderModel', \Weble\LaravelEcommerce\Order\Order::class),
             'graph' => 'ecommerce-order',
             // Name of the graph passed down to winzou/state-machine
 
-            'property_path' => 'state', // should exist on model
+            'property_path' => 'state',
+            // should exist on model
 
             'states'      => [
                 'created',
@@ -219,8 +220,8 @@ return [
                 'refunded',
             ],
             'transitions' => [
-                'readyForPayment' => [
-                    'from' => [
+                'readyForPayment'    => [
+                    'from'     => [
                         'created',
                         'payment_failed',
                     ],
@@ -230,47 +231,56 @@ return [
                         'classes' => 'btn btn-default btn-primary',
                     ],
                 ],
-                'markAsPayed'     => [
+                'markAsPayed'        => [
                     'from' => [
                         'waiting_for_payment',
                         'payment_failed',
                     ],
                     'to'   => 'payed',
                 ],
-                'paymentFailed'   => [
+                'paymentFailed'      => [
                     'from' => [
                         'waiting_for_payment',
                     ],
                     'to'   => 'payment_failed',
                 ],
-                'cancel'       => [
-                    'from'     => ['created', 'payment_failed', 'waiting_for_payment'],
+                'cancel'             => [
+                    'from'     => [
+                        'created',
+                        'payment_failed',
+                        'waiting_for_payment',
+                    ],
                     'to'       => 'canceled',
                     'metadata' => [
                         'title'   => 'Cancel',
                         'classes' => 'btn btn-default btn-danger',
                     ],
                 ],
-                'prepareForShipment'   => [
+                'prepareForShipment' => [
                     'from' => [
                         'payed',
                     ],
                     'to'   => 'shipping',
                 ],
-                'ship'   => [
+                'ship'               => [
                     'from' => [
                         'shipping',
                     ],
                     'to'   => 'shipped',
                 ],
-                'markAsDelivered'   => [
+                'markAsDelivered'    => [
                     'from' => [
                         'shipped',
                     ],
                     'to'   => 'delivered',
                 ],
-                'refund'       => [
-                    'from' => ['payed', 'shipping', 'shipped', 'delivered'],
+                'refund'             => [
+                    'from' => [
+                        'payed',
+                        'shipping',
+                        'shipped',
+                        'delivered',
+                    ],
                     'to'   => 'refunded',
                 ],
             ],
@@ -279,6 +289,105 @@ return [
                     'history' => [
                         'do' => 'StateHistoryManager@storeHistory',
                     ],
+                ],
+            ],
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Payment
+    |--------------------------------------------------------------------------
+    |
+    | Payment settings, like the State Machine for managing the payment workflow
+    */
+    'payment' => [
+
+        /*
+        |--------------------------------------------------------------------------
+        | Payment Workflow
+        |--------------------------------------------------------------------------
+        |
+        | Payment processing workflow, as a state machine
+        | See docs for details.
+        */
+        'workflow' => [
+            'class' => config('ecommerce.classes.paymentModel', \Weble\LaravelEcommerce\Payment\Payment::class),
+            'graph' => 'ecommerce-payment',
+            // Name of the graph passed down to winzou/state-machine
+
+            'property_path' => 'state',
+            // should exist on model
+
+            'states'      => [
+                'cart',
+                'new',
+                'processing',
+                'completed',
+                'failed',
+                'cancelled',
+                'void',
+                'refunded',
+            ],
+            'transitions' => [
+                'create'    => [
+                    'from'     => [
+                        'cart',
+                    ],
+                    'to'       => 'new',
+                    'metadata' => [
+                        'title'   => 'Create',
+                        'classes' => 'btn btn-default btn-primary',
+                    ],
+                ],
+                'process'        => [
+                    'from' => [
+                        'new',
+                    ],
+                    'to'   => 'processing',
+                ],
+                'complete'      => [
+                    'from' => [
+                        'new',
+                        'processing',
+                    ],
+                    'to'   => 'completed',
+                ],
+                'fail'             => [
+                    'from'     => [
+                        'new',
+                        'processing',
+                    ],
+                    'to'       => 'failed',
+                    'metadata' => [
+                        'title'   => 'Fail',
+                        'classes' => 'btn btn-default btn-danger',
+                    ],
+                ],
+                'cancel' => [
+                    'from' => [
+                        'new',
+                        'processing',
+                    ],
+                    'to'   => 'cancelled',
+                ],
+                'refund'               => [
+                    'from' => [
+                        'completed',
+                    ],
+                    'to'   => 'refunded',
+                ],
+                'void'    => [
+                    'from' => [
+                        'new',
+                        'processing',
+                    ],
+                    'to'   => 'void',
+                ],
+            ],
+            'callbacks'   => [
+                'after' => [
+
                 ],
             ],
         ],
@@ -331,6 +440,7 @@ return [
         'orderModel'        => \Weble\LaravelEcommerce\Order\Order::class,
         'orderItemModel'    => \Weble\LaravelEcommerce\Order\OrderItem::class,
         'orderHistoryModel' => \Weble\LaravelEcommerce\Order\OrderHistory::class,
+        'paymentModel'      => \Weble\LaravelEcommerce\Payment\Payment::class,
     ],
 
     /*
@@ -347,5 +457,6 @@ return [
         'orders'        => 'orders',
         'order_items'   => 'order_items',
         'order_history' => 'order_history',
+        'payments'      => 'payments',
     ],
 ];

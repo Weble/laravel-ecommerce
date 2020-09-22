@@ -8,7 +8,7 @@ use CommerceGuys\Tax\Repository\TaxTypeRepository;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Weble\LaravelEcommerce\Purchasable;
-use Weble\LaravelEcommerce\Support\MoneyCast;
+use Cknow\Money\MoneyCast;
 
 class Product extends Model implements Purchasable
 {

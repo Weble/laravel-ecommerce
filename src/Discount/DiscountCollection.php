@@ -10,7 +10,7 @@ class DiscountCollection extends Collection
     public function withTarget(DiscountTarget $target): self
     {
         return $this->filter(function (Discount $discount) use ($target) {
-            return $discount->target()->isEqual($target);
+            return $discount->target()->equals($target);
         });
     }
 

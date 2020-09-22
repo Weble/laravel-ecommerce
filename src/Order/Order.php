@@ -13,7 +13,7 @@ use Weble\LaravelEcommerce\Order\Concern\InteractsWithStateMachine;
 use Weble\LaravelEcommerce\Order\Concern\Payable;
 use Weble\LaravelEcommerce\Support\CurrencyCast;
 use Weble\LaravelEcommerce\Support\DTOCast;
-use Weble\LaravelEcommerce\Support\MoneyCast;
+use Cknow\Money\MoneyCast;
 
 class Order extends Model
 {
@@ -25,16 +25,16 @@ class Order extends Model
         'customer'           => DTOCast::class . ':' . Customer::class,
         'currency'           => CurrencyCast::class,
         'discounts'          => 'collection',
-        'discounts_subtotal' => MoneyCast::class . ':,currency',
-        'items_subtotal'     => MoneyCast::class . ':,currency',
-        'items_total'        => MoneyCast::class . ':,currency',
-        'subtotal'           => MoneyCast::class . ':,currency',
-        'tax'                => MoneyCast::class . ':,currency',
-        'total'              => MoneyCast::class . ':,currency',
+        'discounts_subtotal' => MoneyCast::class . ':currency',
+        'items_subtotal'     => MoneyCast::class . ':currency',
+        'items_total'        => MoneyCast::class . ':currency',
+        'subtotal'           => MoneyCast::class . ':currency',
+        'tax'                => MoneyCast::class . ':currency',
+        'total'              => MoneyCast::class . ':currency',
     ];
 
     public $incrementing = false;
-    protected $keyType   = 'uuid';
+    protected $keyType   = 'string';
 
     public function __construct(array $attributes = [])
     {

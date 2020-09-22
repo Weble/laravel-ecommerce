@@ -6,14 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Weble\LaravelEcommerce\Cart\CartItem;
-use Weble\LaravelEcommerce\Support\MoneyCast;
+use Cknow\Money\MoneyCast;
 
 class OrderItem extends Model
 {
     protected $guarded = [];
 
     protected $casts = [
-        'order_id'           => 'uuid',
         'product_attributes' => 'collection',
         'discounts'          => 'collection',
         'quantity'           => 'float',
@@ -22,7 +21,7 @@ class OrderItem extends Model
         'subtotal'           => MoneyCast::class,
     ];
 
-    protected $keyType   = 'uuid';
+    protected $keyType   = 'string';
     public $incrementing = false;
 
     public function __construct(array $attributes = [])

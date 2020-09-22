@@ -2,12 +2,13 @@
 
 namespace Weble\LaravelEcommerce\Customer;
 
+use BadMethodCallException;
 use CommerceGuys\Addressing\AddressInterface;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Str;
 use Spatie\DataTransferObject\DataTransferObject;
-use Spatie\Enum\Exceptions\InvalidValueException;
+use Spatie\Enum\Exceptions\UnknownEnumProperty;
 use Weble\LaravelEcommerce\Address\Address;
 use Weble\LaravelEcommerce\Address\AddressType;
 use Weble\LaravelEcommerce\Address\StoreAddress;
@@ -43,15 +44,15 @@ class Customer extends DataTransferObject implements Jsonable
     {
         try {
             $taxAddressType = AddressType::make(config('ecommerce.tax.address_type', 'shipping'));
-        } catch (InvalidValueException $e) {
+        } catch (BadMethodCallException $e) {
             $taxAddressType = AddressType::shipping();
         }
 
-        if ($taxAddressType->isEqual(AddressType::shipping())) {
+        if ($taxAddressType->equals(AddressType::shipping())) {
             return $this->shippingAddress;
         }
 
-        if ($taxAddressType->isEqual(AddressType::billing())) {
+        if ($taxAddressType->equals(AddressType::billing())) {
             return $this->billingAddress;
         }
 

@@ -16,7 +16,7 @@ class Discount extends DataTransferObject implements Arrayable, Jsonable
 
     public function calculateValue(Money $price): Money
     {
-        if ($this->type->isEqual(DiscountType::percentage())) {
+        if ($this->type->equals(DiscountType::percentage())) {
             return $price->multiply($this->value / 100);
         }
 
@@ -40,7 +40,7 @@ class Discount extends DataTransferObject implements Arrayable, Jsonable
         return new Discount([
             'type'   => $type,
             'target' => DiscountTarget::make($discount['target']),
-            'value'  => $type->isEqual(DiscountType::value()) ? money($discount['value']['amount'] ?? 0, $discount['value']['currency'] ?? 'USD') : (float) $discount['value'],
+            'value'  => $type->equals(DiscountType::value()) ? money($discount['value']['amount'] ?? 0, $discount['value']['currency'] ?? 'USD') : (float) $discount['value'],
         ]);
     }
 }

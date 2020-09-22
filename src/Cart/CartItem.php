@@ -32,7 +32,7 @@ class CartItem extends DataTransferObject implements Arrayable, Jsonable
 
     public function withDiscount(Discount $discount): self
     {
-        if (! $discount->target()->isEqual(DiscountTarget::item())) {
+        if (! $discount->target()->equals(DiscountTarget::item())) {
             throw new InvalidDiscountException();
         }
 

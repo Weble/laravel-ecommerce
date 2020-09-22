@@ -13,7 +13,7 @@ class OrderHistory extends Model
 
     protected $casts = [];
 
-    protected $keyType = 'uuid';
+    protected $keyType = 'string';
 
     public function __construct(array $attributes = [])
     {

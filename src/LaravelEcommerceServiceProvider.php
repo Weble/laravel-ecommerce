@@ -209,6 +209,6 @@ class LaravelEcommerceServiceProvider extends ServiceProvider
     protected function addMoneyConfig(): void
     {
         Money::setLocale(config()->get('ecommerce.customer.locale', 'en_US'));
-        Money::setCurrency(config()->get('ecommerce.currency.default', 'USD'));
+        Money::setDefaultCurrency(config()->get('ecommerce.currency.default', 'USD'));
     }
 }
