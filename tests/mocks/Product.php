@@ -3,12 +3,12 @@
 namespace Weble\LaravelEcommerce\Tests\mocks;
 
 use Cknow\Money\Money;
+use Cknow\Money\MoneyCast;
 use CommerceGuys\Tax\Model\TaxTypeInterface;
 use CommerceGuys\Tax\Repository\TaxTypeRepository;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Weble\LaravelEcommerce\Purchasable;
-use Cknow\Money\MoneyCast;
 
 class Product extends Model implements Purchasable
 {

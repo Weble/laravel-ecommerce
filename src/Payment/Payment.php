@@ -2,12 +2,12 @@
 
 namespace Weble\LaravelEcommerce\Payment;
 
+use Cknow\Money\MoneyCast;
 use Illuminate\Database\Eloquent\Model;
 use Weble\LaravelEcommerce\Customer\Customer;
 use Weble\LaravelEcommerce\Order\Concern\InteractsWithStateMachine;
 use Weble\LaravelEcommerce\Support\CurrencyCast;
 use Weble\LaravelEcommerce\Support\DTOCast;
-use Cknow\Money\MoneyCast;
 
 class Payment extends Model
 {

@@ -2,11 +2,11 @@
 
 namespace Weble\LaravelEcommerce\Order;
 
+use Cknow\Money\MoneyCast;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Weble\LaravelEcommerce\Cart\CartItem;
-use Cknow\Money\MoneyCast;
 
 class OrderItem extends Model
 {

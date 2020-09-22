@@ -8,7 +8,6 @@ use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Str;
 use Spatie\DataTransferObject\DataTransferObject;
-use Spatie\Enum\Exceptions\UnknownEnumProperty;
 use Weble\LaravelEcommerce\Address\Address;
 use Weble\LaravelEcommerce\Address\AddressType;
 use Weble\LaravelEcommerce\Address\StoreAddress;

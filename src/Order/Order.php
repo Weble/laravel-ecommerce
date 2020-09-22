@@ -2,6 +2,7 @@
 
 namespace Weble\LaravelEcommerce\Order;
 
+use Cknow\Money\MoneyCast;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -13,7 +14,6 @@ use Weble\LaravelEcommerce\Order\Concern\InteractsWithStateMachine;
 use Weble\LaravelEcommerce\Order\Concern\Payable;
 use Weble\LaravelEcommerce\Support\CurrencyCast;
 use Weble\LaravelEcommerce\Support\DTOCast;
-use Cknow\Money\MoneyCast;
 
 class Order extends Model
 {
