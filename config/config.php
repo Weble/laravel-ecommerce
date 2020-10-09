@@ -28,7 +28,7 @@ return [
         | Falls back to \Cknow\Money config.
         | Needs to be in the list of the available currencies above.
         */
-        'default'     => config('money.currency', config('app.currency', 'USD')),
+        'default'     => config('money.defaultCurrency', config('app.currency', 'USD')),
 
         /*
         |--------------------------------------------------------------------------

@@ -9,11 +9,12 @@
 Opinionated ecommerce tools for laravel
 
 ## Introduction
-In a lot of projects, we encounter the same dilemma: we need to provide a customer with an "Ecommerce" website (basically, he needs to sell either a product or a service) which doesn't "fit" in the standard definition of ecommerce (ie: what you can easily build on top of the popular ecommerce CMSes, like Prestashop, Magento, Woocommerce, etc), or with the usual SaaS (Shopify, Webflow, etc)
+In a lot of projects, we encounter the same dilemma: we need to provide a customer with an "Ecommerce" website (basically, he needs to sell either a product or a service) which doesn't "fit" in the standard definition of ecommerce (ie: what you can easily build on top of the popular ecommerce CMSes, like Prestashop, Magento, Woocommerce, etc), or with the usual SaaS (Shopify, Webflow, SnipCart, etc)
 
 The natural question that arises for us is then: do we customize these CMSes to suite the particular business case of the client, or build a custom Laravel application while having to deal with all the standard (and always "expected") ecommerce features, like cart, orders, notifications, inventory, coupons, taxes, customers, etc?
 
-This is why Laravel Ecommerce was born: to provide most of these standard ecommerce features to whatever Laravel Application needs them, allowing us to leverage them, without having to rebuild them from scratch every time.
+This is why Laravel Ecommerce was born: to provide most of these standard ecommerce features to any Laravel Application that needs them, allowing us to leverage them, without having to rebuild them from scratch every time.
+
 It is **very** opinionated, meaning we put some "assertions" in place to allow us to build upon a few "certainties".
 
 ### Prerequisites
@@ -26,7 +27,7 @@ It is **very** opinionated, meaning we put some "assertions" in place to allow u
 
 - In v1 we support only the Single Store model. For v2 we plan to add support for Multiple Store, with a Store Provider.
 - Each "thing" you add to the cart is an Eloquent Model. This is done in order to take advantage of the Polymorphic relationships, while keeping the maximum flexibility.
-- Everything related to "prices" is a MoneyPHP object. For now we use the excellent ```cknow/laravel-money``` wrapper for laravel
+- Everything related to "prices" is a MoneyPHP object. For this we use the excellent ```cknow/laravel-money``` wrapper for laravel
 - We use ```commerceguys/addressing``` to deal with addresses and zones in general
 - We use ```commerceguys/tax``` to deal with taxes
 - We use ```iben12/laravel-statable``` to deal with order management through a state machine.
