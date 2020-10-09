@@ -1,3 +1,5 @@
+# WARNING: STILL IN DEVELOPMENT - DO NOT USE YET
+
 # Laravel Ecommerce
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/weble/laravel-ecommerce.svg?style=flat-square)](https://packagist.org/packages/weble/laravel-ecommerce)
