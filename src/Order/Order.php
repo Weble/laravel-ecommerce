@@ -3,6 +3,7 @@
 namespace Weble\LaravelEcommerce\Order;
 
 use Cknow\Money\MoneyCast;
+use Cknow\Money\MoneyIntCast;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -26,12 +27,12 @@ class Order extends Model
         'customer'           => DTOCast::class . ':' . Customer::class,
         'currency'           => CurrencyCast::class,
         'discounts'          => 'collection',
-        'discounts_subtotal' => MoneyCast::class . ':currency',
-        'items_subtotal'     => MoneyCast::class . ':currency',
-        'items_total'        => MoneyCast::class . ':currency',
-        'subtotal'           => MoneyCast::class . ':currency',
-        'tax'                => MoneyCast::class . ':currency',
-        'total'              => MoneyCast::class . ':currency',
+        'discounts_subtotal' => MoneyIntCast::class . ':currency',
+        'items_subtotal'     => MoneyIntCast::class . ':currency',
+        'items_total'        => MoneyIntCast::class . ':currency',
+        'subtotal'           => MoneyIntCast::class . ':currency',
+        'tax'                => MoneyIntCast::class . ':currency',
+        'total'              => MoneyIntCast::class . ':currency',
     ];
 
     public $incrementing = false;

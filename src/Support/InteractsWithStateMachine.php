@@ -4,6 +4,7 @@ namespace Weble\LaravelEcommerce\Support;
 
 use Iben\Statable\Statable;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Collection;
 use Weble\LaravelEcommerce\Order\StateHistory;
 
 trait InteractsWithStateMachine
@@ -54,8 +55,17 @@ trait InteractsWithStateMachine
         return true;
     }
 
+    public function possibleTransitions(): Collection
+    {
+        if ($this->getKey() === null) {
+            return collect([]);
+        }
+
+        return collect($this->stateMachine()->getPossibleTransitions());
+    }
+
     public function hasPossibleTransition($name): bool
     {
-        return collect($this->stateMachine()->getPossibleTransitions())->contains($name);
+        return $this->possibleTransitions()->contains($name);
     }
 }
