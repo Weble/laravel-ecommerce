@@ -14,16 +14,16 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Weble",
+            "name": "Daniele Rosario",
             "email": "daniele@weble.it",
-            "homepage": "https://spatie.be",
+            "homepage": "https://weble.it",
             "role": "Developer"
         }
     ],
     "require": {
         "php": "^7.4",
         "ext-json": "*",
-        "cknow/laravel-money": "^6.0",
+        "cknow/laravel-money": "dev-more-casts",
         "commerceguys/addressing": "^1.0",
         "commerceguys/tax": "^0.8",
         "florianv/laravel-swap": "^2.2",
@@ -67,7 +67,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/sebdesign/state-machine"
+            "url": "https://github.com/skullbock/laravel-money"
         }
     ],
     "extra": {

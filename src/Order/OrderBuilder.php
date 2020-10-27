@@ -6,6 +6,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Weble\LaravelEcommerce\Cart\Cart;
+use Weble\LaravelEcommerce\Cart\CartInterface;
 use Weble\LaravelEcommerce\Cart\CartItem;
 
 class OrderBuilder
@@ -24,7 +25,7 @@ class OrderBuilder
         ]);
     }
 
-    public function fromCart(Cart $cart): self
+    public function fromCart(CartInterface $cart): self
     {
         $this->order
             ->fill([
@@ -39,7 +40,7 @@ class OrderBuilder
                 'subtotal'           => $cart->subTotal(),
                 'tax'                => $cart->tax(),
                 'total'              => $cart->total(),
-                'state'              => 'created',
+                'state'              => OrderState::NEW,
             ]);
 
         $this->items = $cart->items()->map(function (CartItem $item) {

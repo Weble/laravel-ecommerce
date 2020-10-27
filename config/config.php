@@ -209,85 +209,51 @@ return [
             // should exist on model
 
             'states'      => [
-                'created',
-                'waiting_for_payment',
-                'payed',
-                'payment_failed',
-                'canceled',
-                'shipping',
-                'shipped',
-                'delivered',
-                'refunded',
+                \Weble\LaravelEcommerce\Order\OrderState::NEW,
+                \Weble\LaravelEcommerce\Order\OrderState::PAYED,
+                \Weble\LaravelEcommerce\Order\OrderState::CANCELED,
+                \Weble\LaravelEcommerce\Order\OrderState::REFUNDED,
+                \Weble\LaravelEcommerce\Order\OrderState::COMPLETED,
             ],
             'transitions' => [
-                'readyForPayment'    => [
-                    'from'     => [
-                        'created',
-                        'payment_failed',
-                    ],
-                    'to'       => 'waiting_for_payment',
-                    'metadata' => [
-                        'title'   => 'Ready for Payment',
-                        'classes' => 'btn btn-default btn-primary',
-                    ],
-                ],
-                'markAsPayed'        => [
+                \Weble\LaravelEcommerce\Order\OrderTransition::PAY => [
                     'from' => [
-                        'waiting_for_payment',
-                        'payment_failed',
+                        \Weble\LaravelEcommerce\Order\OrderState::NEW,
                     ],
-                    'to'   => 'payed',
+                    'to'   => \Weble\LaravelEcommerce\Order\OrderState::PAYED,
                 ],
-                'paymentFailed'      => [
-                    'from' => [
-                        'waiting_for_payment',
-                    ],
-                    'to'   => 'payment_failed',
-                ],
-                'cancel'             => [
+
+                \Weble\LaravelEcommerce\Order\OrderTransition::CANCEL => [
                     'from'     => [
-                        'created',
-                        'payment_failed',
-                        'waiting_for_payment',
+                        \Weble\LaravelEcommerce\Order\OrderState::NEW,
                     ],
-                    'to'       => 'canceled',
+                    'to'       => \Weble\LaravelEcommerce\Order\OrderState::CANCELED,
                     'metadata' => [
                         'title'   => 'Cancel',
                         'classes' => 'btn btn-default btn-danger',
                     ],
                 ],
-                'prepareForShipment' => [
+
+                \Weble\LaravelEcommerce\Order\OrderTransition::REFUND => [
                     'from' => [
-                        'payed',
+                        \Weble\LaravelEcommerce\Order\OrderState::PAYED,
+                        \Weble\LaravelEcommerce\Order\OrderState::COMPLETED,
                     ],
-                    'to'   => 'shipping',
+                    'to'   => \Weble\LaravelEcommerce\Order\OrderState::REFUNDED,
                 ],
-                'ship'               => [
+
+
+                \Weble\LaravelEcommerce\Order\OrderTransition::COMPLETE => [
                     'from' => [
-                        'shipping',
+                        \Weble\LaravelEcommerce\Order\OrderState::PAYED,
                     ],
-                    'to'   => 'shipped',
-                ],
-                'markAsDelivered'    => [
-                    'from' => [
-                        'shipped',
-                    ],
-                    'to'   => 'delivered',
-                ],
-                'refund'             => [
-                    'from' => [
-                        'payed',
-                        'shipping',
-                        'shipped',
-                        'delivered',
-                    ],
-                    'to'   => 'refunded',
+                    'to'   => \Weble\LaravelEcommerce\Order\OrderState::COMPLETED,
                 ],
             ],
             'callbacks'   => [
-                'after' => [
+                'after'  => [
                     'history' => [
-                        'do' => 'StateHistoryManager@storeHistory',
+                        'do' => new Weble\LaravelEcommerce\Support\StateHistoryManager,
                     ],
                 ],
             ],
@@ -320,74 +286,66 @@ return [
             // should exist on model
 
             'states'      => [
-                'cart',
-                'new',
-                'processing',
-                'completed',
-                'failed',
-                'cancelled',
-                'void',
-                'refunded',
+                \Weble\LaravelEcommerce\Payment\PaymentState::NEW,
+                \Weble\LaravelEcommerce\Payment\PaymentState::PROCESSING,
+                \Weble\LaravelEcommerce\Payment\PaymentState::COMPLETED,
+                \Weble\LaravelEcommerce\Payment\PaymentState::FAILED,
+                \Weble\LaravelEcommerce\Payment\PaymentState::CANCELED,
+                \Weble\LaravelEcommerce\Payment\PaymentState::REFUNDED,
             ],
             'transitions' => [
-                'create'    => [
-                    'from'     => [
-                        'cart',
-                    ],
-                    'to'       => 'new',
-                    'metadata' => [
-                        'title'   => 'Create',
-                        'classes' => 'btn btn-default btn-primary',
-                    ],
-                ],
-                'process'        => [
+                \Weble\LaravelEcommerce\Payment\PaymentTransition::PROCESS  => [
                     'from' => [
-                        'new',
+                        \Weble\LaravelEcommerce\Payment\PaymentState::NEW,
                     ],
-                    'to'   => 'processing',
+                    'to'   => \Weble\LaravelEcommerce\Payment\PaymentState::PROCESSING,
                 ],
-                'complete'      => [
+                \Weble\LaravelEcommerce\Payment\PaymentTransition::COMPLETE => [
                     'from' => [
-                        'new',
-                        'processing',
+                        \Weble\LaravelEcommerce\Payment\PaymentState::NEW,
+                        \Weble\LaravelEcommerce\Payment\PaymentState::PROCESSING,
                     ],
-                    'to'   => 'completed',
+                    'to'   => \Weble\LaravelEcommerce\Payment\PaymentState::COMPLETED,
                 ],
-                'fail'             => [
+                \Weble\LaravelEcommerce\Payment\PaymentTransition::FAIL     => [
                     'from'     => [
-                        'new',
-                        'processing',
+                        \Weble\LaravelEcommerce\Payment\PaymentState::NEW,
+                        \Weble\LaravelEcommerce\Payment\PaymentState::PROCESSING,
                     ],
-                    'to'       => 'failed',
+                    'to'       => \Weble\LaravelEcommerce\Payment\PaymentState::FAILED,
                     'metadata' => [
                         'title'   => 'Fail',
                         'classes' => 'btn btn-default btn-danger',
                     ],
                 ],
-                'cancel' => [
+                \Weble\LaravelEcommerce\Payment\PaymentTransition::CANCEL   => [
                     'from' => [
-                        'new',
-                        'processing',
+                        \Weble\LaravelEcommerce\Payment\PaymentState::NEW,
+                        \Weble\LaravelEcommerce\Payment\PaymentState::PROCESSING,
+                        \Weble\LaravelEcommerce\Payment\PaymentState::FAILED,
                     ],
-                    'to'   => 'cancelled',
+                    'to'   => \Weble\LaravelEcommerce\Payment\PaymentState::CANCELED,
                 ],
-                'refund'               => [
+                \Weble\LaravelEcommerce\Payment\PaymentTransition::REFUND   => [
                     'from' => [
-                        'completed',
+                        \Weble\LaravelEcommerce\Payment\PaymentState::COMPLETED,
                     ],
-                    'to'   => 'refunded',
-                ],
-                'void'    => [
-                    'from' => [
-                        'new',
-                        'processing',
-                    ],
-                    'to'   => 'void',
+                    'to'   => \Weble\LaravelEcommerce\Payment\PaymentState::REFUNDED,
                 ],
             ],
             'callbacks'   => [
                 'after' => [
-
+                    'on-completed' => [
+                        'to' => \Weble\LaravelEcommerce\Payment\PaymentState::COMPLETED,
+                        'do' => new \Weble\LaravelEcommerce\Payment\Callback\MarkOrderAs(\Weble\LaravelEcommerce\Order\OrderTransition::PAY),
+                    ],
+                    'on-refunded'   => [
+                        'to' => \Weble\LaravelEcommerce\Payment\PaymentState::REFUNDED,
+                        'do' => new \Weble\LaravelEcommerce\Payment\Callback\MarkOrderAs(\Weble\LaravelEcommerce\Order\OrderTransition::REFUND),
+                    ],
+                    'history' => [
+                        'do' => new Weble\LaravelEcommerce\Support\StateHistoryManager,
+                    ],
                 ],
             ],
         ],
@@ -439,7 +397,7 @@ return [
         'cart'              => \Weble\LaravelEcommerce\Cart\Cart::class,
         'orderModel'        => \Weble\LaravelEcommerce\Order\Order::class,
         'orderItemModel'    => \Weble\LaravelEcommerce\Order\OrderItem::class,
-        'orderHistoryModel' => \Weble\LaravelEcommerce\Order\OrderHistory::class,
+        'orderHistoryModel' => \Weble\LaravelEcommerce\Order\StateHistory::class,
         'paymentModel'      => \Weble\LaravelEcommerce\Payment\Payment::class,
     ],
 
@@ -456,7 +414,7 @@ return [
         'discounts'     => 'cart_discounts',
         'orders'        => 'orders',
         'order_items'   => 'order_items',
-        'order_history' => 'order_history',
+        'state_history' => 'ecommerce_state_history',
         'payments'      => 'payments',
     ],
 ];

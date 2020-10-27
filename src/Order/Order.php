@@ -9,15 +9,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 use Weble\LaravelEcommerce\Cart\Cart;
+use Weble\LaravelEcommerce\Cart\CartInterface;
 use Weble\LaravelEcommerce\Customer\Customer;
-use Weble\LaravelEcommerce\Order\Concern\InteractsWithStateMachine;
+use Weble\LaravelEcommerce\Support\HasUuidPrimaryKey;
+use Weble\LaravelEcommerce\Support\InteractsWithStateMachine;
 use Weble\LaravelEcommerce\Order\Concern\Payable;
 use Weble\LaravelEcommerce\Support\CurrencyCast;
 use Weble\LaravelEcommerce\Support\DTOCast;
 
 class Order extends Model
 {
-    use InteractsWithStateMachine, Payable;
+    use InteractsWithStateMachine, Payable, HasUuidPrimaryKey;
 
     protected $guarded = [];
 
@@ -49,12 +51,16 @@ class Order extends Model
             $order->generateUniqueHash();
         });
 
+        static::created(function (Order $order) {
+            $order->createPayment();
+        });
+
         static::updating(function (Order $order) {
             $order->generateUniqueHash();
         });
     }
 
-    public static function fromCart(Cart $cart): OrderBuilder
+    public static function fromCart(CartInterface $cart): OrderBuilder
     {
         return (new OrderBuilder())->fromCart($cart);
     }
@@ -69,22 +75,33 @@ class Order extends Model
         $this->belongsTo(Authenticatable::class);
     }
 
-    protected function generateUniqueHash()
+    protected function generateUniqueHash(): self
     {
         if ($this->hash) {
-            return;
+            return $this;
         }
 
         $hash = $this->generateHash();
-        while (self::whereHash($hash)->count() > 0) {
+        while (self::query()->where('hash', '=', $hash)->count() > 0) {
             $hash = $this->generateHash();
         }
 
         $this->hash = $hash;
+
+
+
+        return $this;
     }
 
     protected function generateHash(): string
     {
         return Str::random(config('ecommerce.order.hash_length', 8));
     }
+
+    protected function getGraph(): string
+    {
+        return config('ecommerce.order.workflow.graph', 'ecommerce-order');
+    }
+
+
 }

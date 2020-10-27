@@ -5,6 +5,11 @@ namespace Weble\LaravelEcommerce\Tests\Order;
 use Weble\LaravelEcommerce\Cart\Cart;
 use Weble\LaravelEcommerce\Order\Order;
 use Weble\LaravelEcommerce\Order\OrderBuilder;
+use Weble\LaravelEcommerce\Order\OrderState;
+use Weble\LaravelEcommerce\Order\OrderTransition;
+use Weble\LaravelEcommerce\Payment\Payment;
+use Weble\LaravelEcommerce\Payment\PaymentState;
+use Weble\LaravelEcommerce\Payment\PaymentTransition;
 use Weble\LaravelEcommerce\Tests\mocks\Product;
 use Weble\LaravelEcommerce\Tests\TestCase;
 
@@ -88,11 +93,11 @@ class OrderTest extends TestCase
             ->fromCart($cart)
             ->create();
 
-        $this->assertEquals('created', $order->stateIs());
+        $this->assertEquals(OrderState::NEW, $order->stateIs());
 
-        $order->apply('readyForPayment');
+        $order->apply(OrderTransition::PAY);
 
-        $this->assertEquals('waiting_for_payment', $order->stateIs());
+        $this->assertEquals(OrderState::PAYED, $order->stateIs());
     }
 
     /** @test */
@@ -108,7 +113,7 @@ class OrderTest extends TestCase
             ->fromCart($cart)
             ->create();
 
-        $order->apply('readyForPayment');
+        $order->apply(OrderTransition::PAY);
 
         $this->assertEquals(1, $order->stateHistory()->get()->count());
 
@@ -116,9 +121,40 @@ class OrderTest extends TestCase
             ->fromCart($cart)
             ->create();
 
-        $order2->apply('readyForPayment');
+        $order2->apply(OrderTransition::PAY);
         $this->assertEquals(1, $order2->stateHistory()->get()->count());
         $this->assertEquals(1, $order->stateHistory()->get()->count());
-        $this->assertDatabaseCount('order_history', 2);
+        $this->assertDatabaseCount('ecommerce_state_history', 2);
+    }
+
+    /** @test */
+    public function order_creates_payment()
+    {
+        $product = factory(Product::class)->create(['price' => money(100)]);
+
+        /** @var Cart $cart */
+        $cart     = app('ecommerce.cart')->instance();
+        $cartItem = $cart->add($product);
+
+        $order = (new OrderBuilder())
+            ->fromCart($cart)
+            ->create();
+
+        $this->assertEquals(1, $order->payments()->count());
+
+        /** @var Payment $payment */
+        $payment = Payment::query()->latest()->first();
+
+        $this->assertTrue($payment->total->equals($order->total));
+        $this->assertEquals($order->payment_gateway, $payment->payment_gateway);
+        $this->assertEquals($order->currency->getCode(), $payment->currency->getCode());
+
+        $this->assertEquals(OrderState::NEW, $order->stateIs());
+
+        $payment->apply(PaymentTransition::COMPLETE);
+        $order->refresh();
+
+        $this->assertEquals(PaymentState::COMPLETED, $payment->stateIs());
+        $this->assertEquals(OrderState::PAYED, $order->stateIs());
     }
 }

@@ -4,16 +4,17 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateOrderHistoryTable extends Migration
+class CreateEcommerceStateHistoryTable extends Migration
 {
     /**
      * Run the migrations.
      */
     public function up()
     {
-        Schema::create(config('ecommerce.tables.order_history', 'order_history'), function (Blueprint $table) {
+        Schema::create(config('ecommerce.tables.state_history', 'ecommerce_state_history'), function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('order_id');
+            $table->uuid('model_id');
+            $table->uuid('model_type');
 
             $table->string('transition');
             $table->string('from');
@@ -22,7 +23,7 @@ class CreateOrderHistoryTable extends Migration
 
             $table->timestamps();
 
-            $table->index(['order_id']);
+            $table->index(['model_id', 'model_type']);
             $table->index(['actor_id']);
         });
     }
@@ -31,6 +32,6 @@ class CreateOrderHistoryTable extends Migration
      */
     public function down()
     {
-        Schema::drop(config('ecommerce.tables.order_history', 'order_items'));
+        Schema::drop(config('ecommerce.tables.state_history', 'ecommerce_state_history'));
     }
 }

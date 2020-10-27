@@ -192,17 +192,31 @@ class LaravelEcommerceServiceProvider extends ServiceProvider
 
     protected function addStateMachineConfig(): void
     {
-        $key = config('ecommerce.order.workflow.graph', 'ecommerce-order');
-        config()->set('state-machine.' . $key, config()->get('ecommerce.order.workflow'));
+        $stateMachineConfigKeys = [
+            'order',
+            'payment',
+        ];
 
-        $this->app->extend('sm.factory', function ($service, $app) use ($key) {
-            $service->addConfig(config()->get('ecommerce.order.workflow'), $key);
+        $keys = [];
+        foreach ($stateMachineConfigKeys as $key) {
+            $graphKey  = 'ecommerce.' . $key . '.workflow';
+            $configKey = config($graphKey . '.graph', 'ecommerce-' . $key);
+            config()->set('state-machine.' . $configKey, config()->get($graphKey));
+            $keys[$graphKey] = config($graphKey . '.graph', 'ecommerce-' . $key);
+        }
+
+        $this->app->extend('sm.factory', function ($service, $app) use ($keys) {
+            foreach ($keys as $graphKey => $key) {
+                $service->addConfig(config()->get($graphKey), $key);
+            }
 
             return $service;
         });
 
-        $this->app->resolving('sm.factory', function ($service, $app) use ($key) {
-            $service->addConfig(config()->get('ecommerce.order.workflow'), $key);
+        $this->app->resolving('sm.factory', function ($service, $app) use ($keys) {
+            foreach ($keys as $graphKey => $key) {
+                $service->addConfig(config()->get($graphKey), $key);
+            }
         });
     }
 

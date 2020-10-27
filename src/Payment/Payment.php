@@ -2,16 +2,20 @@
 
 namespace Weble\LaravelEcommerce\Payment;
 
-use Cknow\Money\MoneyCast;
+use Cknow\Money\MoneyIntCast;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Str;
 use Weble\LaravelEcommerce\Customer\Customer;
-use Weble\LaravelEcommerce\Order\Concern\InteractsWithStateMachine;
+use Weble\LaravelEcommerce\Order\Order;
 use Weble\LaravelEcommerce\Support\CurrencyCast;
 use Weble\LaravelEcommerce\Support\DTOCast;
+use Weble\LaravelEcommerce\Support\HasUuidPrimaryKey;
+use Weble\LaravelEcommerce\Support\InteractsWithStateMachine;
 
 class Payment extends Model
 {
-    use InteractsWithStateMachine;
+    use InteractsWithStateMachine, HasUuidPrimaryKey;
 
     protected $guarded = [];
 
@@ -19,21 +23,31 @@ class Payment extends Model
         'customer'           => DTOCast::class . ':' . Customer::class,
         'currency'           => CurrencyCast::class,
         'discounts'          => 'collection',
-        'discounts_subtotal' => MoneyCast::class . ':currency',
-        'items_subtotal'     => MoneyCast::class . ':currency',
-        'items_total'        => MoneyCast::class . ':currency',
-        'subtotal'           => MoneyCast::class . ':currency',
-        'tax'                => MoneyCast::class . ':currency',
-        'total'              => MoneyCast::class . ':currency',
+        'discounts_subtotal' => MoneyIntCast::class . ':currency',
+        'items_subtotal'     => MoneyIntCast::class . ':currency',
+        'items_total'        => MoneyIntCast::class . ':currency',
+        'subtotal'           => MoneyIntCast::class . ':currency',
+        'tax'                => MoneyIntCast::class . ':currency',
+        'total'              => MoneyIntCast::class . ':currency',
     ];
 
     public $incrementing = false;
-    protected $keyType   = 'uuid';
+    protected $keyType   = 'string';
 
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
 
         $this->setTable(config('ecommerce.tables.payments', 'payments'));
+    }
+
+    protected function getGraph(): string
+    {
+        return config('ecommerce.payment.workflow.graph', 'ecommerce-payment');
+    }
+
+    public function order(): BelongsTo
+    {
+        return $this->belongsTo(config('ecommerce.classes.orderModel', Order::class));
     }
 }

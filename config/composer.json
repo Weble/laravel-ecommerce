@@ -1,0 +1,14 @@
+{
+    "name": "vendor_name/config",
+    "description": "description",
+    "minimum-stability": "stable",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "skullbock",
+            "email": "email@example.com"
+        }
+    ],
+    "require": {
+    }
+}

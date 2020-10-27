@@ -2,7 +2,7 @@
 
 namespace Weble\LaravelEcommerce\Cart;
 
-use Cknow\Money\MoneyCast;
+use Cknow\Money\MoneyIntCast;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -19,7 +19,7 @@ class CartItemModel extends Model implements StoresEcommerceData
     protected $guarded = [];
 
     protected $casts = [
-        'price'              => MoneyCast::class,
+        'price'              => MoneyIntCast::class,
         'product_attributes' => 'collection',
         'discounts'          => 'collection',
         'quantity'           => 'float',

@@ -4,36 +4,37 @@ namespace Weble\LaravelEcommerce\Order;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Str;
+use Weble\LaravelEcommerce\Support\HasUuidPrimaryKey;
 
-class OrderHistory extends Model
+class StateHistory extends Model
 {
+    use HasUuidPrimaryKey;
+
     protected $guarded = [];
 
     protected $casts = [];
 
-    protected $keyType = 'string';
+    public $incrementing = false;
+    protected $keyType   = 'string';
 
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
 
-        $this->setTable(config('ecommerce.tables.order_history', 'order_history'));
-
-        $this->fill([
-            'id' => Str::orderedUuid(),
-        ]);
+        $this->setTable(config('ecommerce.tables.state_history', 'ecommerce_state_history'));
     }
 
-    public function order(): BelongsTo
+    public function model(): MorphTo
     {
-        return $this->belongsTo(config('ecommerce.classes.orderModel', Order::class));
+        return $this->morphTo();
     }
 
     public function statable()
     {
-        return $this->order();
+        return $this->model();
     }
 
     public function user(): BelongsTo
