@@ -2,7 +2,6 @@
 
 namespace Weble\LaravelEcommerce\Order;
 
-use Cknow\Money\MoneyCast;
 use Cknow\Money\MoneyIntCast;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
