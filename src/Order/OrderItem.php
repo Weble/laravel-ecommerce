@@ -2,7 +2,7 @@
 
 namespace Weble\LaravelEcommerce\Order;
 
-use Cknow\Money\MoneyCast;
+use Cknow\Money\MoneyIntCast;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -19,9 +19,9 @@ class OrderItem extends Model
         'product_attributes' => 'collection',
         'discounts'          => 'collection',
         'quantity'           => 'float',
-        'unit_price'         => MoneyCast::class,
-        'discounts_subtotal' => MoneyCast::class,
-        'subtotal'           => MoneyCast::class,
+        'unit_price'         => MoneyIntCast::class,
+        'discounts_subtotal' => MoneyIntCast::class,
+        'subtotal'           => MoneyIntCast::class,
     ];
 
     protected $keyType   = 'string';
