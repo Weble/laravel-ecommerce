@@ -16,6 +16,7 @@ trait InteractsWithStateMachine
     {
         if ($this->hasPossibleTransition($name)) {
             $this->apply($name);
+
             return $this;
         }
 
@@ -26,6 +27,7 @@ trait InteractsWithStateMachine
     {
         if ($this->statableApply($transition, $soft, $context)) {
             $this->save();
+
             return $this;
         }
 

@@ -5,7 +5,6 @@ namespace Weble\LaravelEcommerce\Order;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Weble\LaravelEcommerce\Cart\Cart;
 use Weble\LaravelEcommerce\Cart\CartInterface;
 use Weble\LaravelEcommerce\Cart\CartItem;
 

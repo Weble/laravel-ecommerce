@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Foundation\Auth\User;
-use Illuminate\Support\Str;
 use Weble\LaravelEcommerce\Support\HasUuidPrimaryKey;
 
 class StateHistory extends Model

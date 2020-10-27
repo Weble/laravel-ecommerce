@@ -5,7 +5,6 @@ namespace Weble\LaravelEcommerce\Payment;
 use Cknow\Money\MoneyIntCast;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Str;
 use Weble\LaravelEcommerce\Customer\Customer;
 use Weble\LaravelEcommerce\Order\Order;
 use Weble\LaravelEcommerce\Support\CurrencyCast;

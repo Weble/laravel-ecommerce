@@ -20,10 +20,10 @@ trait Payable
     public function createPayment(): Payment
     {
         return $this->payments()->create([
-            'total' => $this->total,
+            'total'           => $this->total,
             'payment_gateway' => $this->payment_gateway,
-            'state' => PaymentState::NEW,
-            'currency' => $this->currency
+            'state'           => PaymentState::NEW,
+            'currency'        => $this->currency,
         ]);
     }
 }

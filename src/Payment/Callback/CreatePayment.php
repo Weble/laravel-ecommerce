@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Weble\LaravelEcommerce\Payment\Callback;
 
 use SM\Event\TransitionEvent;

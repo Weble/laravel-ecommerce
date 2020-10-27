@@ -1,10 +1,8 @@
 <?php
 
-
 namespace Weble\LaravelEcommerce\Payment\Callback;
 
 use SM\Event\TransitionEvent;
-use Weble\LaravelEcommerce\Order\Order;
 use Weble\LaravelEcommerce\Payment\Payment;
 
 class MarkOrderAs

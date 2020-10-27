@@ -8,14 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
-use Weble\LaravelEcommerce\Cart\Cart;
 use Weble\LaravelEcommerce\Cart\CartInterface;
 use Weble\LaravelEcommerce\Customer\Customer;
-use Weble\LaravelEcommerce\Support\HasUuidPrimaryKey;
-use Weble\LaravelEcommerce\Support\InteractsWithStateMachine;
 use Weble\LaravelEcommerce\Order\Concern\Payable;
 use Weble\LaravelEcommerce\Support\CurrencyCast;
 use Weble\LaravelEcommerce\Support\DTOCast;
+use Weble\LaravelEcommerce\Support\HasUuidPrimaryKey;
+use Weble\LaravelEcommerce\Support\InteractsWithStateMachine;
 
 class Order extends Model
 {
@@ -88,8 +87,6 @@ class Order extends Model
 
         $this->hash = $hash;
 
-
-
         return $this;
     }
 
@@ -102,6 +99,4 @@ class Order extends Model
     {
         return config('ecommerce.order.workflow.graph', 'ecommerce-order');
     }
-
-
 }

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Weble\LaravelEcommerce\Support;
 
 use SM\Event\TransitionEvent;
