@@ -4,7 +4,6 @@ namespace Weble\LaravelEcommerce\Order;
 
 use App\Models\User;
 use Cknow\Money\MoneyIntCast;
-use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
