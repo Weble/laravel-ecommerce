@@ -2,6 +2,7 @@
 
 namespace Weble\LaravelEcommerce\Order;
 
+use App\Models\User;
 use Cknow\Money\MoneyIntCast;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
@@ -71,7 +72,7 @@ class Order extends Model
 
     public function user(): BelongsTo
     {
-        $this->belongsTo(Authenticatable::class);
+        return $this->belongsTo(User::class);
     }
 
     protected function generateUniqueHash(): self
