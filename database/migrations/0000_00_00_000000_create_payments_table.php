@@ -17,6 +17,7 @@ class CreatePaymentsTable extends Migration
             $table->char('currency', 3)->default(config('ecommerce.currency.default', 'USD'));
             $table->string('state')->nullable();
             $table->string('payment_gateway')->nullable();
+            $table->string('transaction_id')->nullable();
             $table->bigInteger('total')->default(0);
             $table->timestamps();
         });
