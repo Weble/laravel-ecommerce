@@ -14,7 +14,7 @@ class OrderBuilder
 
     public function __construct()
     {
-        $class = config('ecommerce.classes.orderModel', Order::class);
+        $class       = config('ecommerce.classes.orderModel', Order::class);
         $this->order = new $class;
         $this->items = Collection::make([]);
 
@@ -66,7 +66,6 @@ class OrderBuilder
 
     public function create(): Order
     {
-
         DB::transaction(function () {
             $this->order->save();
             $this->items->each(function (OrderItem $item) {

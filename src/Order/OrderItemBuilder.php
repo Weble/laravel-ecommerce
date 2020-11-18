@@ -2,7 +2,6 @@
 
 namespace Weble\LaravelEcommerce\Order;
 
-use Illuminate\Support\Str;
 use Weble\LaravelEcommerce\Cart\CartItem;
 
 class OrderItemBuilder
