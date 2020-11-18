@@ -25,7 +25,7 @@ class CartItemModel extends Model implements StoresEcommerceData
         'quantity'           => 'float',
     ];
 
-    protected $keyType = 'string';
+    protected $keyType   = 'string';
     public $incrementing = false;
 
     /**
