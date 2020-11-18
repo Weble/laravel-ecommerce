@@ -4,7 +4,6 @@ namespace Weble\LaravelEcommerce\Order;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Weble\LaravelEcommerce\Cart\CartInterface;
 use Weble\LaravelEcommerce\Cart\CartItem;
 
@@ -15,9 +14,9 @@ class OrderBuilder
 
     public function __construct()
     {
-        $class         = config('ecommerce.classes.orderModel', Order::class);
-        $this->order   = new $class;
-        $this->items   = Collection::make([]);
+        $class = config('ecommerce.classes.orderModel', Order::class);
+        $this->order = new $class;
+        $this->items = Collection::make([]);
 
         $this->order->fill([
             'payment_gateway' => config('ecommerce.payment.gateway', config('omnipay.gateway', env('OMNIPAY_GATEWAY', 'PayPal_Express'))),
@@ -28,7 +27,6 @@ class OrderBuilder
     {
         $this->order
             ->fill([
-                'id'                 => Str::orderedUuid(),
                 'user_id'            => $cart->customer()->user ? $cart->customer()->user->id : null,
                 'customer_id'        => $cart->customer()->getId() ?: null,
                 'customer'           => $cart->customer(),
@@ -45,7 +43,6 @@ class OrderBuilder
         $this->items = $cart->items()->map(function (CartItem $item) {
             $item = OrderItem::fromCartItem($item)
                 ->make();
-            $item->order_id = (string) $this->order->id;
 
             return $item;
         })->toBase();
@@ -69,9 +66,12 @@ class OrderBuilder
 
     public function create(): Order
     {
+
         DB::transaction(function () {
             $this->order->save();
-            $this->items->each->save();
+            $this->items->each(function (OrderItem $item) {
+                $item->order()->associate($this->order)->save();
+            });
         });
 
         if (config('ecommerce.order.clear_cart', true)) {

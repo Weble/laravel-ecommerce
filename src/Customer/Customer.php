@@ -29,7 +29,7 @@ class Customer extends DataTransferObject implements Jsonable
             'type' => AddressType::shipping(),
         ]);
 
-        $parameters['id'] ??= (string)Str::orderedUuid();
+        $parameters['id'] ??= sha1((string)Str::orderedUuid());
 
         parent::__construct($parameters);
     }

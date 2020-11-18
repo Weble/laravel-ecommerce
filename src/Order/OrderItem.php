@@ -7,12 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Weble\LaravelEcommerce\Cart\CartItem;
-use Weble\LaravelEcommerce\Support\HasUuidPrimaryKey;
 
 class OrderItem extends Model
 {
-    use HasUuidPrimaryKey;
-
     protected $guarded = [];
 
     protected $casts = [
@@ -23,9 +20,6 @@ class OrderItem extends Model
         'discounts_subtotal' => MoneyIntCast::class,
         'subtotal'           => MoneyIntCast::class,
     ];
-
-    protected $keyType   = 'string';
-    public $incrementing = false;
 
     public function __construct(array $attributes = [])
     {

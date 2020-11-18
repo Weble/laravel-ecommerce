@@ -12,10 +12,10 @@ class CreateOrdersTable extends Migration
     public function up()
     {
         Schema::create(config('ecommerce.tables.orders', 'orders'), function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->string('hash')->unique();
-            $table->uuid('customer_id')->nullable();
-            $table->uuid('cart_id')->nullable();
+            $table->bigInteger('customer_id')->nullable();
+            $table->bigInteger('cart_id')->nullable();
             $table->bigInteger('user_id')->nullable();
             $table->json('customer')->nullable();
             $table->char('currency', 3)->default(config('ecommerce.currency.default', 'USD'));

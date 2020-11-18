@@ -12,9 +12,8 @@ class CreateEcommerceStateHistoryTable extends Migration
     public function up()
     {
         Schema::create(config('ecommerce.tables.state_history', 'ecommerce_state_history'), function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->uuid('model_id');
-            $table->uuid('model_type');
+            $table->id();
+            $table->morphs('model');
 
             $table->string('transition');
             $table->string('from');
@@ -23,7 +22,6 @@ class CreateEcommerceStateHistoryTable extends Migration
 
             $table->timestamps();
 
-            $table->index(['model_id', 'model_type']);
             $table->index(['actor_id']);
         });
     }

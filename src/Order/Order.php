@@ -13,12 +13,11 @@ use Weble\LaravelEcommerce\Customer\Customer;
 use Weble\LaravelEcommerce\Order\Concern\Payable;
 use Weble\LaravelEcommerce\Support\CurrencyCast;
 use Weble\LaravelEcommerce\Support\DTOCast;
-use Weble\LaravelEcommerce\Support\HasUuidPrimaryKey;
 use Weble\LaravelEcommerce\Support\InteractsWithStateMachine;
 
 class Order extends Model
 {
-    use InteractsWithStateMachine, Payable, HasUuidPrimaryKey;
+    use InteractsWithStateMachine, Payable;
 
     protected $guarded = [];
 
@@ -33,9 +32,6 @@ class Order extends Model
         'tax'                => MoneyIntCast::class . ':currency',
         'total'              => MoneyIntCast::class . ':currency',
     ];
-
-    public $incrementing = false;
-    protected $keyType   = 'string';
 
     public function __construct(array $attributes = [])
     {

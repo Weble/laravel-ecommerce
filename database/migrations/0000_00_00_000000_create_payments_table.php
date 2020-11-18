@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Weble\LaravelEcommerce\Order\Order;
 
 class CreatePaymentsTable extends Migration
 {
@@ -12,8 +13,8 @@ class CreatePaymentsTable extends Migration
     public function up()
     {
         Schema::create(config('ecommerce.tables.payments', 'payments'), function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->uuid('order_id')->index();
+            $table->id();
+            $table->foreignIdFor(Order::class);
             $table->char('currency', 3)->default(config('ecommerce.currency.default', 'USD'));
             $table->string('state')->nullable();
             $table->string('payment_gateway')->nullable();

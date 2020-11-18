@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Weble\LaravelEcommerce\Order\Order;
 
 class CreateOrderItemsTable extends Migration
 {
@@ -12,11 +13,10 @@ class CreateOrderItemsTable extends Migration
     public function up()
     {
         Schema::create(config('ecommerce.tables.order_items', 'order_items'), function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->uuid('order_id');
+            $table->id();
+            $table->foreignIdFor(Order::class);
 
-            $table->bigInteger('purchasable_id');
-            $table->string('purchasable_type');
+            $table->morphs('purchasable');
             $table->json('purchasable_data');
             $table->float('quantity')->default(1);
             $table->json('product_attributes');
@@ -27,9 +27,6 @@ class CreateOrderItemsTable extends Migration
             $table->bigInteger('subtotal');
 
             $table->timestamps();
-
-            $table->index(['order_id']);
-            $table->index(['purchasable_type', 'purchasable_id']);
         });
     }
     /**

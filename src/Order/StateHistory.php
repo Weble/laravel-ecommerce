@@ -6,18 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Foundation\Auth\User;
-use Weble\LaravelEcommerce\Support\HasUuidPrimaryKey;
 
 class StateHistory extends Model
 {
-    use HasUuidPrimaryKey;
-
     protected $guarded = [];
 
     protected $casts = [];
-
-    public $incrementing = false;
-    protected $keyType   = 'string';
 
     public function __construct(array $attributes = [])
     {

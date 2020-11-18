@@ -28,7 +28,7 @@ class OrderTest extends TestCase
             ->fromCart($cart)
             ->create();
 
-        $this->assertDatabaseCount('orders', 1);
+        $this->assertEquals(1, Order::query()->count());
         $this->assertEquals($cart->total(), $order->total);
         $this->assertEquals(1, $order->items->count());
         $this->assertEquals($product->getKey(), $order->items->first()->product->getKey());

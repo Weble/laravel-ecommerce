@@ -42,7 +42,7 @@ class CustomerModel extends Model implements StoresEcommerceData
     public function fromCartValue($customer, string $key, string $instanceName): StoresEcommerceData
     {
         try {
-            return self::where($this->getKeyName(), '=', $key)->firstOrFail()
+            return self::where($this->getKeyName(), '=', $customer->getId())->firstOrFail()
                 ->fill([
                     'shipping_address' => json_encode($customer->shippingAddress),
                     'billing_address'  => json_encode($customer->billingAddress),
