@@ -16,8 +16,8 @@ class CreateOrdersTable extends Migration
         Schema::create(config('ecommerce.tables.orders', 'orders'), function (Blueprint $table) {
             $table->id();
             $table->string('hash')->unique();
-            $table->foreignIdFor(config('ecommerce.classes.cartItemModel', CartItemModel::class), 'cart_id')->nullable();
-            $table->foreignIdFor(config('ecommerce.classes.customerModel', CustomerModel::class), 'customer_id')->nullable();
+            $table->foreignUuid('cart_id')->nullable();
+            $table->foreignUuid('customer_id')->nullable();
             $table->foreignIdFor(config('ecommerce.classes.user', \App\Models\User::class))->nullable();
             $table->json('customer')->nullable();
             $table->char('currency', 3)->default(config('ecommerce.currency.default', 'USD'));

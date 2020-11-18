@@ -14,10 +14,9 @@ class CreateCartitemsTable extends Migration
         Schema::create(config('ecommerce.tables.items', 'cart_items'), function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('cart_key');
-            $table->bigInteger('user_id')->nullable();
+            $table->foreignIdFor(config('ecommerce.classes.user', \App\Models\User::class))->nullable();
             $table->string('instance')->index();
-            $table->bigInteger('purchasable_id');
-            $table->string('purchasable_type');
+            $table->morphs('purchasable');
             $table->bigInteger('price');
             $table->float('quantity')->default(1);
             $table->json('product_attributes');
@@ -25,7 +24,6 @@ class CreateCartitemsTable extends Migration
             $table->timestamps();
 
             $table->index(['cart_key']);
-            $table->index(['purchasable_type', 'purchasable_id']);
         });
     }
     /**
