@@ -1,8 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+use Weble\LaravelEcommerce\Cart\CartItemModel;
+use Weble\LaravelEcommerce\Customer\CustomerModel;
 
 class CreateOrdersTable extends Migration
 {
@@ -14,9 +16,9 @@ class CreateOrdersTable extends Migration
         Schema::create(config('ecommerce.tables.orders', 'orders'), function (Blueprint $table) {
             $table->id();
             $table->string('hash')->unique();
-            $table->bigInteger('customer_id')->nullable();
-            $table->bigInteger('cart_id')->nullable();
-            $table->bigInteger('user_id')->nullable();
+            $table->foreignIdFor(config('ecommerce.classes.cartItemModel', CartItemModel::class), 'cart_id')->nullable();
+            $table->foreignIdFor(config('ecommerce.classes.customerModel', CustomerModel::class), 'customer_id')->nullable();
+            $table->foreignIdFor(config('ecommerce.classes.user', \App\Models\User::class))->nullable();
             $table->json('customer')->nullable();
             $table->char('currency', 3)->default(config('ecommerce.currency.default', 'USD'));
             $table->string('state')->nullable();
@@ -39,6 +41,7 @@ class CreateOrdersTable extends Migration
             $table->timestamps();
         });
     }
+
     /**
      * Reverse the migrations.
      */

@@ -26,6 +26,7 @@ class CartItemModel extends Model implements StoresEcommerceData
     ];
 
     protected $keyType = 'string';
+    public $incrementing = false;
 
     /**
      * @var mixed|string

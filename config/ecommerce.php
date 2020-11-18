@@ -103,12 +103,6 @@ return [
             'eloquent' => [
                 'fallback'    => 'session',
                 'session_key' => 'ecommerce.store.eloquent.',
-                'models'      => [
-                    'items'    => \Weble\LaravelEcommerce\Cart\CartItemModel::class,
-                    'customer' => \Weble\LaravelEcommerce\Customer\CustomerModel::class,
-                    /*'discounts' => \Weble\LaravelEcommerce\Discount\DiscountModel::class,
-                    'address' => \Weble\LaravelEcommerce\Address\AddressModel::class,*/
-                ],
             ],
         ],
 
@@ -242,7 +236,6 @@ return [
                     'to'   => \Weble\LaravelEcommerce\Order\OrderState::REFUNDED,
                 ],
 
-
                 \Weble\LaravelEcommerce\Order\OrderTransition::COMPLETE => [
                     'from' => [
                         \Weble\LaravelEcommerce\Order\OrderState::PAYED,
@@ -251,7 +244,7 @@ return [
                 ],
             ],
             'callbacks'   => [
-                'after'  => [
+                'after' => [
                     'history' => [
                         'do' => new Weble\LaravelEcommerce\Support\StateHistoryManager,
                     ],
@@ -339,11 +332,11 @@ return [
                         'to' => \Weble\LaravelEcommerce\Payment\PaymentState::COMPLETED,
                         'do' => new \Weble\LaravelEcommerce\Payment\Callback\MarkOrderAs(\Weble\LaravelEcommerce\Order\OrderTransition::PAY),
                     ],
-                    'on-refunded'   => [
+                    'on-refunded'  => [
                         'to' => \Weble\LaravelEcommerce\Payment\PaymentState::REFUNDED,
                         'do' => new \Weble\LaravelEcommerce\Payment\Callback\MarkOrderAs(\Weble\LaravelEcommerce\Order\OrderTransition::REFUND),
                     ],
-                    'history' => [
+                    'history'      => [
                         'do' => new Weble\LaravelEcommerce\Support\StateHistoryManager,
                     ],
                 ],
@@ -389,6 +382,7 @@ return [
     | You can swap our classes with yours here
     */
     'classes' => [
+        'user'              => \App\Models\User::class,
         'storageManager'    => \Weble\LaravelEcommerce\Storage\StorageManager::class,
         'currencyManager'   => \Weble\LaravelEcommerce\Currency\CurrencyManager::class,
         'taxManager'        => \Weble\LaravelEcommerce\Tax\TaxManager::class,
@@ -399,6 +393,9 @@ return [
         'orderItemModel'    => \Weble\LaravelEcommerce\Order\OrderItem::class,
         'orderHistoryModel' => \Weble\LaravelEcommerce\Order\StateHistory::class,
         'paymentModel'      => \Weble\LaravelEcommerce\Payment\Payment::class,
+        'customerModel'     => \Weble\LaravelEcommerce\Customer\CustomerModel::class,
+        'addressModel'      => \Weble\LaravelEcommerce\Address\AddressModel::class,
+        'discountModel'     => \Weble\LaravelEcommerce\Discount\DiscountModel::class,
     ],
 
     /*

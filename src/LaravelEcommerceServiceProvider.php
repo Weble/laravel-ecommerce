@@ -47,7 +47,7 @@ class LaravelEcommerceServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/config.php', 'ecommerce');
+        $this->mergeConfigFrom(__DIR__ . '/../config/ecommerce.php', 'ecommerce');
 
         $this->addStateMachineConfig();
         $this->registerStorageManager();
@@ -168,7 +168,7 @@ class LaravelEcommerceServiceProvider extends ServiceProvider
         }
 
         $this->publishes([
-            __DIR__ . '/../config/config.php' => config_path('ecommerce.php'),
+            __DIR__ . '/../config/ecommerce.php' => config_path('ecommerce.php'),
         ], 'config');
 
         if (! class_exists('CreateCartitemsTable')) {

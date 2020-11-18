@@ -2,7 +2,6 @@
 
 namespace Weble\LaravelEcommerce\Order;
 
-use App\Models\User;
 use Cknow\Money\MoneyIntCast;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -67,7 +66,7 @@ class Order extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(config('ecommerce.classes.user'));
     }
 
     protected function generateUniqueHash(): self

@@ -7,6 +7,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Swap\Laravel\SwapServiceProvider;
 use Weble\LaravelEcommerce\LaravelEcommerceServiceProvider;
+use Weble\LaravelEcommerce\Tests\mocks\User;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
@@ -51,6 +52,8 @@ class TestCase extends \Orchestra\Testbench\TestCase
             'database' => __DIR__ . '/temp/database.sqlite',
             'prefix'   => '',
         ]);
+
+        $app['config']->set('ecommerce.classes.user', User::class);
     }
 
     protected function setupDatabase()
