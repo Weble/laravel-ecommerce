@@ -26,7 +26,7 @@ class DiscountModel extends Model
 
     protected function getValueAttribute($value)
     {
-        if (DiscountType::value()->equals($this->type)){
+        if (DiscountType::value()->equals($this->type)) {
             return new Money($value, $this->currency);
         }
 
