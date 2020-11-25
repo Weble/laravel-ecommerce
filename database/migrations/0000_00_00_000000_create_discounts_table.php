@@ -14,6 +14,8 @@ class CreateDiscountsTable extends Migration
     {
         Schema::create(config('ecommerce.tables.discounts', 'discounts'), function (Blueprint $table) {
             $table->id();
+            $table->string('title')->nullable();
+            $table->string('code')->nullable();
             $table->string('type');
             $table->string('target');
             $table->bigInteger('value')->default(0);
