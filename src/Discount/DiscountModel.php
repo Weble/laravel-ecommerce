@@ -35,7 +35,7 @@ class DiscountModel extends Model
 
     public function toDTO(): Discount
     {
-        return Discount::fromArray([
+        return new Discount([
             'type'   => $this->type,
             'target' => $this->target,
             'value'  => $this->value,
