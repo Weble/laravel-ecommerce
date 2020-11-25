@@ -12,6 +12,6 @@ class DiscountModel extends Model
     {
         parent::__construct($attributes);
 
-        $this->setTable(config('ecommerce.coupon.table', 'coupons'));
+        $this->setTable(config('ecommerce.tables.discounts', 'discounts'));
     }
 }
