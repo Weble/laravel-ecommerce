@@ -4,14 +4,14 @@ namespace Weble\LaravelEcommerce\Tests;
 
 use Cknow\Money\MoneyServiceProvider;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Swap\Laravel\SwapServiceProvider;
 use Weble\LaravelEcommerce\LaravelEcommerceServiceProvider;
 use Weble\LaravelEcommerce\Tests\mocks\User;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
-    use DatabaseTransactions;
+    use RefreshDatabase;
 
     protected function setUp(): void
     {
@@ -42,7 +42,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
             unlink($databasePath);
         }
 
-        if (! file_exists($databasePath)) {
+        if (!file_exists($databasePath)) {
             file_put_contents($databasePath, '');
         }
 

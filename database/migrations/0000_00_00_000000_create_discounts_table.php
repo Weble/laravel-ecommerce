@@ -26,6 +26,6 @@ class CreateDiscountsTable extends Migration
      */
     public function down()
     {
-        Schema::drop(config('ecommerce.tables.payments', 'payments'));
+        Schema::drop(config('ecommerce.tables.discounts', 'discounts'));
     }
 }
