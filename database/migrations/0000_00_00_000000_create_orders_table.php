@@ -17,7 +17,7 @@ class CreateOrdersTable extends Migration
             $table->id();
             $table->string('hash')->unique();
             $table->foreignUuid('cart_id')->nullable();
-            $table->foreignUuid('customer_id')->nullable();
+            $table->char('customer_id', 40)->nullable();
             $table->foreignIdFor(config('ecommerce.classes.user', \App\Models\User::class))->nullable();
             $table->json('customer')->nullable();
             $table->char('currency', 3)->default(config('ecommerce.currency.default', 'USD'));
@@ -39,6 +39,11 @@ class CreateOrdersTable extends Migration
             $table->timestamp('invoice_date')->nullable();
             $table->timestamp('delivery_date')->nullable();
             $table->timestamps();
+
+            $table->foreign('customer_id')
+                ->on(config('ecommerce.tables.customers', 'cart_customers'))
+                ->references('id')
+                ->nullOnDelete();
         });
     }
 
