@@ -15,7 +15,7 @@ use Weble\LaravelEcommerce\Address\StoreAddress;
 class Customer extends DataTransferObject implements Jsonable
 {
     public string $id;
-    public ?Authenticatable $user = null;
+    public $user = null;
     public ?string $email;
     public ?Address $billingAddress;
     public ?Address $shippingAddress;
