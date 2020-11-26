@@ -12,7 +12,7 @@ class CreateCartcustomersTable extends Migration
     public function up()
     {
         Schema::create(config('ecommerce.tables.customers', 'cart_customers'), function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->char('id', 40)->primary();
             $table->foreignIdFor(config('ecommerce.classes.user', \App\Models\User::class))->nullable();
             $table->json('billing_address');
             $table->json('shipping_address');
