@@ -141,6 +141,20 @@ class Cart implements CartInterface, Jsonable
         return $this->persist("discounts", $this->discounts());
     }
 
+    public function removeDiscounts($keys): self
+    {
+        $this->discounts = $this->discounts->except($keys);
+        $this->persist("discounts", $this->discounts());
+        return $this;
+    }
+
+    public function clearDiscounts(): self
+    {
+        $this->discounts = new DiscountCollection([]);
+        $this->persist("discounts", $this->discounts());
+        return $this;
+    }
+
     public function discount(): Money
     {
         return Money::sum(
