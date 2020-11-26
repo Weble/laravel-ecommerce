@@ -4,7 +4,6 @@ namespace Weble\LaravelEcommerce\Customer;
 
 use BadMethodCallException;
 use CommerceGuys\Addressing\AddressInterface;
-use Illuminate\Auth\Authenticatable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Str;
 use Spatie\DataTransferObject\DataTransferObject;
