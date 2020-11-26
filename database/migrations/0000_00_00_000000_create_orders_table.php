@@ -39,11 +39,6 @@ class CreateOrdersTable extends Migration
             $table->timestamp('invoice_date')->nullable();
             $table->timestamp('delivery_date')->nullable();
             $table->timestamps();
-
-            $table->foreign('customer_id')
-                ->on(config('ecommerce.tables.customers', 'cart_customers'))
-                ->references('id')
-                ->nullOnDelete();
         });
     }
 
