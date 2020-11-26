@@ -145,6 +145,7 @@ class Cart implements CartInterface, Jsonable
     {
         $this->discounts = $this->discounts->except($keys);
         $this->persist("discounts", $this->discounts());
+
         return $this;
     }
 
@@ -152,6 +153,7 @@ class Cart implements CartInterface, Jsonable
     {
         $this->discounts = new DiscountCollection([]);
         $this->persist("discounts", $this->discounts());
+
         return $this;
     }
 
