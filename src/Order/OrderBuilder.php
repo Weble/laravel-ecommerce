@@ -50,6 +50,19 @@ class OrderBuilder
         return $this;
     }
 
+    public function forUser($user): self
+    {
+        $this->order->user()->associate($user);
+        return $this;
+    }
+
+    public function fill(array $data): self
+    {
+        $this->order->fill($data);
+
+        return $this;
+    }
+
     public function withGateway(string $gateway): self
     {
         $this->order->fill([
@@ -57,11 +70,6 @@ class OrderBuilder
         ]);
 
         return $this;
-    }
-
-    public function make(): Order
-    {
-        return $this->order;
     }
 
     public function create(): Order
