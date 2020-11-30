@@ -53,6 +53,7 @@ class OrderBuilder
     public function forUser($user): self
     {
         $this->order->user()->associate($user);
+
         return $this;
     }
 
