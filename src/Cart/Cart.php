@@ -64,7 +64,7 @@ class Cart implements CartInterface, Jsonable
 
     public function has(string $id): bool
     {
-        return $this->storage()->get('items')->has($id);
+        return $this->storage()->get('items', collect([]))->has($id);
     }
 
     public function clear(): self
