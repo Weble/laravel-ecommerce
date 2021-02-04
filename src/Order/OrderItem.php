@@ -2,12 +2,25 @@
 
 namespace Weble\LaravelEcommerce\Order;
 
+use Cknow\Money\Money;
 use Cknow\Money\MoneyIntCast;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Support\Collection;
 use Weble\LaravelEcommerce\Cart\CartItem;
+use Weble\LaravelEcommerce\Purchasable;
 
+/**
+ * @property-read Order $order
+ * @property-read Purchasable $product
+ * @property Collection $product_attributes
+ * @property Collection $discounts
+ * @property float $quantity
+ * @property Money $unit_price
+ * @property Money $discounts_subtotal
+ * @property Money $subtotal
+ */
 class OrderItem extends Model
 {
     protected $guarded = [];
