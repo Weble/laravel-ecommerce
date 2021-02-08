@@ -12,7 +12,7 @@ class CreateCartitemsTable extends Migration
     public function up()
     {
         Schema::create(config('ecommerce.tables.items', 'cart_items'), function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->char('id', 40)->primary(); // Sha1
             $table->string('cart_key');
             $table->foreignIdFor(config('ecommerce.classes.user', \App\Models\User::class))->nullable();
             $table->string('instance')->index();
