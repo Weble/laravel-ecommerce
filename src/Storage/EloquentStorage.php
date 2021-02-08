@@ -14,12 +14,9 @@ class EloquentStorage implements StorageInterface
     protected string $modelKey;
     protected string $instanceName;
 
-    public function __construct(array $config = [])
+    public function __construct(array $config = [], array $modelClasses = [])
     {
-        $models = $config['models'] ?? [];
-        foreach ($models as $key => $class) {
-            $this->modelClasses[$key] = $class;
-        }
+        $this->modelClasses = $modelClasses;
 
         $this->fallbackStorage = storageManager()->store($config['fallback'] ?? 'session');
 
@@ -113,13 +110,35 @@ class EloquentStorage implements StorageInterface
         return $this;
     }
 
-    protected function hasModelFor(string $key) : bool
+    protected function hasModelFor(string $key): bool
     {
-        return isset($this->modelClasses[str_replace("cart.", "", $key)]);
+        return $this->modelClassFor($key) !== null;
     }
 
-    protected function modelFor(string $key): Model
+    protected function modelClassFor(string $key): ?string
     {
-        return (new $this->modelClasses[str_replace("cart.", "", $key)])->withCartKey($this->modelKey);
+        switch ($key) {
+            case 'customer':
+                return $this->modelClasses['customerModel'] ?? null;
+
+            case 'discount':
+                return $this->modelClasses['discountModel'] ?? null;
+
+            case 'items':
+                return $this->modelClasses['cartItemModel'] ?? null;
+
+        }
+
+        return null;
+    }
+
+    protected function modelFor(string $key): ?Model
+    {
+        $class = $this->modelClassFor($key);
+        if (! $class) {
+            return null;
+        }
+
+        return (new $class)->withCartKey($this->modelKey);
     }
 }

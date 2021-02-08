@@ -34,7 +34,7 @@ class StorageManager extends Manager
     {
         $config = $this->getConfig('eloquent');
 
-        return new EloquentStorage($config);
+        return new EloquentStorage($config, $this->config['ecommerce.classes'] ?? []);
     }
 
     protected function getConfig(string $storeName): array

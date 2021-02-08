@@ -261,6 +261,27 @@ class CartTest extends TestCase
         config()->set('ecommerce.cart.instances.cart.storage', $driver);
     }
 
+    /**
+     * @test
+     */
+    public function can_add_to_cart_storing_in_db()
+    {
+        $this->setCartStorageDriver('eloquent');
+
+        $product = factory(Product::class)->create(['price' => money(100)]);
+
+        /** @var Cart $cart */
+        $cart     = app('ecommerce.cart');
+        $cartItem = $cart->add($product, 2);
+
+        /** @var CartItemModel $storedCartItem */
+        $storedCartItem = CartItemModel::query()->latest()->first();
+        $this->assertEquals(2, $storedCartItem->quantity);
+
+        $this->assertEquals($product->getKey(), $storedCartItem->product->getKey());
+        $this->assertTrue($product->price->equals($storedCartItem->price));
+    }
+
     public function driversProvider()
     {
         return [
