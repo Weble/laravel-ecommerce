@@ -50,6 +50,7 @@ class CustomerModel extends Model implements StoresEcommerceData
     public function toCartValue(): DataTransferObject
     {
         $userModel = config('ecommerce.classes.user', '\\App\\Models\\User');
+
         return new Customer([
             'id'              => $this->getKey(),
             'user'            => $this->user_id ? $userModel::find($this->user_id) : null,
@@ -74,7 +75,6 @@ class CustomerModel extends Model implements StoresEcommerceData
                         'billing_address'  => $customer->billingAddress,
                     ]);
             } catch (ModelNotFoundException $e) {
-
             }
         }
 
@@ -99,6 +99,4 @@ class CustomerModel extends Model implements StoresEcommerceData
             ]));
         }
     }
-
-
 }

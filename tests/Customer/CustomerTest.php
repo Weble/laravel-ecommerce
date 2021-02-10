@@ -31,7 +31,7 @@ class CustomerTest extends TestCase
                 'type'    => AddressType::billing(),
                 'name'    => $name,
                 'surname' => $surname,
-            ])
+            ]),
         ]);
 
         /** @var Cart $cart */
@@ -52,9 +52,9 @@ class CustomerTest extends TestCase
     {
         config()->set('ecommerce.cart.instances.cart.storage', 'eloquent');
 
-        $user = factory(User::class)->create();
+        $user     = factory(User::class)->create();
         $customer = new Customer([
-            'user' => $user
+            'user' => $user,
         ]);
 
         /** @var Cart $cart */
@@ -74,9 +74,9 @@ class CustomerTest extends TestCase
     {
         config()->set('ecommerce.cart.instances.cart.storage', 'eloquent');
 
-        $user = factory(User::class)->create();
+        $user     = factory(User::class)->create();
         $customer = new Customer([
-            'user' => $user
+            'user' => $user,
         ]);
 
         /** @var Cart $cart */
@@ -107,5 +107,4 @@ class CustomerTest extends TestCase
         $this->assertEquals($name, $storedCustomer2->billing_address->name);
         $this->assertEquals($surname, $storedCustomer2->billing_address->surname);
     }
-
 }
