@@ -47,6 +47,17 @@ class CustomerModel extends Model implements StoresEcommerceData
         return $this;
     }
 
+    public function toCartValue(): DataTransferObject
+    {
+        $userModel = config('ecommerce.classes.user', '\\App\\Models\\User');
+        return new Customer([
+            'id'              => $this->getKey(),
+            'user'            => $this->user_id ? $userModel::find($this->user_id) : null,
+            'shippingAddress' => $this->shipping_address,
+            'billingAddress'  => $this->billing_address,
+        ]);
+    }
+
     /**
      * @param Customer $customer
      * @param string $key
@@ -55,8 +66,25 @@ class CustomerModel extends Model implements StoresEcommerceData
      */
     public function fromCartValue($customer, string $key, string $instanceName): StoresEcommerceData
     {
+        if ($customer->user) {
+            try {
+                return self::query()->where('user_id', '=', $customer->user->getKey())->firstOrFail()
+                    ->fill([
+                        'shipping_address' => $customer->shippingAddress,
+                        'billing_address'  => $customer->billingAddress,
+                    ]);
+            } catch (ModelNotFoundException $e) {
+
+            }
+        }
+
+        return $this->loadOrCreateFromCustomerId($customer);
+    }
+
+    private function loadOrCreateFromCustomerId(Customer $customer): self
+    {
         try {
-            return self::where($this->getKeyName(), '=', $customer->getId())->firstOrFail()
+            return self::query()->where($this->getKeyName(), '=', $customer->getId())->firstOrFail()
                 ->fill([
                     'user_id'          => $customer->user ? $customer->user->getKey() : null,
                     'shipping_address' => $customer->shippingAddress,
@@ -72,14 +100,5 @@ class CustomerModel extends Model implements StoresEcommerceData
         }
     }
 
-    public function toCartValue(): DataTransferObject
-    {
-        $userModel = config('ecommerce.classes.user', '\\App\\Models\\User');
-        return new Customer([
-            'id'              => $this->getKey(),
-            'user'            => $this->user_id ? $userModel::find($this->user_id) : null,
-            'shippingAddress' => $this->shipping_address,
-            'billingAddress'  => $this->billing_address,
-        ]);
-    }
+
 }
