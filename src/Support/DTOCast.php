@@ -3,9 +3,7 @@
 namespace Weble\LaravelEcommerce\Support;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
-use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
-use JsonSerializable;
 
 class DTOCast implements CastsAttributes
 {

@@ -30,7 +30,7 @@ class CustomerTest extends TestCase
                 'type'    => AddressType::billing(),
                 'name'    => $name,
                 'surname' => $surname,
-            ])
+            ]),
         ]);
 
         /** @var Cart $cart */
@@ -43,6 +43,4 @@ class CustomerTest extends TestCase
         $this->assertEquals($name, $storedCustomer->billing_address->name);
         $this->assertEquals($surname, $storedCustomer->billing_address->surname);
     }
-
-
 }

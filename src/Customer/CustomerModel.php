@@ -19,9 +19,8 @@ class CustomerModel extends Model implements StoresEcommerceData
 {
     protected $guarded = [];
 
-    protected $keyType = 'string';
+    protected $keyType   = 'string';
     public $incrementing = false;
-
 
     protected $casts = [
         'billing_address'  => DTOCast::class . ':' . Address::class,
