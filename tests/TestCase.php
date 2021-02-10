@@ -74,6 +74,5 @@ class TestCase extends \Orchestra\Testbench\TestCase
             $table->increments('id');
             $table->bigInteger('price');
         });
-
     }
 }
