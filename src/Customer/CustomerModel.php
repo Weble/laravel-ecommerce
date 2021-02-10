@@ -5,14 +5,28 @@ namespace Weble\LaravelEcommerce\Customer;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Foundation\Auth\User;
 use Spatie\DataTransferObject\DataTransferObject;
+use Weble\LaravelEcommerce\Address\Address;
 use Weble\LaravelEcommerce\Storage\StoresEcommerceData;
+use Weble\LaravelEcommerce\Support\DTOCast;
 
+/**
+ * @property string $id
+ * @property Address $billing_address
+ * @property Address $shipping_address
+ */
 class CustomerModel extends Model implements StoresEcommerceData
 {
     protected $guarded = [];
+
+    protected $keyType = 'string';
+    public $incrementing = false;
+
+
+    protected $casts = [
+        'billing_address'  => DTOCast::class . ':' . Address::class,
+        'shipping_address' => DTOCast::class . ':' . Address::class,
+    ];
 
     public function __construct(array $attributes = [])
     {
@@ -44,14 +58,14 @@ class CustomerModel extends Model implements StoresEcommerceData
         try {
             return self::where($this->getKeyName(), '=', $customer->getId())->firstOrFail()
                 ->fill([
-                    'shipping_address' => json_encode($customer->shippingAddress),
-                    'billing_address'  => json_encode($customer->billingAddress),
+                    'shipping_address' => $customer->shippingAddress,
+                    'billing_address'  => $customer->billingAddress,
                 ]);
         } catch (ModelNotFoundException $e) {
             return (new self([
-                'id'               => $key,
-                'shipping_address' => json_encode($customer->shippingAddress),
-                'billing_address'  => json_encode($customer->billingAddress),
+                'id'               => $customer->getId(),
+                'shipping_address' => $customer->shippingAddress,
+                'billing_address'  => $customer->billingAddress,
             ]));
         }
     }
@@ -60,8 +74,8 @@ class CustomerModel extends Model implements StoresEcommerceData
     {
         return new Customer([
             'id'              => $this->getKey(),
-            'shippingAddress' => json_decode($this->shipping_address, true),
-            'billingAddress'  => json_decode($this->billing_address, true),
+            'shippingAddress' => $this->shipping_address,
+            'billingAddress'  => $this->billing_address,
         ]);
     }
 }

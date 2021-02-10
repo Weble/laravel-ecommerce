@@ -3,6 +3,9 @@
 namespace Weble\LaravelEcommerce\Support;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Support\Jsonable;
+use JsonSerializable;
 
 class DTOCast implements CastsAttributes
 {
@@ -20,6 +23,10 @@ class DTOCast implements CastsAttributes
 
     public function set($model, string $key, $value, array $attributes)
     {
-        return $value->toJson();
+        if ($value instanceof Jsonable) {
+            return $value->toJson();
+        }
+
+        return json_encode($value);
     }
 }
