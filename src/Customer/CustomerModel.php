@@ -12,6 +12,7 @@ use Weble\LaravelEcommerce\Support\DTOCast;
 
 /**
  * @property string $id
+ * @property int $user_id
  * @property Address $billing_address
  * @property Address $shipping_address
  */
@@ -58,12 +59,14 @@ class CustomerModel extends Model implements StoresEcommerceData
         try {
             return self::where($this->getKeyName(), '=', $customer->getId())->firstOrFail()
                 ->fill([
+                    'user_id'          => $customer->user ? $customer->user->getKey() : null,
                     'shipping_address' => $customer->shippingAddress,
                     'billing_address'  => $customer->billingAddress,
                 ]);
         } catch (ModelNotFoundException $e) {
             return (new self([
                 'id'               => $customer->getId(),
+                'user_id'          => $customer->user ? $customer->user->getKey() : null,
                 'shipping_address' => $customer->shippingAddress,
                 'billing_address'  => $customer->billingAddress,
             ]));
@@ -72,8 +75,10 @@ class CustomerModel extends Model implements StoresEcommerceData
 
     public function toCartValue(): DataTransferObject
     {
+        $userModel = config('ecommerce.classes.user', '\\App\\Models\\User');
         return new Customer([
             'id'              => $this->getKey(),
+            'user'            => $this->user_id ? $userModel::find($this->user_id) : null,
             'shippingAddress' => $this->shipping_address,
             'billingAddress'  => $this->billing_address,
         ]);

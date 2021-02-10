@@ -8,6 +8,7 @@ use Weble\LaravelEcommerce\Address\AddressType;
 use Weble\LaravelEcommerce\Cart\Cart;
 use Weble\LaravelEcommerce\Customer\Customer;
 use Weble\LaravelEcommerce\Customer\CustomerModel;
+use Weble\LaravelEcommerce\Tests\mocks\User;
 use Weble\LaravelEcommerce\Tests\TestCase;
 
 class CustomerTest extends TestCase
@@ -42,6 +43,28 @@ class CustomerTest extends TestCase
         $this->assertEquals($customer->id, $storedCustomer->getKey());
         $this->assertEquals($name, $storedCustomer->billing_address->name);
         $this->assertEquals($surname, $storedCustomer->billing_address->surname);
+    }
+
+    /**
+     * @test
+     */
+    public function can_add_to_cart_for_user_storing_in_db()
+    {
+        config()->set('ecommerce.cart.instances.cart.storage', 'eloquent');
+
+        $user = factory(User::class)->create();
+        $customer = new Customer([
+            'user' => $user
+        ]);
+
+        /** @var Cart $cart */
+        $cart = app('ecommerce.cart');
+        $cart->forCustomer($customer);
+
+        /** @var CustomerModel $storedCustomer */
+        $storedCustomer = CustomerModel::query()->latest()->first();
+        $this->assertEquals($customer->id, $storedCustomer->getKey());
+        $this->assertEquals($user->getKey(), $storedCustomer->user_id);
     }
 
 
