@@ -280,6 +280,10 @@ class CartTest extends TestCase
 
         $this->assertEquals($product->getKey(), $storedCartItem->product->getKey());
         $this->assertTrue($product->price->equals($storedCartItem->price));
+
+        $cart->clear();
+
+        $this->assertEquals(0, CartItemModel::query()->count());
     }
 
     public function driversProvider()

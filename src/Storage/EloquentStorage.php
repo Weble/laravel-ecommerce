@@ -101,11 +101,26 @@ class EloquentStorage implements StorageInterface
 
     public function remove(string $key): StorageInterface
     {
-        if (! $this->hasModelFor($key)) {
+        if (!$this->hasModelFor($key)) {
             return $this->fallbackStorage->remove($key);
         }
 
-        $this->modelFor($key)->delete();
+        if ($key === 'items') {
+            $items = $this->modelFor($key)->get();
+
+            if ($items->count() <= 0) {
+                return $this->fallbackStorage->remove($key);
+            }
+
+            $items->each->delete();
+            return $this;
+        }
+
+        try {
+            $this->modelFor($key)->firstOrFail()->delete();
+        } catch (ModelNotFoundException $e) {
+            $this->fallbackStorage->remove($key);
+        }
 
         return $this;
     }
