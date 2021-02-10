@@ -101,7 +101,7 @@ class EloquentStorage implements StorageInterface
 
     public function remove(string $key): StorageInterface
     {
-        if (!$this->hasModelFor($key)) {
+        if (! $this->hasModelFor($key)) {
             return $this->fallbackStorage->remove($key);
         }
 
@@ -113,6 +113,7 @@ class EloquentStorage implements StorageInterface
             }
 
             $items->each->delete();
+
             return $this;
         }
 
