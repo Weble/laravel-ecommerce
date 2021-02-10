@@ -75,6 +75,7 @@ class CustomerModel extends Model implements StoresEcommerceData
     public function toCartValue(): DataTransferObject
     {
         $userModel = config('ecommerce.classes.user', '\\App\\Models\\User');
+
         return new Customer([
             'id'              => $this->getKey(),
             'user'            => $this->user_id ? $userModel::find($this->user_id) : null,
