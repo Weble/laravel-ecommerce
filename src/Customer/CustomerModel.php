@@ -84,16 +84,18 @@ class CustomerModel extends Model implements StoresEcommerceData
                 ->where($this->getKeyName(), '=', $customer->getId())
                 ->firstOrFail()
                 ->fill([
-                    'user_id'          => $customer->user ? $customer->user->getKey() : null,
-                    'shipping_address' => $customer->shippingAddress,
-                    'billing_address'  => $customer->billingAddress,
+                    'session_id'         => session()->getId(),
+                    'user_id'            => $customer->user ? $customer->user->getKey() : null,
+                    'shipping_address'   => $customer->shippingAddress,
+                    'billing_address'    => $customer->billingAddress,
                 ]);
         } catch (ModelNotFoundException $e) {
             return (new self([
-                'id'               => $customer->getId(),
-                'user_id'          => $customer->user ? $customer->user->getKey() : null,
-                'shipping_address' => $customer->shippingAddress,
-                'billing_address'  => $customer->billingAddress,
+                'id'                 => $customer->getId(),
+                'session_id'         => session()->getId(),
+                'user_id'            => $customer->user ? $customer->user->getKey() : null,
+                'shipping_address'   => $customer->shippingAddress,
+                'billing_address'    => $customer->billingAddress,
             ]));
         }
     }
