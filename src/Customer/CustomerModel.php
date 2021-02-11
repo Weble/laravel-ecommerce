@@ -5,6 +5,7 @@ namespace Weble\LaravelEcommerce\Customer;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\DataTransferObject\DataTransferObject;
 use Weble\LaravelEcommerce\Address\Address;
 use Weble\LaravelEcommerce\Storage\StoresEcommerceData;
@@ -20,7 +21,7 @@ class CustomerModel extends Model implements StoresEcommerceData
 {
     protected $guarded = [];
 
-    protected $keyType   = 'string';
+    protected $keyType = 'string';
     public $incrementing = false;
 
     protected $casts = [
@@ -35,17 +36,11 @@ class CustomerModel extends Model implements StoresEcommerceData
         $this->setTable(config('ecommerce.tables.customers', 'cart_customers'));
     }
 
-    /*    public function user(): BelongsTo
-        {
-            $this->belongsTo(config('auth.providers.users.model', User::class));
-        }*/
-
-    public function scopeWithCartKey(Builder $query, string $key): self
+    public function user(): BelongsTo
     {
-        $query->where('id', '=', $key);
-
-        return $this;
+        $this->belongsTo(config('ecommerce.classes.user', '\\App\\Models\\User'));
     }
+
 
     public function toCartValue(): DataTransferObject
     {
@@ -69,7 +64,9 @@ class CustomerModel extends Model implements StoresEcommerceData
     {
         if ($customer->user) {
             try {
-                return self::query()->where('user_id', '=', $customer->user->getKey())->firstOrFail()
+                return self::query()
+                    ->where('user_id', '=', $customer->user->getKey())
+                    ->firstOrFail()
                     ->fill([
                         'shipping_address' => $customer->shippingAddress,
                         'billing_address'  => $customer->billingAddress,
@@ -84,7 +81,9 @@ class CustomerModel extends Model implements StoresEcommerceData
     private function loadOrCreateFromCustomerId(Customer $customer): self
     {
         try {
-            return self::query()->where($this->getKeyName(), '=', $customer->getId())->firstOrFail()
+            return self::query()
+                ->where($this->getKeyName(), '=', $customer->getId())
+                ->firstOrFail()
                 ->fill([
                     'user_id'          => $customer->user ? $customer->user->getKey() : null,
                     'shipping_address' => $customer->shippingAddress,
@@ -99,4 +98,19 @@ class CustomerModel extends Model implements StoresEcommerceData
             ]));
         }
     }
+
+    public function scopeForCurrentUser(Builder $query): Builder
+    {
+        return $query->where(function (Builder $subQuery) {
+            $subQuery->where('session_id', '=', session()->getId());
+
+            if (auth()->user()) {
+                $subQuery->orWhere('user_id', '=', auth()->user()->getAuthIdentifier());
+            }
+
+            return $subQuery;
+        });
+    }
+
+
 }

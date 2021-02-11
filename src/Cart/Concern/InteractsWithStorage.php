@@ -10,6 +10,7 @@ use Weble\LaravelEcommerce\Cart\CartItemCollection;
 use Weble\LaravelEcommerce\Customer\Customer;
 use Weble\LaravelEcommerce\Discount\DiscountCollection;
 use Weble\LaravelEcommerce\Storage\StorageInterface;
+use Weble\LaravelEcommerce\Storage\StorageType;
 
 trait InteractsWithStorage
 {
@@ -37,14 +38,14 @@ trait InteractsWithStorage
     protected function loadItemsFromStorage(): void
     {
         $this->items = CartItemCollection::make(
-            $this->storage()->get("items", [])
+            $this->storage()->get(StorageType::ITEMS, [])
         )->keyBy(fn (CartItem $item) => $item->getId());
     }
 
     protected function loadDiscountsFromStorage(): void
     {
         $this->discounts = $this->storage()->get(
-            "discounts",
+            StorageType::DISCOUNTS,
             DiscountCollection::make(),
         );
     }
@@ -52,7 +53,7 @@ trait InteractsWithStorage
     protected function loadCustomerFromStorage(): void
     {
         $this->customer = $this->storage()->get(
-            "customer",
+            StorageType::CUSTOMER,
             new Customer([
                 'id'              => (string) Str::orderedUuid(),
                 'shippingAddress' => new Address([

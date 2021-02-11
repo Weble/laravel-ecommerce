@@ -97,12 +97,10 @@ return [
                 // "default" means the default driver used for everything else
                 'driver'      => 'default',
                 'prefix'      => 'ecommerce.',
-                'session_key' => 'ecommerce.store.cache.',
             ],
 
             'eloquent' => [
                 'fallback'    => 'session',
-                'session_key' => 'ecommerce.store.eloquent.',
             ],
         ],
 

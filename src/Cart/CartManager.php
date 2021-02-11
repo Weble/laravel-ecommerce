@@ -3,7 +3,6 @@
 namespace Weble\LaravelEcommerce\Cart;
 
 use Illuminate\Foundation\Application;
-use Weble\LaravelEcommerce\Storage\SessionStorage;
 
 /**
  * @mixin Cart
@@ -12,7 +11,6 @@ class CartManager
 {
     protected Application $app;
     protected array $instances      = [];
-    protected array $customCreators = [];
 
     public function __construct(Application $app)
     {
@@ -56,21 +54,6 @@ class CartManager
         $storage = $config['storage'] ?? $this->app['config']['ecommerce.storage.default'] ?? 'session';
 
         return $this->app['ecommerce.storage']->store($storage, $name);
-    }
-
-    public function createSessionDriver(string $instanceName, array $config): SessionStorage
-    {
-        return new SessionStorage($instanceName, $config);
-    }
-
-    public function createDatabaseDriver(string $instanceName, array $config): CartDatabaseDriver
-    {
-        return new CartDatabaseDriver($instanceName, $config);
-    }
-
-    protected function callCustomCreator(string $instanceName, array $config)
-    {
-        return $this->customCreators[$config['driver']]($this->app, $instanceName, $config);
     }
 
     protected function getConfig(string $name): array

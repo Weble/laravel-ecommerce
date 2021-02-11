@@ -2,32 +2,21 @@
 
 namespace Weble\LaravelEcommerce\Storage;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 
 class EloquentStorage implements StorageInterface
 {
     protected array $modelClasses = [];
     protected StorageInterface $fallbackStorage;
-    protected string $modelKey;
     protected string $instanceName;
 
     public function __construct(array $config = [], array $modelClasses = [])
     {
-        $this->modelClasses = $modelClasses;
-
+        $this->modelClasses    = $modelClasses;
         $this->fallbackStorage = storageManager()->store($config['fallback'] ?? 'session');
-
-        $sessionKey = $config['session_key'] ?? 'ecommerce.store.eloquent.';
-        $modelKey   = session()->get($sessionKey);
-        if (! $modelKey) {
-            $modelKey = Str::orderedUuid();
-            session()->put($sessionKey, $modelKey);
-        }
-
-        $this->modelKey = $modelKey;
     }
 
     public function setInstanceName(string $name): StorageInterface
@@ -44,13 +33,18 @@ class EloquentStorage implements StorageInterface
         }
 
         if ($value instanceof Collection) {
-            $model        = $this->modelFor($key);
-            $oldKeys      = $model->get()->pluck($model->getKeyName());
+            $model   = $this->modelFor($key);
+            $oldKeys = $this->modelQueryFor($key)
+                ->get()
+                ->pluck($model->getKeyName());
             $newKeys      = $value->pluck($model->getKeyName());
             $keysToDelete = $oldKeys->except($newKeys);
 
             if ($keysToDelete->count() > 0) {
-                $this->modelFor($key)->whereIn($model->getKeyName(), $keysToDelete->toArray())->delete();
+                $this
+                    ->modelQueryFor($key)
+                    ->whereIn($model->getKeyName(), $keysToDelete->toArray())
+                    ->delete();
             }
 
             $value->each(function ($item) use ($key) {
@@ -71,8 +65,10 @@ class EloquentStorage implements StorageInterface
             return $this->fallbackStorage->get($key, $default);
         }
 
-        if ($key === 'items') {
-            $items = $this->modelFor($key)->get();
+        if ($key === StorageType::ITEMS) {
+            $items = $this
+                ->modelQueryFor($key)
+                ->get();
 
             if ($items->count() <= 0) {
                 return $default;
@@ -84,7 +80,10 @@ class EloquentStorage implements StorageInterface
         }
 
         try {
-            return $this->modelFor($key)->firstOrFail()->toCartValue();
+            return $this
+                ->modelQueryFor($key)
+                ->firstOrFail()
+                ->toCartValue();
         } catch (ModelNotFoundException $e) {
             return $default;
         }
@@ -96,28 +95,29 @@ class EloquentStorage implements StorageInterface
             return $this->fallbackStorage->has($key);
         }
 
-        return $this->modelFor($key)->count() > 0;
+        return $this->modelQueryFor($key)->count() > 0;
     }
 
     public function remove(string $key): StorageInterface
     {
-        if (!$this->hasModelFor($key)) {
+        if (! $this->hasModelFor($key)) {
             return $this->fallbackStorage->remove($key);
         }
 
-        if ($key === 'items') {
-            $items = $this->modelFor($key)->get();
+        if ($key === StorageType::ITEMS) {
+            $items = $this->modelQueryFor($key)->get();
 
             if ($items->count() <= 0) {
                 return $this->fallbackStorage->remove($key);
             }
 
             $items->each->delete();
+
             return $this;
         }
 
         try {
-            $this->modelFor($key)->firstOrFail()->delete();
+            $this->modelQueryFor($key)->firstOrFail()->delete();
         } catch (ModelNotFoundException $e) {
             $this->fallbackStorage->remove($key);
         }
@@ -133,27 +133,33 @@ class EloquentStorage implements StorageInterface
     protected function modelClassFor(string $key): ?string
     {
         switch ($key) {
-            case 'customer':
+            case StorageType::CUSTOMER:
                 return $this->modelClasses['customerModel'] ?? null;
 
-            case 'discount':
+            case StorageType::DISCOUNTS:
                 return $this->modelClasses['discountModel'] ?? null;
 
-            case 'items':
+            case StorageType::ITEMS:
                 return $this->modelClasses['cartItemModel'] ?? null;
-
         }
 
         return null;
     }
 
-    protected function modelFor(string $key): ?Model
+    protected function modelFor(string $key): ?StoresEcommerceData
     {
         $class = $this->modelClassFor($key);
         if (! $class) {
             return null;
         }
 
-        return (new $class)->withCartKey($this->modelKey);
+        return (new $class);
+    }
+
+    protected function modelQueryFor(string $key): ?Builder
+    {
+        $model = $this->modelFor($key);
+
+        return $model ? $model->query()->forCurrentUser() : null;
     }
 }

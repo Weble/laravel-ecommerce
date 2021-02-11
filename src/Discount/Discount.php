@@ -5,14 +5,23 @@ namespace Weble\LaravelEcommerce\Discount;
 use Cknow\Money\Money;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
+use Illuminate\Support\Str;
 use Spatie\DataTransferObject\DataTransferObject;
 
 class Discount extends DataTransferObject implements Arrayable, Jsonable
 {
+    public string $id;
     /** @var \Cknow\Money\Money|\Money\Money|float|int */
     public $value;
     public DiscountTarget $target;
     public DiscountType $type;
+
+    public function __construct(array $parameters = [])
+    {
+        $parameters['id'] ??= sha1((string)Str::orderedUuid());
+
+        parent::__construct($parameters);
+    }
 
     public function calculateValue(Money $price): Money
     {

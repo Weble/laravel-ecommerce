@@ -6,11 +6,12 @@ use Illuminate\Database\Eloquent\Builder;
 use Spatie\DataTransferObject\DataTransferObject;
 
 /**
- * @method self withCartKey(Builder $query, string $key)
+ * @method Builder forCurrentUser()
+ * @mixin \Eloquent
  */
 interface StoresEcommerceData
 {
-    public function scopeWithCartKey(Builder $query, string $key): self;
+    public function scopeForCurrentUser(Builder $query): Builder;
 
     public function fromCartValue($value, string $key, string $instanceName): self;
 

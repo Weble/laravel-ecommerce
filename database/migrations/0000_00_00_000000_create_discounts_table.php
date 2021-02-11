@@ -12,10 +12,11 @@ class CreateDiscountsTable extends Migration
      */
     public function up()
     {
-        Schema::create(config('ecommerce.tables.discounts', 'discounts'), function (Blueprint $table) {
-            $table->id();
-            $table->string('title')->nullable();
-            $table->string('code')->nullable();
+        Schema::create(config('ecommerce.tables.discounts', 'cart_discounts'), function (Blueprint $table) {
+            $table->char('id', 40)->primary(); // Sha1
+            $table->char('session_id')->nullable()->index(); // Max length for a session_id
+            $table->foreignIdFor(config('ecommerce.classes.user', '\\App\\Models\\User'))->nullable();
+            $table->string('instance')->index();
             $table->string('type');
             $table->string('target');
             $table->bigInteger('value')->default(0);
@@ -28,6 +29,6 @@ class CreateDiscountsTable extends Migration
      */
     public function down()
     {
-        Schema::drop(config('ecommerce.tables.discounts', 'discounts'));
+        Schema::drop(config('ecommerce.tables.discounts', 'cart_discounts'));
     }
 }

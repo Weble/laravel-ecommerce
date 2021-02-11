@@ -13,7 +13,7 @@ class CreateCartcustomersTable extends Migration
     {
         Schema::create(config('ecommerce.tables.customers', 'cart_customers'), function (Blueprint $table) {
             $table->char('id', 40)->primary();
-            $table->foreignIdFor(config('ecommerce.classes.user', \App\Models\User::class))->nullable();
+            $table->foreignIdFor(config('ecommerce.classes.user', '\\App\\Models\\User'))->nullable();
             $table->json('billing_address');
             $table->json('shipping_address');
             $table->timestamps();

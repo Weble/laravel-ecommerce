@@ -14,6 +14,7 @@ use Weble\LaravelEcommerce\Storage\CacheStorage;
 use Weble\LaravelEcommerce\Storage\EloquentStorage;
 use Weble\LaravelEcommerce\Storage\SessionStorage;
 use Weble\LaravelEcommerce\Tests\mocks\Product;
+use Weble\LaravelEcommerce\Tests\mocks\User;
 use Weble\LaravelEcommerce\Tests\TestCase;
 
 class CartTest extends TestCase
@@ -284,6 +285,84 @@ class CartTest extends TestCase
         $cart->clear();
 
         $this->assertEquals(0, CartItemModel::query()->count());
+    }
+
+    /**
+     * @test
+     */
+    public function user_add_to_cart_storing_in_db()
+    {
+        $this->setCartStorageDriver('eloquent');
+
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        $this->actingAs($user);
+
+        $product = factory(Product::class)->create(['price' => money(100)]);
+
+        /** @var Cart $cart */
+        $cart     = app('ecommerce.cart');
+        $cartItem = $cart->add($product, 2);
+
+        /** @var CartItemModel $storedCartItem */
+        $storedCartItem = CartItemModel::query()->latest()->first();
+        $this->assertEquals(2, $storedCartItem->quantity);
+        $this->assertEquals($product->getKey(), $storedCartItem->product->getKey());
+        $this->assertTrue($product->price->equals($storedCartItem->price));
+        $this->assertEquals($user->id, $storedCartItem->user_id);
+
+        $cart->clear();
+
+        $this->assertEquals(0, CartItemModel::query()->count());
+    }
+
+    /**
+     * @test
+     */
+    public function cart_stored_storing_in_db_for_different_users()
+    {
+        $this->setCartStorageDriver('eloquent');
+
+        /** @var User $user */
+        $user = factory(User::class)->create();
+        /** @var User $otherUser */
+        $otherUser = factory(User::class)->create();
+        /** @var Product $product */
+        $product = factory(Product::class)->create(['price' => money(100)]);
+
+        $this->actingAs($user);
+
+        /** @var Cart $cart */
+        $cart     = app('ecommerce.cart');
+        $cartItem = $cart->add($product, 2);
+
+        /** @var CartItemModel $storedCartItem */
+        $storedCartItem = CartItemModel::query()->latest()->first();
+        $this->assertEquals(2, $storedCartItem->quantity);
+        $this->assertEquals($product->getKey(), $storedCartItem->product->getKey());
+        $this->assertTrue($product->price->equals($storedCartItem->price));
+        $this->assertEquals($user->id, $storedCartItem->user_id);
+
+        session()->regenerate(true);
+        $this->actingAs($otherUser);
+        app()->forgetInstance('ecommerce.cart');
+
+        /** @var Cart $cart */
+        $cart     = app('ecommerce.cart');
+        $cartItem = $cart->add($product, 3);
+
+        /** @var CartItemModel $storedCartItem */
+        $storedCartItem = CartItemModel::query()->forCurrentUser()->latest()->first();
+        $this->assertEquals(3, $storedCartItem->quantity);
+        $this->assertEquals($product->getKey(), $storedCartItem->product->getKey());
+        $this->assertTrue($product->price->equals($storedCartItem->price));
+        $this->assertEquals($otherUser->id, $storedCartItem->user_id);
+
+        $cart->clear();
+
+        $this->assertEquals(1, CartItemModel::query()->count());
+        $this->assertEquals(1, CartItemModel::query()->where('user_id', '=', $user->id)->count());
+        $this->assertEquals(0, CartItemModel::query()->where('user_id', '=', $otherUser->id)->count());
     }
 
     public function driversProvider()
