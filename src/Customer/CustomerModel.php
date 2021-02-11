@@ -21,7 +21,7 @@ class CustomerModel extends Model implements StoresEcommerceData
 {
     protected $guarded = [];
 
-    protected $keyType = 'string';
+    protected $keyType   = 'string';
     public $incrementing = false;
 
     protected $casts = [
@@ -40,7 +40,6 @@ class CustomerModel extends Model implements StoresEcommerceData
     {
         $this->belongsTo(config('ecommerce.classes.user', '\\App\\Models\\User'));
     }
-
 
     public function toCartValue(): DataTransferObject
     {
@@ -111,6 +110,4 @@ class CustomerModel extends Model implements StoresEcommerceData
             return $subQuery;
         });
     }
-
-
 }
