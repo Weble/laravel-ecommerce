@@ -13,6 +13,7 @@ class CreateCartcustomersTable extends Migration
     {
         Schema::create(config('ecommerce.tables.customers', 'cart_customers'), function (Blueprint $table) {
             $table->char('id', 40)->primary();
+            $table->char('session_id')->nullable()->index(); // Max length for a session_id
             $table->foreignIdFor(config('ecommerce.classes.user', '\\App\\Models\\User'))->nullable();
             $table->json('billing_address');
             $table->json('shipping_address');
