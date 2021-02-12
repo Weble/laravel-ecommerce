@@ -20,7 +20,7 @@ class CreateDiscountsTable extends Migration
             $table->string('type');
             $table->string('target');
             $table->bigInteger('value')->default(0);
-            $table->char('currency', 3)->default(config('ecommerce.currency.default', 'USD'));
+            $table->char('currency', 3)->nullable();
             $table->timestamps();
         });
     }
