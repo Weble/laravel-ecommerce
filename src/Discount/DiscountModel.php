@@ -6,11 +6,18 @@ use Cknow\Money\Money;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Money\Currency;
 use Spatie\DataTransferObject\DataTransferObject;
 use Weble\LaravelEcommerce\Storage\StoresEcommerceData;
 use Weble\LaravelEcommerce\Support\CurrencyCast;
 use Weble\LaravelEcommerce\Support\DTOCast;
 
+/**
+ * @property DiscountType $type
+ * @property DiscountTarget $target
+ * @property Currency $currency
+ * @property Money $value
+ */
 class DiscountModel extends Model implements StoresEcommerceData
 {
     protected $guarded = [];
@@ -28,9 +35,9 @@ class DiscountModel extends Model implements StoresEcommerceData
         $this->setTable(config('ecommerce.tables.discounts', 'discounts'));
     }
 
-    protected function getValueAttribute($value)
+    public function getValueAttribute($value)
     {
-        if (DiscountType::value()->equals($this->type)) {
+        if ($this->type->equals(DiscountType::value())) {
             return new Money($value, $this->currency);
         }
 
@@ -75,8 +82,8 @@ class DiscountModel extends Model implements StoresEcommerceData
             'user_id'    => auth()->user() ? auth()->user()->getAuthIdentifier() : null,
             'session_id' => session()->getId(),
             'instance'   => $instanceName,
-            'value'      => $discount->value->getAmount(),
-            'currency'   => $discount->value->getCurrency(),
+            'value'      => $discount->value instanceof Money ? $discount->value->getAmount() : $discount->value,
+            'currency'   => $discount->value instanceof Money ? $discount->value->getCurrency() : null,
             'type'       => $discount->type->value,
             'target'     => $discount->target->value,
         ];
