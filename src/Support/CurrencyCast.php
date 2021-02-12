@@ -14,10 +14,14 @@ class CurrencyCast implements CastsAttributes
      * @param string $key
      * @param mixed $value
      * @param array $attributes
-     * @return Currency
+     * @return Currency|null
      */
     public function get($model, $key, $value, $attributes)
     {
+        if ($value === null) {
+            return null;
+        }
+
         if (! $value instanceof Currency) {
             $value = new Currency($value);
         }
@@ -32,10 +36,14 @@ class CurrencyCast implements CastsAttributes
      * @param string $key
      * @param string|null|Currency $value
      * @param array $attributes
-     * @return string
+     * @return string|null
      */
     public function set($model, $key, $value, $attributes)
     {
+        if ($value === null) {
+            return null;
+        }
+
         if (! $value instanceof Currency) {
             $value = new Currency($value);
         }
