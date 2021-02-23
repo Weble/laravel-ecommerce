@@ -64,7 +64,7 @@ class EloquentStorage implements StorageInterface
             return $this->fallbackStorage->get($key, $default);
         }
 
-        if ($key === StorageType::ITEMS) {
+        if ($key !== StorageType::CUSTOMER) {
             $items = $this
                 ->modelQueryFor($key)
                 ->get();
