@@ -65,7 +65,7 @@ class DiscountModel extends Model implements StoresEcommerceData
 
         try {
             $discountModel = self::query()
-                ->where($this->getKeyName(), '=', $discount->id)
+                ->where('discount_id', '=', $discount->id)
                 ->firstOrFail()
                 ->fill($data);
         } catch (ModelNotFoundException $e) {
@@ -78,14 +78,14 @@ class DiscountModel extends Model implements StoresEcommerceData
     private function discountData(Discount $discount, string $instanceName): array
     {
         return [
-            'id'         => $discount->id,
-            'user_id'    => auth()->user() ? auth()->user()->getAuthIdentifier() : null,
-            'session_id' => session()->getId(),
-            'instance'   => $instanceName,
-            'value'      => $discount->value instanceof Money ? $discount->value->getAmount() : $discount->value,
-            'currency'   => $discount->value instanceof Money ? $discount->value->getCurrency() : null,
-            'type'       => $discount->type->value,
-            'target'     => $discount->target->value,
+            'discount_id' => $discount->id,
+            'user_id'     => auth()->user() ? auth()->user()->getAuthIdentifier() : null,
+            'session_id'  => session()->getId(),
+            'instance'    => $instanceName,
+            'value'       => $discount->value instanceof Money ? $discount->value->getAmount() : $discount->value,
+            'currency'    => $discount->value instanceof Money ? $discount->value->getCurrency() : null,
+            'type'        => $discount->type->value,
+            'target'      => $discount->target->value,
         ];
     }
 

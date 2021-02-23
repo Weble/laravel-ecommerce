@@ -13,7 +13,8 @@ class CreateDiscountsTable extends Migration
     public function up()
     {
         Schema::create(config('ecommerce.tables.discounts', 'cart_discounts'), function (Blueprint $table) {
-            $table->char('id', 40)->primary(); // Sha1
+            $table->id();
+            $table->char('discount_id', 40)->index(); // Sha1
             $table->char('session_id')->nullable()->index(); // Max length for a session_id
             $table->foreignIdFor(config('ecommerce.classes.user', '\\App\\Models\\User'))->nullable();
             $table->string('instance')->index();
