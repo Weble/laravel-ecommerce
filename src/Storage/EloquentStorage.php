@@ -103,7 +103,7 @@ class EloquentStorage implements StorageInterface
             return $this->fallbackStorage->remove($key);
         }
 
-        if ($key === StorageType::ITEMS) {
+        if ($key !== StorageType::CUSTOMER) {
             $items = $this->modelQueryFor($key)->get();
 
             if ($items->count() <= 0) {
