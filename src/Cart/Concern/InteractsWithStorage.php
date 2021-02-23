@@ -44,9 +44,11 @@ trait InteractsWithStorage
 
     protected function loadDiscountsFromStorage(): void
     {
-        $this->discounts = $this->storage()->get(
-            StorageType::DISCOUNTS,
-            DiscountCollection::make(),
+        $this->discounts = DiscountCollection::make(
+            $this->storage()->get(
+                StorageType::DISCOUNTS,
+                DiscountCollection::make(),
+            )
         );
     }
 
