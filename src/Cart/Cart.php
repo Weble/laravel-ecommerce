@@ -73,6 +73,9 @@ class Cart implements CartInterface, Jsonable
         $this->storage()->remove(StorageType::ITEMS);
         $this->storage()->remove(StorageType::DISCOUNTS);
 
+        $this->items     = CartItemCollection::make([]);
+        $this->discounts = DiscountCollection::make([]);
+
         return $this;
     }
 
