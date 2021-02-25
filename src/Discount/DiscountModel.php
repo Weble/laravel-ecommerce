@@ -6,6 +6,7 @@ use Cknow\Money\Money;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Collection;
 use Money\Currency;
 use Spatie\DataTransferObject\DataTransferObject;
 use Weble\LaravelEcommerce\Storage\StoresEcommerceData;
@@ -17,15 +18,18 @@ use Weble\LaravelEcommerce\Support\DTOCast;
  * @property DiscountTarget $target
  * @property Currency $currency
  * @property Money $value
+ * @property Collection $discount_attributes
+ * @method DiscountModel forCurrentUser()
  */
 class DiscountModel extends Model implements StoresEcommerceData
 {
     protected $guarded = [];
 
     protected $casts = [
-        'target'   => DTOCast::class . ':' . DiscountTarget::class,
-        'type'     => DTOCast::class . ':' . DiscountType::class,
-        'currency' => CurrencyCast::class,
+        'target'              => DTOCast::class . ':' . DiscountTarget::class,
+        'type'                => DTOCast::class . ':' . DiscountType::class,
+        'currency'            => CurrencyCast::class,
+        'discount_attributes' => 'collection',
     ];
 
     public function __construct(array $attributes = [])
@@ -47,9 +51,10 @@ class DiscountModel extends Model implements StoresEcommerceData
     public function toCartValue(): DataTransferObject
     {
         return new Discount([
-            'type'   => $this->type,
-            'target' => $this->target,
-            'value'  => $this->value,
+            'type'       => $this->type,
+            'target'     => $this->target,
+            'value'      => $this->value,
+            'attributes' => $this->discount_attributes,
         ]);
     }
 
@@ -78,14 +83,15 @@ class DiscountModel extends Model implements StoresEcommerceData
     private function discountData(Discount $discount, string $instanceName): array
     {
         return [
-            'discount_id' => $discount->id,
-            'user_id'     => auth()->user() ? auth()->user()->getAuthIdentifier() : null,
-            'session_id'  => session()->getId(),
-            'instance'    => $instanceName,
-            'value'       => $discount->value instanceof Money ? $discount->value->getAmount() : $discount->value,
-            'currency'    => $discount->value instanceof Money ? $discount->value->getCurrency() : null,
-            'type'        => $discount->type->value,
-            'target'      => $discount->target->value,
+            'discount_id'         => $discount->id,
+            'user_id'             => auth()->user() ? auth()->user()->getAuthIdentifier() : null,
+            'session_id'          => session()->getId(),
+            'instance'            => $instanceName,
+            'value'               => $discount->value instanceof Money ? $discount->value->getAmount() : $discount->value,
+            'currency'            => $discount->value instanceof Money ? $discount->value->getCurrency() : null,
+            'type'                => $discount->type->value,
+            'target'              => $discount->target->value,
+            'discount_attributes' => $discount->attributes->toArray(),
         ];
     }
 
