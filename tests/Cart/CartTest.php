@@ -67,7 +67,7 @@ class CartTest extends TestCase
         $product = factory(Product::class)->create(['price' => money(100)]);
 
         /** @var Cart $cart */
-        $cart = app('ecommerce.cart');
+        $cart     = app('ecommerce.cart');
         $cartItem = $cart->add($product);
 
         $restoredCartitem = (new CartItemModel())->fromCartValue($cartItem, 'ecommerce', 'cart')->toCartValue();
@@ -87,7 +87,7 @@ class CartTest extends TestCase
         $product = factory(Product::class)->create(['price' => money(100)]);
 
         /** @var Cart $cart */
-        $cart = app('ecommerce.cart');
+        $cart     = app('ecommerce.cart');
         $cartItem = $cart->add($product, 2);
 
         $this->assertEquals(2, $cart->items()->total());
@@ -105,11 +105,11 @@ class CartTest extends TestCase
     {
         $this->setCartStorageDriver($driver);
 
-        $product = factory(Product::class)->create(['price' => money(100)]);
+        $product  = factory(Product::class)->create(['price' => money(100)]);
         $product2 = factory(Product::class)->create(['price' => money(200)]);
 
         /** @var Cart $cart */
-        $cart = app('ecommerce.cart');
+        $cart     = app('ecommerce.cart');
         $cartItem = $cart->add($product, 2);
         $cart->add($product2, 1);
         $cart->remove($cartItem);
@@ -125,7 +125,7 @@ class CartTest extends TestCase
     {
         $this->setCartStorageDriver($driver);
 
-        $product = factory(Product::class)->create(['price' => money(100)]);
+        $product  = factory(Product::class)->create(['price' => money(100)]);
         $product2 = factory(Product::class)->create(['price' => money(200)]);
 
         /** @var Cart $cart */
@@ -145,7 +145,7 @@ class CartTest extends TestCase
         $this->setCartStorageDriver($driver);
 
         // These is tested with 22% IT vat
-        $product = factory(Product::class)->create(['price' => money(100)]);
+        $product  = factory(Product::class)->create(['price' => money(100)]);
         $product2 = factory(Product::class)->create(['price' => money(200)]);
 
         /** @var Cart $cart */
@@ -169,7 +169,7 @@ class CartTest extends TestCase
         $product = factory(Product::class)->create(['price' => money(100)]);
 
         /** @var Cart $cart */
-        $cart = app('ecommerce.cart');
+        $cart     = app('ecommerce.cart');
         $cartItem = $cart->add($product, 2)->withDiscount(new Discount([
             'value'  => money(10),
             'type'   => DiscountType::value(),
@@ -243,9 +243,9 @@ class CartTest extends TestCase
         $cart = app('ecommerce.cart');
         $cart->add($product, 2);
 
-        $this->assertTrue(!$cart->tax()->isZero());
+        $this->assertTrue(! $cart->tax()->isZero());
 
-        $customer = new Customer([]);
+        $customer                 = new Customer([]);
         $customer->billingAddress = new Address([
             'country' => 'IT',
             'state'   => 'VI',
@@ -275,7 +275,7 @@ class CartTest extends TestCase
         $product = factory(Product::class)->create(['price' => money(100)]);
 
         /** @var Cart $cart */
-        $cart = app('ecommerce.cart');
+        $cart     = app('ecommerce.cart');
         $cartItem = $cart->add($product, 2);
 
         /** @var CartItemModel $storedCartItem */
@@ -304,7 +304,7 @@ class CartTest extends TestCase
         $product = factory(Product::class)->create(['price' => money(100)]);
 
         /** @var Cart $cart */
-        $cart = app('ecommerce.cart');
+        $cart     = app('ecommerce.cart');
         $cartItem = $cart->add($product, 2);
 
         /** @var CartItemModel $storedCartItem */
@@ -336,7 +336,7 @@ class CartTest extends TestCase
         $this->actingAs($user);
 
         /** @var Cart $cart */
-        $cart = app('ecommerce.cart');
+        $cart     = app('ecommerce.cart');
         $cartItem = $cart->add($product, 2);
 
         /** @var CartItemModel $storedCartItem */
@@ -351,7 +351,7 @@ class CartTest extends TestCase
         app()->forgetInstance('ecommerce.cart');
 
         /** @var Cart $cart */
-        $cart = app('ecommerce.cart');
+        $cart     = app('ecommerce.cart');
         $cartItem = $cart->add($product, 3);
 
         /** @var CartItemModel $storedCartItem */
@@ -376,11 +376,11 @@ class CartTest extends TestCase
         $this->setCartStorageDriver('eloquent');
 
         $product = factory(Product::class)->create(['price' => money(100)]);
-        $value = new Money(1, new Currency('EUR'));
+        $value   = new Money(1, new Currency('EUR'));
         $options = collect(['code' => 'CODE']);
 
         /** @var Cart $cart */
-        $cart = app('ecommerce.cart');
+        $cart     = app('ecommerce.cart');
         $cartItem = $cart->add($product, 2);
         $cart->withDiscount(new Discount([
             'value'      => $value,
