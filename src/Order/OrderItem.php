@@ -32,6 +32,7 @@ class OrderItem extends Model
         'unit_price'         => MoneyIntCast::class,
         'discounts_subtotal' => MoneyIntCast::class,
         'subtotal'           => MoneyIntCast::class,
+        'purchasable_data'   => 'collection',
     ];
 
     public function __construct(array $attributes = [])
