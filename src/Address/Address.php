@@ -14,6 +14,7 @@ class Address extends DataTransferObject implements AddressInterface
     public string $surname = '';
     public string $company = '';
     public string $vatId   = '';
+    public string $personalId   = '';
     public string $country;
     public string $street = '';
     public string $zip    = '';
@@ -109,6 +110,11 @@ class Address extends DataTransferObject implements AddressInterface
     public function getVatId(): string
     {
         return $this->vatId;
+    }
+
+    public function getPersonalId(): string
+    {
+        return $this->personalId;
     }
 
     public static function fromRequest(Request $request, $type = 'shipping'): self
