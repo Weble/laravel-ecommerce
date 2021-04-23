@@ -10,10 +10,10 @@ use Spatie\DataTransferObject\DataTransferObject;
 
 class Address extends DataTransferObject implements AddressInterface
 {
-    public string $name    = '';
-    public string $surname = '';
-    public string $company = '';
-    public string $vatId   = '';
+    public string $name         = '';
+    public string $surname      = '';
+    public string $company      = '';
+    public string $vatId        = '';
     public string $personalId   = '';
     public string $country;
     public string $street = '';
