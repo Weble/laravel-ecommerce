@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
 use Money\Currency;
 use Spatie\DataTransferObject\DataTransferObject;
+use Weble\LaravelEcommerce\Storage\StoresDifferentInstances;
 use Weble\LaravelEcommerce\Storage\StoresEcommerceData;
 use Weble\LaravelEcommerce\Support\CurrencyCast;
 use Weble\LaravelEcommerce\Support\DTOCast;
@@ -21,7 +22,7 @@ use Weble\LaravelEcommerce\Support\DTOCast;
  * @property Collection $discount_attributes
  * @method DiscountModel forCurrentUser()
  */
-class DiscountModel extends Model implements StoresEcommerceData
+class DiscountModel extends Model implements StoresEcommerceData, StoresDifferentInstances
 {
     protected $guarded = [];
 
@@ -98,13 +99,16 @@ class DiscountModel extends Model implements StoresEcommerceData
     public function scopeForCurrentUser(Builder $query): Builder
     {
         return $query->where(function (Builder $subQuery) {
-            $subQuery->where('session_id', '=', session()->getId());
-
             if (auth()->user()) {
-                $subQuery->orWhere('user_id', '=', auth()->user()->getAuthIdentifier());
+                return $subQuery->orWhere('user_id', '=', auth()->user()->getAuthIdentifier());
             }
 
-            return $subQuery;
+            return $subQuery->where('session_id', '=', session()->getId());
         });
+    }
+
+    public function scopeForInstance(Builder $query, string $instanceName): Builder
+    {
+        return $query->where('instance', $instanceName);
     }
 }

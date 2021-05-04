@@ -158,7 +158,14 @@ class EloquentStorage implements StorageInterface
     protected function modelQueryFor(string $key): ?Builder
     {
         $model = $this->modelFor($key);
+        if (! $model) {
+            return null;
+        }
 
-        return $model ? $model->query()->forCurrentUser() : null;
+        if ($model instanceof StoresDifferentInstances) {
+            $model = $model->forInstance($this->instanceName);
+        }
+
+        return $model->forCurrentUser();
     }
 }

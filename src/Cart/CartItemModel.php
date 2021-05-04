@@ -14,6 +14,7 @@ use Spatie\DataTransferObject\DataTransferObject;
 use Weble\LaravelEcommerce\Discount\Discount;
 use Weble\LaravelEcommerce\Discount\DiscountCollection;
 use Weble\LaravelEcommerce\Purchasable;
+use Weble\LaravelEcommerce\Storage\StoresDifferentInstances;
 use Weble\LaravelEcommerce\Storage\StoresEcommerceData;
 use Weble\LaravelEcommerce\Tests\mocks\User;
 
@@ -28,7 +29,7 @@ use Weble\LaravelEcommerce\Tests\mocks\User;
  * @property User|\App\Models\User|null $user
  * @property Purchasable|Model|null $product
  */
-class CartItemModel extends Model implements StoresEcommerceData
+class CartItemModel extends Model implements StoresEcommerceData, StoresDifferentInstances
 {
     protected $guarded = [];
 
@@ -93,6 +94,7 @@ class CartItemModel extends Model implements StoresEcommerceData
 
         try {
             $cartItemModel = $this
+                ->forInstance($instanceName)
                 ->forCurrentUser()
                 ->where('cart_item_id', '=', $cartItem->getId())
                 ->firstOrFail()
@@ -123,13 +125,16 @@ class CartItemModel extends Model implements StoresEcommerceData
     public function scopeForCurrentUser(Builder $query): Builder
     {
         return $query->where(function (Builder $subQuery) {
-            $subQuery->where('session_id', '=', session()->getId());
-
             if (auth()->user()) {
-                $subQuery->orWhere('user_id', '=', auth()->user()->getAuthIdentifier());
+                return $subQuery->orWhere('user_id', '=', auth()->user()->getAuthIdentifier());
             }
 
-            return $subQuery;
+            return $subQuery->where('session_id', '=', session()->getId());
         });
+    }
+
+    public function scopeForInstance(Builder $query, string $instanceName): Builder
+    {
+        return $query->where('instance', $instanceName);
     }
 }
