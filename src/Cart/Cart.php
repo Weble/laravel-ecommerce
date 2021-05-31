@@ -201,6 +201,7 @@ class Cart implements CartInterface, Jsonable
         }
 
         return $this->items()->reduce(function (?Money $sum = null, ?CartItem $cartItem = null) {
+            $cartItem->discounts = $cartItem->discounts->merge($this->discounts);
             if ($sum === null) {
                 return $cartItem->tax($this->customer->taxAddress());
             }
