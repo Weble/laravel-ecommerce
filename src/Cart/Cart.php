@@ -200,14 +200,19 @@ class Cart implements CartInterface, Jsonable
             return money(0);
         }
 
-        return $this->items()->reduce(function (?Money $sum = null, ?CartItem $cartItem = null) {
-            $cartItem->discounts = $cartItem->discounts->merge($this->discounts);
+        $tax = $this->items()->reduce(function (?Money $sum = null, ?CartItem $cartItem = null) {
             if ($sum === null) {
                 return $cartItem->tax($this->customer->taxAddress());
             }
 
             return $sum->add($cartItem->tax($this->customer->taxAddress()));
         });
+
+        if ($this->discounts->count() > 0) {
+            return $tax->subtract($this->discounts->withTarget(DiscountTarget::subtotal())->total($tax));
+        }
+
+        return $tax;
     }
 
     public function total(): Money
