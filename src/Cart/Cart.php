@@ -208,8 +208,11 @@ class Cart implements CartInterface, Jsonable
             return $sum->add($cartItem->tax($this->customer->taxAddress()));
         });
 
-        if ($this->discounts->count() > 0) {
-            return $tax->subtract($this->discounts->withTarget(DiscountTarget::subtotal())->total($tax));
+        $subtotalDiscounts = $this->discounts->withTarget(DiscountTarget::subtotal());
+        if ($subtotalDiscounts->count() > 0) {
+            // proportionate discount also on tax
+            $discountedTax = $tax->getAmount() * $this->subTotal()->getAmount() / $this->subTotalWithoutDiscounts()->getAmount();
+            return new Money($discountedTax, $tax->getCurrency());
         }
 
         return $tax;
