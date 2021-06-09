@@ -211,8 +211,9 @@ class Cart implements CartInterface, Jsonable
         $subtotalDiscounts = $this->discounts->withTarget(DiscountTarget::subtotal());
         if ($subtotalDiscounts->count() > 0) {
             // proportionate discount also on tax
-            $discountedTax = $tax->getAmount() * $this->subTotal()->getAmount() / $this->subTotalWithoutDiscounts()->getAmount();
-            return new Money($discountedTax, $tax->getCurrency());
+            return $tax
+                ->multiply($this->subTotal()->getAmount())
+                ->divide($this->subTotalWithoutDiscounts()->getAmount());
         }
 
         return $tax;
