@@ -41,6 +41,13 @@ class CartItem extends DataTransferObject implements Arrayable, Jsonable
         return $this;
     }
 
+    public function clearDiscounts(): self
+    {
+        $this->discounts = DiscountCollection::make([]);
+
+        return $this;
+    }
+
     public function toJson($options = 0): string
     {
         return json_encode($this->toArray(), $options);

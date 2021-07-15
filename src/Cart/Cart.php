@@ -156,7 +156,12 @@ class Cart implements CartInterface, Jsonable
     public function clearDiscounts(): self
     {
         $this->discounts = new DiscountCollection([]);
+        $this->items()->each(function(CartItem $item) {
+            $item->clearDiscounts();
+        });
+
         $this->persist(StorageType::DISCOUNTS, $this->discounts());
+        $this->persist(StorageType::ITEMS, $this->items());
 
         return $this;
     }
@@ -167,6 +172,13 @@ class Cart implements CartInterface, Jsonable
             $this->discounts->withTarget(DiscountTarget::items())->total($this->itemsSubtotal()),
             $this->discounts->withTarget(DiscountTarget::subtotal())->total($this->subTotalWithoutDiscounts())
         );
+    }
+
+    public function singleItemsDiscounts(): Money
+    {
+        return $this->items()->reduce(function (Money $carry, CartItem $item) {
+            return $carry->add($item->discount());
+        }, money(0));
     }
 
     public function subTotalWithoutDiscounts(): Money
