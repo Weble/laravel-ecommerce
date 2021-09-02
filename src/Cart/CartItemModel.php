@@ -54,7 +54,7 @@ class CartItemModel extends Model implements StoresEcommerceData, StoresDifferen
 
     public function user(): BelongsTo
     {
-        $this->belongsTo(config('ecommerce.classes.user', '\\App\\Models\\User'));
+        return $this->belongsTo(config('ecommerce.classes.user', '\\App\\Models\\User'));
     }
 
     public function product(): MorphTo
