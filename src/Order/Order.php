@@ -2,7 +2,7 @@
 
 namespace Weble\LaravelEcommerce\Order;
 
-use Cknow\Money\MoneyIntCast;
+use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -24,12 +24,12 @@ class Order extends Model
         'customer'           => DTOCast::class . ':' . Customer::class,
         'currency'           => CurrencyCast::class,
         'discounts'          => 'collection',
-        'discounts_subtotal' => MoneyIntCast::class . ':currency',
-        'items_subtotal'     => MoneyIntCast::class . ':currency',
-        'items_total'        => MoneyIntCast::class . ':currency',
-        'subtotal'           => MoneyIntCast::class . ':currency',
-        'tax'                => MoneyIntCast::class . ':currency',
-        'total'              => MoneyIntCast::class . ':currency',
+        'discounts_subtotal' => MoneyIntegerCast::class . ':currency',
+        'items_subtotal'     => MoneyIntegerCast::class . ':currency',
+        'items_total'        => MoneyIntegerCast::class . ':currency',
+        'subtotal'           => MoneyIntegerCast::class . ':currency',
+        'tax'                => MoneyIntegerCast::class . ':currency',
+        'total'              => MoneyIntegerCast::class . ':currency',
     ];
 
     public function __construct(array $attributes = [])

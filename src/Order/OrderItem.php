@@ -3,7 +3,7 @@
 namespace Weble\LaravelEcommerce\Order;
 
 use Cknow\Money\Money;
-use Cknow\Money\MoneyIntCast;
+use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -29,9 +29,9 @@ class OrderItem extends Model
         'product_attributes' => 'collection',
         'discounts'          => 'collection',
         'quantity'           => 'float',
-        'unit_price'         => MoneyIntCast::class,
-        'discounts_subtotal' => MoneyIntCast::class,
-        'subtotal'           => MoneyIntCast::class,
+        'unit_price'         => MoneyIntegerCast::class,
+        'discounts_subtotal' => MoneyIntegerCast::class,
+        'subtotal'           => MoneyIntegerCast::class,
         'purchasable_data'   => 'collection',
     ];
 

@@ -2,7 +2,7 @@
 
 namespace Weble\LaravelEcommerce\Payment;
 
-use Cknow\Money\MoneyIntCast;
+use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Weble\LaravelEcommerce\Customer\Customer;

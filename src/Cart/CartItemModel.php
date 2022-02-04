@@ -3,7 +3,7 @@
 namespace Weble\LaravelEcommerce\Cart;
 
 use Cknow\Money\Money;
-use Cknow\Money\MoneyIntCast;
+use Cknow\Money\Casts\MoneyIntegerCast;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
