@@ -21,12 +21,12 @@ class Payment extends Model
         'customer'           => DTOCast::class . ':' . Customer::class,
         'currency'           => CurrencyCast::class,
         'discounts'          => 'collection',
-        'discounts_subtotal' => MoneyIntCast::class . ':currency',
-        'items_subtotal'     => MoneyIntCast::class . ':currency',
-        'items_total'        => MoneyIntCast::class . ':currency',
-        'subtotal'           => MoneyIntCast::class . ':currency',
-        'tax'                => MoneyIntCast::class . ':currency',
-        'total'              => MoneyIntCast::class . ':currency',
+        'discounts_subtotal' => MoneyIntegerCast::class . ':currency',
+        'items_subtotal'     => MoneyIntegerCast::class . ':currency',
+        'items_total'        => MoneyIntegerCast::class . ':currency',
+        'subtotal'           => MoneyIntegerCast::class . ':currency',
+        'tax'                => MoneyIntegerCast::class . ':currency',
+        'total'              => MoneyIntegerCast::class . ':currency',
     ];
 
     public function __construct(array $attributes = [])
