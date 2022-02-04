@@ -47,6 +47,6 @@ class TaxManager
 
         $amount = array_shift($amounts)->getAmount();
 
-        return $price->multiply($amount);
+        return $price->multiply((string) $amount);
     }
 }

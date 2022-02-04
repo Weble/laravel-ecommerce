@@ -29,7 +29,7 @@ class Discount extends DataTransferObject implements Arrayable, Jsonable
     public function calculateValue(Money $price): Money
     {
         if ($this->type->equals(DiscountType::percentage())) {
-            return $price->multiply($this->value / 100);
+            return $price->multiply((string) ($this->value / 100));
         }
 
         return $this->value;
