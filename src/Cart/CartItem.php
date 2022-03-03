@@ -6,6 +6,7 @@ use Cknow\Money\Money;
 use CommerceGuys\Addressing\AddressInterface;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
 use Spatie\DataTransferObject\DataTransferObject;
 use Weble\LaravelEcommerce\Discount\Discount;
@@ -69,7 +70,23 @@ class CartItem extends DataTransferObject implements Arrayable, Jsonable
 
     public function getId(): string
     {
-        return sha1($this->product->getKey() . '-' . $this->attributes->toJson());
+        return sha1(implode("-", [
+            $this->morphAlias($this->product),
+            $this->product->getKey(),
+            $this->attributes->toJson()
+        ]));
+    }
+
+    private function morphAlias(Purchasable $product): string
+    {
+        $class = get_class($product);
+        foreach (Relation::$morphMap as $alias => $model) {
+            if ($model === $class) {
+                return $alias;
+            }
+        }
+
+        return $class;
     }
 
     public function subTotalWithoutDiscounts(): Money
