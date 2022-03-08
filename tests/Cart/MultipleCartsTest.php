@@ -4,6 +4,8 @@ namespace Weble\LaravelEcommerce\Tests\Cart;
 
 use Weble\LaravelEcommerce\Cart\Cart;
 use Weble\LaravelEcommerce\Cart\CartItemModel;
+use Weble\LaravelEcommerce\Tests\factories\ProductFactory;
+use Weble\LaravelEcommerce\Tests\factories\UserFactory;
 use Weble\LaravelEcommerce\Tests\mocks\Product;
 use Weble\LaravelEcommerce\Tests\mocks\User;
 use Weble\LaravelEcommerce\Tests\TestCase;
@@ -19,11 +21,11 @@ class MultipleCartsTest extends TestCase
         config()->set('ecommerce.cart.instances.wishlist.storage', 'eloquent');
 
         /** @var User $user */
-        $user = factory(User::class)->create();
+        $user = UserFactory::new()->create();
 
         /** @var Product $product */
-        $product         = factory(Product::class)->create(['price' => money(100)]);
-        $productWishlist = factory(Product::class)->create(['price' => money(200)]);
+        $product         = ProductFactory::new()->create(['price' => money(100)]);
+        $productWishlist = ProductFactory::new()->create(['price' => money(200)]);
 
         $this->actingAs($user);
 

@@ -2,12 +2,8 @@
 
 namespace Weble\LaravelEcommerce\Address;
 
-use Spatie\Enum\Enum;
-
-/**
- * @method static self billing()
- * @method static self shipping()
- */
-class AddressType extends Enum
+enum AddressType: string
 {
+    case Billing = "billing";
+    case Shipping = "shipping";
 }

@@ -59,10 +59,10 @@ trait InteractsWithStorage
             new Customer([
                 'id'              => (string) Str::orderedUuid(),
                 'shippingAddress' => new Address([
-                    'type' => AddressType::shipping(),
+                    'type' => AddressType::Shipping,
                 ]),
                 'billingAddress' => new Address([
-                    'type' => AddressType::billing(),
+                    'type' => AddressType::Billing,
                 ]),
             ])
         );
