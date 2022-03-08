@@ -33,7 +33,7 @@ class CartItem extends DataTransferObject implements Arrayable, Jsonable
 
     public function withDiscount(Discount $discount): self
     {
-        if (! $discount->target()->equals(DiscountTarget::item())) {
+        if ($discount->target !== DiscountTarget::Item) {
             throw new InvalidDiscountException();
         }
 
@@ -101,7 +101,7 @@ class CartItem extends DataTransferObject implements Arrayable, Jsonable
 
     public function discount(): Money
     {
-        return $this->discounts->total($this->subTotalWithoutDiscounts(), DiscountTarget::item())->multiply($this->quantity);
+        return $this->discounts->total($this->subTotalWithoutDiscounts(), DiscountTarget::Item)->multiply($this->quantity);
     }
 
     public function tax(AddressInterface $address): Money
@@ -121,7 +121,7 @@ class CartItem extends DataTransferObject implements Arrayable, Jsonable
 
     public function unitDiscount(): Money
     {
-        return $this->discounts->total($this->unitPriceWithoutDiscounts(), DiscountTarget::item());
+        return $this->discounts->total($this->unitPriceWithoutDiscounts(), DiscountTarget::Item);
     }
 
     public function unitPrice(): Money

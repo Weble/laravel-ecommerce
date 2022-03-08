@@ -27,8 +27,8 @@ class DiscountModel extends Model implements StoresEcommerceData, StoresDifferen
     protected $guarded = [];
 
     protected $casts = [
-        'target'              => DTOCast::class . ':' . DiscountTarget::class,
-        'type'                => DTOCast::class . ':' . DiscountType::class,
+        'target'              => DiscountTarget::class,
+        'type'                => DiscountType::class,
         'currency'            => CurrencyCast::class,
         'discount_attributes' => 'collection',
     ];
@@ -42,7 +42,7 @@ class DiscountModel extends Model implements StoresEcommerceData, StoresDifferen
 
     public function getValueAttribute($value)
     {
-        if ($this->type->equals(DiscountType::value())) {
+        if ($this->type === DiscountType::Value) {
             return new Money($value, $this->currency);
         }
 

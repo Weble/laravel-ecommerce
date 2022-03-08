@@ -19,7 +19,6 @@ class TestCase extends \Orchestra\Testbench\TestCase
 
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations/');
         $this->setupDatabase();
-        $this->withFactories(__DIR__ . '/factories');
     }
 
     protected function getPackageProviders($app)

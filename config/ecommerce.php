@@ -358,7 +358,7 @@ return [
         |
         | Which address should be used when calculating taxes. "shipping" or "billing"
         */
-        'address_type' => (string)\Weble\LaravelEcommerce\Address\AddressType::shipping(),
+        'address_type' => \Weble\LaravelEcommerce\Address\AddressType::Shipping,
     ],
 
     /*

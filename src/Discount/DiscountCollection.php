@@ -9,9 +9,7 @@ class DiscountCollection extends Collection
 {
     public function withTarget(DiscountTarget $target): self
     {
-        return $this->filter(function (Discount $discount) use ($target) {
-            return $discount->target()->equals($target);
-        });
+        return $this->filter(fn(Discount $discount) => $discount->target === $target);
     }
 
     public function total(Money $price): Money

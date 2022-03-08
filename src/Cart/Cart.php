@@ -136,7 +136,7 @@ class Cart implements CartInterface, Jsonable
 
     public function withDiscount(Discount $discount): self
     {
-        if ($discount->target()->equals(DiscountTarget::item())) {
+        if ($discount->target === DiscountTarget::Item) {
             throw new InvalidDiscountException();
         }
 
@@ -169,8 +169,8 @@ class Cart implements CartInterface, Jsonable
     public function discount(): Money
     {
         return Money::sum(
-            $this->discounts->withTarget(DiscountTarget::items())->total($this->itemsSubtotal()),
-            $this->discounts->withTarget(DiscountTarget::subtotal())->total($this->subTotalWithoutDiscounts())
+            $this->discounts->withTarget(DiscountTarget::Items)->total($this->itemsSubtotal()),
+            $this->discounts->withTarget(DiscountTarget::Subtotal)->total($this->subTotalWithoutDiscounts())
         );
     }
 
