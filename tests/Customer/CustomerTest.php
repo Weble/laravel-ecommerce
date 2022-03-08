@@ -8,6 +8,7 @@ use Weble\LaravelEcommerce\Address\AddressType;
 use Weble\LaravelEcommerce\Cart\Cart;
 use Weble\LaravelEcommerce\Customer\Customer;
 use Weble\LaravelEcommerce\Customer\CustomerModel;
+use Weble\LaravelEcommerce\Tests\factories\UserFactory;
 use Weble\LaravelEcommerce\Tests\mocks\User;
 use Weble\LaravelEcommerce\Tests\TestCase;
 
@@ -28,7 +29,7 @@ class CustomerTest extends TestCase
 
         $customer = new Customer([
             'billingAddress' => new Address([
-                'type'    => AddressType::billing(),
+                'type'    => AddressType::Billing,
                 'name'    => $name,
                 'surname' => $surname,
             ]),
@@ -52,7 +53,7 @@ class CustomerTest extends TestCase
     {
         config()->set('ecommerce.cart.instances.cart.storage', 'eloquent');
 
-        $user     = factory(User::class)->create();
+        $user     = UserFactory::new()->create();
         $customer = new Customer([
             'user' => $user,
         ]);
@@ -74,7 +75,7 @@ class CustomerTest extends TestCase
     {
         config()->set('ecommerce.cart.instances.cart.storage', 'eloquent');
 
-        $user     = factory(User::class)->create();
+        $user     = UserFactory::new()->create();
         $customer = new Customer([
             'user' => $user,
         ]);
@@ -93,7 +94,7 @@ class CustomerTest extends TestCase
 
         /** @var Cart $cart */
         $customer->billingAddress = new Address([
-            'type'    => AddressType::billing(),
+            'type'    => AddressType::Billing,
             'name'    => $name,
             'surname' => $surname,
         ]);

@@ -2,12 +2,8 @@
 
 namespace Weble\LaravelEcommerce\Discount;
 
-use Spatie\Enum\Enum;
-
-/**
- * @method static self percentage()
- * @method static self value()
- */
-class DiscountType extends Enum
+enum DiscountType: string
 {
+    case Percentage = 'percentage';
+    case Value = 'value';
 }

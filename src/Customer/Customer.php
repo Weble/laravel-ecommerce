@@ -22,10 +22,10 @@ class Customer extends DataTransferObject implements Jsonable
     public function __construct(array $parameters = [])
     {
         $parameters['billingAddress'] ??= new Address([
-            'type' => AddressType::billing(),
+            'type' => AddressType::Billing,
         ]);
         $parameters['shippingAddress'] ??= new Address([
-            'type' => AddressType::shipping(),
+            'type' => AddressType::Shipping,
         ]);
 
         $parameters['id'] ??= sha1((string)Str::orderedUuid());
@@ -40,17 +40,13 @@ class Customer extends DataTransferObject implements Jsonable
 
     public function taxAddress(): AddressInterface
     {
-        try {
-            $taxAddressType = AddressType::make(config('ecommerce.tax.address_type', 'shipping'));
-        } catch (BadMethodCallException $e) {
-            $taxAddressType = AddressType::shipping();
-        }
+        $taxAddressType = config('ecommerce.tax.address_type', AddressType::Shipping);
 
-        if ($taxAddressType->equals(AddressType::shipping())) {
+        if ($taxAddressType === AddressType::Shipping) {
             return $this->shippingAddress;
         }
 
-        if ($taxAddressType->equals(AddressType::billing())) {
+        if ($taxAddressType === AddressType::Billing) {
             return $this->billingAddress;
         }
 

@@ -16,6 +16,8 @@ use Weble\LaravelEcommerce\Discount\DiscountType;
 use Weble\LaravelEcommerce\Storage\CacheStorage;
 use Weble\LaravelEcommerce\Storage\EloquentStorage;
 use Weble\LaravelEcommerce\Storage\SessionStorage;
+use Weble\LaravelEcommerce\Tests\factories\ProductFactory;
+use Weble\LaravelEcommerce\Tests\factories\UserFactory;
 use Weble\LaravelEcommerce\Tests\mocks\Product;
 use Weble\LaravelEcommerce\Tests\mocks\User;
 use Weble\LaravelEcommerce\Tests\TestCase;
@@ -64,7 +66,7 @@ class CartTest extends TestCase
      */
     public function can_generate_cart_items_ids_consistently()
     {
-        $product = factory(Product::class)->create(['price' => money(100)]);
+        $product = ProductFactory::new(['price' => money(100)])->create();
 
         /** @var Cart $cart */
         $cart     = app('ecommerce.cart');
@@ -84,7 +86,7 @@ class CartTest extends TestCase
     {
         $this->setCartStorageDriver($driver);
 
-        $product = factory(Product::class)->create(['price' => money(100)]);
+        $product = ProductFactory::new(['price' => money(100)])->create();
 
         /** @var Cart $cart */
         $cart     = app('ecommerce.cart');
@@ -105,8 +107,8 @@ class CartTest extends TestCase
     {
         $this->setCartStorageDriver($driver);
 
-        $product  = factory(Product::class)->create(['price' => money(100)]);
-        $product2 = factory(Product::class)->create(['price' => money(200)]);
+        $product  = ProductFactory::new(['price' => money(100)])->create();
+        $product2 = ProductFactory::new(['price' => money(200)])->create();
 
         /** @var Cart $cart */
         $cart     = app('ecommerce.cart');
@@ -125,8 +127,8 @@ class CartTest extends TestCase
     {
         $this->setCartStorageDriver($driver);
 
-        $product  = factory(Product::class)->create(['price' => money(100)]);
-        $product2 = factory(Product::class)->create(['price' => money(200)]);
+        $product  = ProductFactory::new(['price' => money(100)])->create();
+        $product2 = ProductFactory::new(['price' => money(200)])->create();
 
         /** @var Cart $cart */
         $cart = app('ecommerce.cart');
@@ -145,8 +147,8 @@ class CartTest extends TestCase
         $this->setCartStorageDriver($driver);
 
         // These is tested with 22% IT vat
-        $product  = factory(Product::class)->create(['price' => money(100)]);
-        $product2 = factory(Product::class)->create(['price' => money(200)]);
+        $product  = ProductFactory::new(['price' => money(100)])->create();
+        $product2 = ProductFactory::new(['price' => money(200)])->create();
 
         /** @var Cart $cart */
         $cart = app('ecommerce.cart');
@@ -166,14 +168,14 @@ class CartTest extends TestCase
         $this->setCartStorageDriver($driver);
 
         // These is tested with 22% IT vat
-        $product = factory(Product::class)->create(['price' => money(100)]);
+        $product = ProductFactory::new(['price' => money(100)])->create();
 
         /** @var Cart $cart */
         $cart     = app('ecommerce.cart');
         $cartItem = $cart->add($product, 2)->withDiscount(new Discount([
             'value'  => money(10),
-            'type'   => DiscountType::value(),
-            'target' => DiscountTarget::item(),
+            'type'   => DiscountType::Value,
+            'target' => DiscountTarget::Item,
         ]));
         $cart->update($cartItem);
 
@@ -189,7 +191,7 @@ class CartTest extends TestCase
         $this->setCartStorageDriver($driver);
 
         // These is tested with 22% IT vat
-        $product = factory(Product::class)->create(['price' => money(100)]);
+        $product = ProductFactory::new(['price' => money(100)])->create();
 
         /** @var Cart $cart */
         $cart = app('ecommerce.cart');
@@ -197,8 +199,8 @@ class CartTest extends TestCase
 
         $cart->withDiscount(new Discount([
             'value'  => money(10),
-            'type'   => DiscountType::value(),
-            'target' => DiscountTarget::subtotal(),
+            'type'   => DiscountType::Value,
+            'target' => DiscountTarget::Subtotal,
         ]));
 
         $this->assertTrue($cart->subTotal()->equals(money(190)));
@@ -213,16 +215,16 @@ class CartTest extends TestCase
         $this->setCartStorageDriver($driver);
 
         // These is tested with 22% IT vat
-        $product = factory(Product::class)->create(['price' => money(100)]);
+        $product = ProductFactory::new(['price' => money(100)])->create();
 
         /** @var Cart $cart */
         $cart = app('ecommerce.cart');
         $cart->add($product, 2);
 
         $cart->withDiscount(new Discount([
-            'type'   => DiscountType::value(),
+            'type'   => DiscountType::Value,
             'value'  => money(60),
-            'target' => DiscountTarget::items(),
+            'target' => DiscountTarget::Items,
         ]));
 
         $this->assertTrue($cart->subTotal()->equals(money(140)));
@@ -237,7 +239,7 @@ class CartTest extends TestCase
         $this->setCartStorageDriver($driver);
 
         // These is tested with 22% IT vat
-        $product = factory(Product::class)->create(['price' => money(100)]);
+        $product = ProductFactory::new(['price' => money(100)])->create();
 
         /** @var Cart $cart */
         $cart = app('ecommerce.cart');
@@ -272,7 +274,7 @@ class CartTest extends TestCase
     {
         $this->setCartStorageDriver('eloquent');
 
-        $product = factory(Product::class)->create(['price' => money(100)]);
+        $product = ProductFactory::new(['price' => money(100)])->create();
 
         /** @var Cart $cart */
         $cart     = app('ecommerce.cart');
@@ -298,10 +300,10 @@ class CartTest extends TestCase
         $this->setCartStorageDriver('eloquent');
 
         /** @var User $user */
-        $user = factory(User::class)->create();
+        $user = UserFactory::new()->create();
         $this->actingAs($user);
 
-        $product = factory(Product::class)->create(['price' => money(100)]);
+        $product = ProductFactory::new(['price' => money(100)])->create();
 
         /** @var Cart $cart */
         $cart     = app('ecommerce.cart');
@@ -327,11 +329,11 @@ class CartTest extends TestCase
         $this->setCartStorageDriver('eloquent');
 
         /** @var User $user */
-        $user = factory(User::class)->create();
+        $user = UserFactory::new()->create();
         /** @var User $otherUser */
-        $otherUser = factory(User::class)->create();
+        $otherUser = UserFactory::new()->create();
         /** @var Product $product */
-        $product = factory(Product::class)->create(['price' => money(100)]);
+        $product = ProductFactory::new(['price' => money(100)])->create();
 
         $this->actingAs($user);
 
@@ -375,7 +377,7 @@ class CartTest extends TestCase
     {
         $this->setCartStorageDriver('eloquent');
 
-        $product = factory(Product::class)->create(['price' => money(100)]);
+        $product = ProductFactory::new(['price' => money(100)])->create();
         $value   = new Money(1, new Currency('EUR'));
         $options = collect(['code' => 'CODE']);
 
@@ -384,8 +386,8 @@ class CartTest extends TestCase
         $cartItem = $cart->add($product, 2);
         $cart->withDiscount(new Discount([
             'value'      => $value,
-            'target'     => DiscountTarget::items(),
-            'type'       => DiscountType::value(),
+            'target'     => DiscountTarget::Items,
+            'type'       => DiscountType::Value,
             'attributes' => $options,
         ]));
 
@@ -394,8 +396,8 @@ class CartTest extends TestCase
         /** @var DiscountModel $storedDiscount */
         $storedDiscount = DiscountModel::query()->latest()->first();
         $this->assertTrue($storedDiscount->value->equals($value));
-        $this->assertTrue($storedDiscount->target->equals(DiscountTarget::items()));
-        $this->assertTrue($storedDiscount->type->equals(DiscountType::value()));
+        $this->assertTrue($storedDiscount->target === DiscountTarget::Items);
+        $this->assertTrue($storedDiscount->type === DiscountType::Value);
         $this->assertEquals(0, $options->diff($storedDiscount->discount_attributes)->count());
     }
 

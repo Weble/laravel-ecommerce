@@ -26,10 +26,10 @@ class Address extends DataTransferObject implements AddressInterface
     {
         $parameters['country'] ??= config('ecommerce.store.address.country', 'IT');
 
-        $type = $parameters['type'] ?? AddressType::shipping();
+        $type = $parameters['type'] ?? AddressType::Shipping;
 
         if (! $type instanceof AddressType) {
-            $type = AddressType::make($type);
+            $type = AddressType::from($type);
         }
 
         $parameters['type'] = $type;
