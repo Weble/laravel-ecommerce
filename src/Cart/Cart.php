@@ -178,7 +178,7 @@ class Cart implements CartInterface, Jsonable
     {
         return $this->items()->reduce(function (Money $carry, CartItem $item) {
             return $carry->add($item->discount());
-        }, money(0));
+        }, new Money(0, currencyManager()->defaultCurrency()));
     }
 
     public function subTotalWithoutDiscounts(): Money
@@ -189,7 +189,7 @@ class Cart implements CartInterface, Jsonable
     public function itemsSubtotal(): Money
     {
         if ($this->items()->count() <= 0) {
-            return money(0);
+            return new Money(0, currencyManager()->defaultCurrency());
         }
 
         return $this->items()->reduce(function (?Money $sum = null, ?CartItem $cartItem = null) {
@@ -209,7 +209,7 @@ class Cart implements CartInterface, Jsonable
     public function tax(): Money
     {
         if ($this->items()->count() <= 0) {
-            return money(0);
+            return new Money(0, currencyManager()->defaultCurrency());
         }
 
         $tax = $this->items()->reduce(function (?Money $sum = null, ?CartItem $cartItem = null) {
