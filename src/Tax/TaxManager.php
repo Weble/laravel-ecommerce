@@ -8,6 +8,8 @@ use CommerceGuys\Tax\Model\TaxRateAmount;
 use CommerceGuys\Tax\Resolver\Context;
 use CommerceGuys\Tax\Resolver\TaxResolver;
 use CommerceGuys\Tax\Resolver\TaxResolverInterface;
+use CommerceGuys\Tax\TaxableInterface;
+use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Weble\LaravelEcommerce\Address\StoreAddress;
 use Weble\LaravelEcommerce\Purchasable;
@@ -26,14 +28,20 @@ class TaxManager
         return $this->taxResolver;
     }
 
-    public function taxFor(Purchasable $product, ?Money $price = null, ?AddressInterface $address = null): Money
+    public function taxFor(Purchasable|TaxableInterface $product, ?Money $price = null, ?AddressInterface $address = null): Money
     {
         $storeAddress = new StoreAddress();
         if ($address === null) {
             $address = $storeAddress;
         }
 
-        $price = $price ?: $product->cartPrice();
+        if ($product instanceof Purchasable && $price === null) {
+            $price = $product->cartPrice();
+        }
+
+        if ($price === null) {
+            throw new Exception("Price cannot be null when calculating taxes");
+        }
 
         $currency = $price->getMoney()->getCurrency();
         $context  = new Context($address, $storeAddress);
