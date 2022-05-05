@@ -2,7 +2,6 @@
 
 namespace Weble\LaravelEcommerce\Customer;
 
-use BadMethodCallException;
 use CommerceGuys\Addressing\AddressInterface;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Str;

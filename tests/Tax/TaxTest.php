@@ -82,11 +82,13 @@ class TaxTest extends TestCase
             'price' => money(100),
         ]);
 
-        $customerAddress = (new Address())
-            ->withOrganization('YOOtheme Gmbh')
-            ->withCountryCode('DE');
+        $customerAddress = (new \Weble\LaravelEcommerce\Address\Address([
+            'company' => 'YOOtheme Gmbh',
+            'country' => 'DE',
+            'vatId' => 'DEVFCLQFW054',
+        ]));
 
-        $tax = \taxManager()->taxFor($product, $product->cartPrice(), $customerAddress, 'DEVFCLQFW054');
+        $tax = \taxManager()->taxFor($product, $product->cartPrice(), $customerAddress);
 
         // Germany should be 0 for valid eu company
         $this->assertTrue((new Money(0, new Currency($product->cartPrice()->getCurrency())))->equals($tax));

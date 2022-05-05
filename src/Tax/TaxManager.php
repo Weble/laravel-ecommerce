@@ -12,6 +12,7 @@ use CommerceGuys\Tax\TaxableInterface;
 use Exception;
 use Mpociot\VatCalculator\Exceptions\VATCheckUnavailableException;
 use Mpociot\VatCalculator\VatCalculator;
+use Weble\LaravelEcommerce\Address\Address;
 use Weble\LaravelEcommerce\Address\StoreAddress;
 use Weble\LaravelEcommerce\Purchasable;
 
@@ -35,7 +36,7 @@ class TaxManager
         return $this->taxResolver;
     }
 
-    public function taxFor(Purchasable|TaxableInterface $product, ?Money $price = null, ?AddressInterface $address = null, ?string $vatId = null): Money
+    public function taxFor(Purchasable|TaxableInterface $product, ?Money $price = null, ?AddressInterface $address = null): Money
     {
 
         if ($address === null) {
@@ -51,7 +52,7 @@ class TaxManager
         }
 
         if ($this->vatCalculator->shouldCollectVAT($address->getCountryCode())) {
-            return $this->vatFor($price, $address, $vatId);
+            return $this->vatFor($price, $address);
         }
 
         return $this->genericTaxFor($price, $address, $product);
@@ -59,17 +60,7 @@ class TaxManager
 
     public function vatFor(Money $price, AddressInterface $address, ?string $vatId = null): Money
     {
-        $isCompany = (bool) $address->getOrganization();
-        $shouldCheckVatId = config('ecommerce.tax.vat_id_check', true);
-        if ($shouldCheckVatId  && !$vatId) {
-            $isCompany = false;
-        } elseif ($shouldCheckVatId && $vatId) {
-            try {
-                $isCompany = $this->vatCalculator->isValidVATNumber($vatId);
-            } catch (VATCheckUnavailableException) {
-                $isCompany = false;
-            }
-        }
+        $isCompany = $this->isValidEUCompany($address, $vatId);
 
         $this->vatCalculator->calculate($price->getAmount(), $address->getCountryCode(), $address->getPostalCode(), $isCompany);
 
@@ -94,5 +85,33 @@ class TaxManager
         $tax =  $price->multiply((string)$amount);
 
         return $tax;
+    }
+
+    private function isValidEUCompany(AddressInterface $address): bool
+    {
+        if (!$address->getOrganization()) {
+            return false;
+        }
+
+        if (!$address instanceof Address) {
+            return false;
+        }
+
+        $vatId = $address->getVatId();
+
+        if (!$vatId) {
+            return false;
+        }
+
+        $shouldCheckVatId = config('ecommerce.tax.vat_id_check', true);
+        if (!$shouldCheckVatId) {
+            return true;
+        }
+
+        try {
+            return $this->vatCalculator->isValidVATNumber($vatId);
+        } catch (VATCheckUnavailableException) {
+            return false;
+        }
     }
 }
