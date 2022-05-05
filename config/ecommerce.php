@@ -359,6 +359,16 @@ return [
         | Which address should be used when calculating taxes. "shipping" or "billing"
         */
         'address_type' => \Weble\LaravelEcommerce\Address\AddressType::Shipping,
+
+       /*
+       |--------------------------------------------------------------------------
+       | Check Valid VAT ID
+       |--------------------------------------------------------------------------
+       |
+       | In case of EU VAT, should the VAT ID be checked realtime to consider the company valid?
+       | Defaults to true.
+       */
+        'vat_id_check' => true,
     ],
 
     /*
