@@ -52,7 +52,9 @@ class Discount extends DataTransferObject implements Arrayable, Jsonable
         return new Discount([
             'type'       => $type,
             'target'     => DiscountTarget::tryFrom($discount['target']),
-            'value'      => $type === DiscountType::Value ? money($discount['value']['amount'] ?? 0, $discount['value']['currency'] ?? 'USD') : (float)$discount['value'],
+            'value'      => $type === DiscountType::Value
+                                ? new Money($discount['value']['amount'] ?? 0, $discount['value']['currency'] ?? 'USD')
+                                : (float)$discount['value'],
             'attributes' => collect($discount['attributes'] ?? []),
         ]);
     }
