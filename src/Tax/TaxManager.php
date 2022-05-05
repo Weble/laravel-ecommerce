@@ -6,7 +6,6 @@ use Cknow\Money\Money;
 use CommerceGuys\Addressing\AddressInterface;
 use CommerceGuys\Tax\Model\TaxRateAmount;
 use CommerceGuys\Tax\Resolver\Context;
-use CommerceGuys\Tax\Resolver\TaxResolver;
 use CommerceGuys\Tax\Resolver\TaxResolverInterface;
 use CommerceGuys\Tax\TaxableInterface;
 use Exception;
@@ -64,7 +63,7 @@ class TaxManager
 
         $this->vatCalculator->calculate($price->getAmount(), $address->getCountryCode(), $address->getPostalCode(), $isCompany);
 
-        return new Money((string) $this->vatCalculator->getTaxValue(), $price->getCurrency());
+        return new Money((string)$this->vatCalculator->getTaxValue(), $price->getCurrency());
     }
 
     public function genericTaxFor(Money $price, ?AddressInterface $address, TaxableInterface|Purchasable $product): Money
@@ -82,7 +81,7 @@ class TaxManager
         $amount = array_shift($amounts)->getAmount();
 
         /** @var Money $tax */
-        $tax =  $price->multiply((string)$amount);
+        $tax = $price->multiply((string)$amount);
 
         return $tax;
     }
