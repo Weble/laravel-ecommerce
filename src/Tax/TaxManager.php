@@ -6,21 +6,28 @@ use Cknow\Money\Money;
 use CommerceGuys\Addressing\AddressInterface;
 use CommerceGuys\Tax\Model\TaxRateAmount;
 use CommerceGuys\Tax\Resolver\Context;
-use CommerceGuys\Tax\Resolver\TaxResolver;
 use CommerceGuys\Tax\Resolver\TaxResolverInterface;
 use CommerceGuys\Tax\TaxableInterface;
 use Exception;
-use Illuminate\Contracts\Foundation\Application;
+use Mpociot\VatCalculator\Exceptions\VATCheckUnavailableException;
+use Mpociot\VatCalculator\VatCalculator;
+use Weble\LaravelEcommerce\Address\Address;
 use Weble\LaravelEcommerce\Address\StoreAddress;
 use Weble\LaravelEcommerce\Purchasable;
 
 class TaxManager
 {
     protected TaxResolverInterface $taxResolver;
+    protected VatCalculator $vatCalculator;
+    protected StoreAddress $storeAddress;
 
-    public function __construct(Application $app)
+    public function __construct(TaxResolverInterface $taxResolver, VatCalculator $vatCalculator)
     {
-        $this->taxResolver = $app->make(TaxResolverInterface::class);
+        $this->vatCalculator = $vatCalculator;
+        $this->taxResolver = $taxResolver;
+        $this->storeAddress = new StoreAddress();
+
+        $this->vatCalculator->setBusinessCountryCode($this->storeAddress->getCountryCode());
     }
 
     public function resolver(): TaxResolverInterface
@@ -30,9 +37,9 @@ class TaxManager
 
     public function taxFor(Purchasable|TaxableInterface $product, ?Money $price = null, ?AddressInterface $address = null): Money
     {
-        $storeAddress = new StoreAddress();
+
         if ($address === null) {
-            $address = $storeAddress;
+            $address = $this->storeAddress;
         }
 
         if ($product instanceof Purchasable && $price === null) {
@@ -43,11 +50,29 @@ class TaxManager
             throw new Exception("Price cannot be null when calculating taxes");
         }
 
+        if ($this->vatCalculator->shouldCollectVAT($address->getCountryCode())) {
+            return $this->vatFor($price, $address);
+        }
+
+        return $this->genericTaxFor($price, $address, $product);
+    }
+
+    public function vatFor(Money $price, AddressInterface $address, ?string $vatId = null): Money
+    {
+        $isCompany = $this->isValidEUCompany($address, $vatId);
+
+        $this->vatCalculator->calculate($price->getAmount(), $address->getCountryCode(), $address->getPostalCode(), $isCompany);
+
+        return new Money((string)$this->vatCalculator->getTaxValue(), $price->getCurrency());
+    }
+
+    public function genericTaxFor(Money $price, ?AddressInterface $address, TaxableInterface|Purchasable $product): Money
+    {
         $currency = $price->getMoney()->getCurrency();
-        $context  = new Context($address, $storeAddress);
+        $context = new Context($address, $this->storeAddress);
 
         /** @var TaxRateAmount[] $amounts */
-        $amounts = app()->make(TaxResolver::class)->resolveAmounts($product, $context);
+        $amounts = $this->taxResolver->resolveAmounts($product, $context);
 
         if (count($amounts) <= 0) {
             return new Money(0, $currency);
@@ -55,6 +80,37 @@ class TaxManager
 
         $amount = array_shift($amounts)->getAmount();
 
-        return $price->multiply((string) $amount);
+        /** @var Money $tax */
+        $tax = $price->multiply((string)$amount);
+
+        return $tax;
+    }
+
+    private function isValidEUCompany(AddressInterface $address): bool
+    {
+        if (!$address->getOrganization()) {
+            return false;
+        }
+
+        if (!$address instanceof Address) {
+            return false;
+        }
+
+        $vatId = $address->getVatId();
+
+        if (!$vatId) {
+            return false;
+        }
+
+        $shouldCheckVatId = config('ecommerce.tax.vat_id_check', true);
+        if (!$shouldCheckVatId) {
+            return true;
+        }
+
+        try {
+            return $this->vatCalculator->isValidVATNumber($vatId);
+        } catch (VATCheckUnavailableException) {
+            return false;
+        }
     }
 }

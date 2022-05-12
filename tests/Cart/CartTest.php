@@ -146,7 +146,7 @@ class CartTest extends TestCase
     {
         $this->setCartStorageDriver($driver);
 
-        // These is tested with 22% IT vat
+        // These are tested with 22% IT vat
         $product  = ProductFactory::new(['price' => money(100)])->create();
         $product2 = ProductFactory::new(['price' => money(200)])->create();
 

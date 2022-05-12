@@ -22,12 +22,14 @@ use CommerceGuys\Tax\Resolver\TaxType\ChainTaxTypeResolverInterface;
 use CommerceGuys\Tax\Resolver\TaxType\DefaultTaxTypeResolver;
 use CommerceGuys\Tax\Resolver\TaxType\EuTaxTypeResolver;
 use Illuminate\Support\ServiceProvider;
+use Mpociot\VatCalculator\VatCalculator;
 use Weble\LaravelEcommerce\Cart\CartManager;
 use Weble\LaravelEcommerce\Currency\CurrencyManager;
 use Weble\LaravelEcommerce\Facades\Cart;
 use Weble\LaravelEcommerce\Facades\Currency;
 use Weble\LaravelEcommerce\Storage\StorageManager;
 use Weble\LaravelEcommerce\Tax\TaxManager;
+use function Clue\StreamFilter\fun;
 
 class LaravelEcommerceServiceProvider extends ServiceProvider
 {
@@ -110,10 +112,9 @@ class LaravelEcommerceServiceProvider extends ServiceProvider
             ->needs('$chainTaxRateResolver')
             ->give(app('ecommerce.tax.chainTaxRateResolver'));
 
-        $this->app->singleton('ecommerce.tax', function ($app) {
-            $class = $this->app['config']['ecommerce.classes.taxManager'] ?? TaxManager::class;
-
-            return new $class($app);
+        $this->app->bind('ecommerce.tax', function($app) {
+            $taxManagerClass = $this->app['config']['ecommerce.classes.taxManager'] ?? TaxManager::class;
+            return new $taxManagerClass($app->make(TaxResolverInterface::class), $app->make(VatCalculator::class));
         });
     }
 
