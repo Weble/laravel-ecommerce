@@ -2,10 +2,22 @@
 
 namespace Weble\LaravelEcommerce\Order;
 
-abstract class OrderTransition
+use Weble\LaravelEcommerce\Contracts\TransitionInterface;
+
+enum OrderTransition: string implements TransitionInterface
 {
-    public const PAY       = 'pay';
-    public const CANCEL    = 'cancel';
-    public const REFUND    = 'refund';
-    public const COMPLETE  = 'complete';
+    case Pay       = 'pay';
+    case Cancel    = 'cancel';
+    case Refund    = 'refund';
+    case Complete  = 'complete';
+
+    public function value(): string
+    {
+        return $this->value;
+    }
+
+    public function name(): string
+    {
+        return ucfirst($this->value());
+    }
 }

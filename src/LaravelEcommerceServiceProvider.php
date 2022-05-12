@@ -194,9 +194,16 @@ class LaravelEcommerceServiceProvider extends ServiceProvider
         foreach ($stateMachineConfigKeys as $key) {
             $graphKey  = 'ecommerce.' . $key . '.workflow';
             $configKey = config($graphKey . '.graph', 'ecommerce-' . $key);
-            config()->set('state-machine.' . $configKey, config()->get($graphKey));
+
+            $stateMachineClass = config($graphKey . '.state_machine_class', config('ecommerce.classes.stateMachine', StateMachine::class));
+            $config = config()->get($graphKey);
+            $config['state_machine_class'] = $stateMachineClass;
+
+            config()->set('state-machine.' . $configKey, $config);
             $keys[$graphKey] = config($graphKey . '.graph', 'ecommerce-' . $key);
         }
+
+
 
         $this->app->extend('sm.factory', function ($service, $app) use ($keys) {
             foreach ($keys as $graphKey => $key) {

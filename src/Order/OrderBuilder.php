@@ -37,7 +37,7 @@ class OrderBuilder
                 'subtotal'           => $cart->subTotal(),
                 'tax'                => $cart->tax(),
                 'total'              => $cart->total(),
-                'state'              => OrderState::NEW,
+                'state'              => config('ecommerce.order.workflow.default_state', OrderState::New->value()),
             ]);
 
         $this->items = $cart->items()->map(function (CartItem $item) {

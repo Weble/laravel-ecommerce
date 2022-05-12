@@ -2,12 +2,21 @@
 
 namespace Weble\LaravelEcommerce\Payment;
 
-abstract class PaymentState
+use Weble\LaravelEcommerce\Contracts\StateInterface;
+
+enum PaymentState: string implements StateInterface
 {
-    public const NEW        = 'new';
-    public const PROCESSING = 'processing';
-    public const COMPLETED  = 'completed';
-    public const FAILED     = 'failed';
-    public const CANCELED   = 'canceled';
-    public const REFUNDED   = 'refunded';
+    case Created    = 'created';
+    case Processing = 'processing';
+    case Completed  = 'completed';
+    case Failed     = 'failed';
+    case Canceled   = 'canceled';
+    case Refunded   = 'refunded';
+
+    public function value(): string
+    {
+        return $this->value;
+    }
+
+
 }

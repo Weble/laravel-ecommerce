@@ -2,11 +2,23 @@
 
 namespace Weble\LaravelEcommerce\Payment;
 
-abstract class PaymentTransition
+use Weble\LaravelEcommerce\Contracts\TransitionInterface;
+
+enum PaymentTransition: string implements TransitionInterface
 {
-    public const PROCESS       = 'process';
-    public const COMPLETE      = 'complete';
-    public const FAIL          = 'fail';
-    public const CANCEL        = 'cancel';
-    public const REFUND        = 'refund';
+    case Process       = 'process';
+    case Complete      = 'complete';
+    case Fail          = 'fail';
+    case Cancel        = 'cancel';
+    case Refund        = 'refund';
+
+    public function value(): string
+    {
+        return $this->value;
+    }
+
+    public function name(): string
+    {
+        return ucfirst($this->value());
+    }
 }

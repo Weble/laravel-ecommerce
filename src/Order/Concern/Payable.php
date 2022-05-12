@@ -22,7 +22,7 @@ trait Payable
         return $this->payments()->create([
             'total'           => $this->total,
             'payment_gateway' => $this->payment_gateway,
-            'state'           => PaymentState::NEW,
+            'state'           => PaymentState::Created,
             'currency'        => $this->currency,
         ]);
     }

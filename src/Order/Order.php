@@ -30,6 +30,7 @@ class Order extends Model
         'subtotal'           => MoneyIntegerCast::class . ':currency',
         'tax'                => MoneyIntegerCast::class . ':currency',
         'total'              => MoneyIntegerCast::class . ':currency',
+        'state'              => OrderState::class,
     ];
 
     public function __construct(array $attributes = [])

@@ -64,7 +64,7 @@ class EloquentStorage implements StorageInterface
             return $this->fallbackStorage->get($key, $default);
         }
 
-        if ($key !== StorageType::CUSTOMER) {
+        if ($key !== StorageType::Customer->value) {
             $items = $this
                 ->modelQueryFor($key)
                 ->get();
@@ -103,7 +103,7 @@ class EloquentStorage implements StorageInterface
             return $this->fallbackStorage->remove($key);
         }
 
-        if ($key !== StorageType::CUSTOMER) {
+        if ($key !== StorageType::Customer->value) {
             $items = $this->modelQueryFor($key)->get();
 
             if ($items->count() <= 0) {
@@ -132,13 +132,13 @@ class EloquentStorage implements StorageInterface
     protected function modelClassFor(string $key): ?string
     {
         switch ($key) {
-            case StorageType::CUSTOMER:
+            case StorageType::Customer->value:
                 return $this->modelClasses['customerModel'] ?? null;
 
-            case StorageType::DISCOUNTS:
+            case StorageType::Discounts->value:
                 return $this->modelClasses['discountModel'] ?? null;
 
-            case StorageType::ITEMS:
+            case StorageType::Items->value:
                 return $this->modelClasses['cartItemModel'] ?? null;
         }
 

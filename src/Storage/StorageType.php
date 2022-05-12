@@ -2,9 +2,9 @@
 
 namespace Weble\LaravelEcommerce\Storage;
 
-abstract class StorageType
+enum StorageType: string
 {
-    public const ITEMS     = 'items';
-    public const CUSTOMER  = 'customer';
-    public const DISCOUNTS = 'discounts';
+    case Items     = 'items';
+    case Customer  = 'customer';
+    case Discounts = 'discounts';
 }

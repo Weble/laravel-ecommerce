@@ -38,7 +38,7 @@ trait InteractsWithStorage
     protected function loadItemsFromStorage(): void
     {
         $this->items = CartItemCollection::make(
-            $this->storage()->get(StorageType::ITEMS, [])
+            $this->storage()->get(StorageType::Items->value, [])
         )->keyBy(fn (CartItem $item) => $item->getId());
     }
 
@@ -46,7 +46,7 @@ trait InteractsWithStorage
     {
         $this->discounts = DiscountCollection::make(
             $this->storage()->get(
-                StorageType::DISCOUNTS,
+                StorageType::Discounts->value,
                 DiscountCollection::make(),
             )
         );
@@ -55,7 +55,7 @@ trait InteractsWithStorage
     protected function loadCustomerFromStorage(): void
     {
         $this->customer = $this->storage()->get(
-            StorageType::CUSTOMER,
+            StorageType::Customer->value,
             new Customer([
                 'id'              => (string) Str::orderedUuid(),
                 'shippingAddress' => new Address([
