@@ -2,11 +2,18 @@
 
 namespace Weble\LaravelEcommerce\Order;
 
-abstract class OrderState
+use Weble\LaravelEcommerce\Contracts\StateInterface;
+
+enum OrderState: string implements StateInterface
 {
-    public const NEW       = 'new';
-    public const PAYED     = 'payed';
-    public const CANCELED  = 'canceled';
-    public const REFUNDED  = 'refunded';
-    public const COMPLETED = 'completed';
+    case New       = 'new';
+    case Payed     = 'payed';
+    case Canceled  = 'canceled';
+    case Refunded  = 'refunded';
+    case Completed = 'completed';
+
+    public function value(): string
+    {
+        return $this->value;
+    }
 }

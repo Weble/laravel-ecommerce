@@ -95,11 +95,11 @@ class OrderTest extends TestCase
             ->fromCart($cart)
             ->create();
 
-        $this->assertEquals(OrderState::NEW, $order->stateIs());
+        $this->assertEquals(OrderState::New->value(), $order->stateIs());
 
-        $order->apply(OrderTransition::PAY);
+        $order->apply(OrderTransition::Pay);
 
-        $this->assertEquals(OrderState::PAYED, $order->stateIs());
+        $this->assertEquals(OrderState::Payed->value(), $order->stateIs());
     }
 
     /** @test */
@@ -115,7 +115,7 @@ class OrderTest extends TestCase
             ->fromCart($cart)
             ->create();
 
-        $order->apply(OrderTransition::PAY);
+        $order->apply(OrderTransition::Pay);
 
         $this->assertEquals(1, $order->stateHistory()->get()->count());
 
@@ -123,7 +123,7 @@ class OrderTest extends TestCase
             ->fromCart($cart)
             ->create();
 
-        $order2->apply(OrderTransition::PAY);
+        $order2->apply(OrderTransition::Pay);
         $this->assertEquals(1, $order2->stateHistory()->get()->count());
         $this->assertEquals(1, $order->stateHistory()->get()->count());
         $this->assertDatabaseCount('ecommerce_state_history', 2);
@@ -151,12 +151,10 @@ class OrderTest extends TestCase
         $this->assertEquals($order->payment_gateway, $payment->payment_gateway);
         $this->assertEquals($order->currency->getCode(), $payment->currency->getCode());
 
-        $this->assertEquals(OrderState::NEW, $order->stateIs());
-
-        $payment->apply(PaymentTransition::COMPLETE);
+        $payment->apply(PaymentTransition::Complete);
         $order->refresh();
 
-        $this->assertEquals(PaymentState::COMPLETED, $payment->stateIs());
-        $this->assertEquals(OrderState::PAYED, $order->stateIs());
+        $this->assertEquals(PaymentState::Completed->value(), $payment->stateIs());
+        $this->assertEquals(OrderState::Payed->value(), $order->stateIs());
     }
 }

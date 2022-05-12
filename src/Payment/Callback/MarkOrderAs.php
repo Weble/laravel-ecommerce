@@ -3,13 +3,14 @@
 namespace Weble\LaravelEcommerce\Payment\Callback;
 
 use SM\Event\TransitionEvent;
+use Weble\LaravelEcommerce\Contracts\TransitionInterface;
 use Weble\LaravelEcommerce\Payment\Payment;
 
 class MarkOrderAs
 {
-    protected string $transition;
+    protected TransitionInterface $transition;
 
-    public function __construct(string $transition)
+    public function __construct(TransitionInterface $transition)
     {
         $this->transition = $transition;
     }

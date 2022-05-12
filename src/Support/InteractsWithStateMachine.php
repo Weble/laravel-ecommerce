@@ -5,6 +5,8 @@ namespace Weble\LaravelEcommerce\Support;
 use Iben\Statable\Statable;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Collection;
+use Weble\LaravelEcommerce\Contracts\StateInterface;
+use Weble\LaravelEcommerce\Contracts\TransitionInterface;
 use Weble\LaravelEcommerce\Order\StateHistory;
 
 trait InteractsWithStateMachine
@@ -24,15 +26,28 @@ trait InteractsWithStateMachine
         return parent::__call($name, $arguments);
     }
 
-    public function apply($transition, $soft = false, $context = [])
+    public function apply(TransitionInterface $transition, $soft = false, $context = [])
     {
-        if ($this->statableApply($transition, $soft, $context)) {
+        if ($this->statableApply($transition->value(), $soft, $context)) {
             $this->save();
 
             return $this;
         }
 
         throw new InvalidTransitionException($transition, $this);
+    }
+
+    public function stateIs(): string
+    {
+        return $this->state()->value();
+    }
+
+    public function state(): StateInterface
+    {
+        $graph = $this->getGraph();
+        $property = config('state-machine.' . $graph . '.property_path', 'state');
+
+        return $this->{$property};
     }
 
     public function stateHistory(): MorphMany
