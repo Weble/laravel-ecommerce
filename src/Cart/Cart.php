@@ -65,13 +65,13 @@ class Cart implements CartInterface, Jsonable
 
     public function has(string $id): bool
     {
-        return $this->storage()->get(StorageType::ITEMS, collect([]))->has($id);
+        return $this->storage()->get(StorageType::Items->value, collect([]))->has($id);
     }
 
     public function clear(): self
     {
-        $this->storage()->remove(StorageType::ITEMS);
-        $this->storage()->remove(StorageType::DISCOUNTS);
+        $this->storage()->remove(StorageType::Items->value);
+        $this->storage()->remove(StorageType::Discounts->value);
 
         $this->items     = CartItemCollection::make([]);
         $this->discounts = DiscountCollection::make([]);
@@ -92,7 +92,7 @@ class Cart implements CartInterface, Jsonable
         }
 
         $this->items()->put($cartItem->getId(), $cartItem);
-        $this->persist(StorageType::ITEMS, $this->items());
+        $this->persist(StorageType::Items->value, $this->items());
 
         event(new CartItemAdded($cartItem, $this->instanceName()));
 
@@ -106,7 +106,7 @@ class Cart implements CartInterface, Jsonable
         }
 
         $this->items()->put($cartItem->getId(), $cartItem);
-        $this->persist(StorageType::ITEMS, $this->items());
+        $this->persist(StorageType::Items->value, $this->items());
 
         event(new CartItemUpdated($cartItem, $this->instanceName()));
 
@@ -120,7 +120,7 @@ class Cart implements CartInterface, Jsonable
         }
 
         $this->items = $this->items()->except($cartItem->getId());
-        $this->persist(StorageType::ITEMS, $this->items());
+        $this->persist(StorageType::Items->value, $this->items());
 
         event(new CartItemRemoved($cartItem, $this->instanceName()));
 
@@ -131,7 +131,7 @@ class Cart implements CartInterface, Jsonable
     {
         $this->customer = $customer;
 
-        return $this->persist(StorageType::CUSTOMER, $this->customer());
+        return $this->persist(StorageType::Customer->value, $this->customer());
     }
 
     public function withDiscount(Discount $discount): self
@@ -142,13 +142,13 @@ class Cart implements CartInterface, Jsonable
 
         $this->discounts->add($discount);
 
-        return $this->persist(StorageType::DISCOUNTS, $this->discounts());
+        return $this->persist(StorageType::Discounts->value, $this->discounts());
     }
 
     public function removeDiscounts($keys): self
     {
         $this->discounts = $this->discounts->except($keys);
-        $this->persist(StorageType::DISCOUNTS, $this->discounts());
+        $this->persist(StorageType::Discounts->value, $this->discounts());
 
         return $this;
     }
@@ -160,8 +160,8 @@ class Cart implements CartInterface, Jsonable
             $item->clearDiscounts();
         });
 
-        $this->persist(StorageType::DISCOUNTS, $this->discounts());
-        $this->persist(StorageType::ITEMS, $this->items());
+        $this->persist(StorageType::Discounts->value, $this->discounts());
+        $this->persist(StorageType::Items->value, $this->items());
 
         return $this;
     }
