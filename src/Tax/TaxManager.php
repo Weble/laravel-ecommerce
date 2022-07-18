@@ -66,7 +66,7 @@ class TaxManager
 
         $this->vatCalculator->calculate($netPrice, $address->getCountryCode(), $address->getPostalCode(), $isCompany);
 
-        return new Money((string)$this->vatCalculator->getTaxValue(), $price->getCurrency());
+        return new Money($this->vatCalculator->getTaxValue(), $price->getCurrency());
     }
 
     public function genericTaxFor(Money $price, ?AddressInterface $address, TaxableInterface|Purchasable $product): Money
