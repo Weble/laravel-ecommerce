@@ -61,7 +61,10 @@ class TaxManager
     {
         $isCompany = $this->isValidEUCompany($address, $vatId);
 
-        $this->vatCalculator->calculate($price->getAmount(), $address->getCountryCode(), $address->getPostalCode(), $isCompany);
+        $numberOfDecimals = currencyManager()->availableCurrencies()->subunitFor($price->getCurrency());
+        $netPrice = $price->getAmount() / pow(10, $numberOfDecimals);
+
+        $this->vatCalculator->calculate($netPrice, $address->getCountryCode(), $address->getPostalCode(), $isCompany);
 
         return new Money((string)$this->vatCalculator->getTaxValue(), $price->getCurrency());
     }
