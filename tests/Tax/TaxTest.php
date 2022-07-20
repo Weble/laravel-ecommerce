@@ -59,7 +59,7 @@ class TaxTest extends TestCase
 
         // This has IT stadard rate type (22%) and it's a physical product
         $product = new Product([
-            'price' => money(100),
+            'price' => money(520), // € 100,00
         ]);
 
         $customerAddress = (new Address())
@@ -68,7 +68,7 @@ class TaxTest extends TestCase
         $tax = \taxManager()->taxFor($product, $product->cartPrice(), $customerAddress);
 
         // Germany should be 19% for private customer
-        $this->assertTrue((new Money(19, new Currency($product->cartPrice()->getCurrency())))->equals($tax));
+        $this->assertTrue((new Money(98, new Currency($product->cartPrice()->getCurrency())))->equals($tax));
     }
 
     /** @test */

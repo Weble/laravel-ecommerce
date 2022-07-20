@@ -60,10 +60,11 @@ class TaxManager
     public function vatFor(Money $price, AddressInterface $address, ?string $vatId = null): Money
     {
         $isCompany = $this->isValidEUCompany($address, $vatId);
+        $this->vatCalculator->calculate((int) $price->getAmount(), $address->getCountryCode(), $address->getPostalCode(), $isCompany);
 
-        $this->vatCalculator->calculate($price->getAmount(), $address->getCountryCode(), $address->getPostalCode(), $isCompany);
+        $tax = (int) $this->vatCalculator->getTaxValue();
 
-        return new Money((string)$this->vatCalculator->getTaxValue(), $price->getCurrency());
+        return new Money((string) $tax, $price->getCurrency());
     }
 
     public function genericTaxFor(Money $price, ?AddressInterface $address, TaxableInterface|Purchasable $product): Money
@@ -86,7 +87,7 @@ class TaxManager
         return $tax;
     }
 
-    private function isValidEUCompany(AddressInterface $address): bool
+    private function isValidEUCompany(AddressInterface $address, ?string $vatId = null): bool
     {
         if (!$address->getOrganization()) {
             return false;
@@ -96,7 +97,7 @@ class TaxManager
             return false;
         }
 
-        $vatId = $address->getVatId();
+        $vatId = $vatId ?? $address->getVatId();
 
         if (!$vatId) {
             return false;
