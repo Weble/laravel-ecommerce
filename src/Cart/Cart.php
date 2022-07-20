@@ -244,7 +244,7 @@ class Cart implements CartInterface, Jsonable
             'discounts' => $this->discounts()->toArray(),
             'subtotal'  => $this->subTotal()->toArray(),
             'tax'       => $this->tax()->toArray(),
-            'total'     => $this->tax()->toArray(),
+            'total'     => $this->total()->toArray(),
         ];
     }
 
