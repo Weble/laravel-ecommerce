@@ -22,4 +22,6 @@ interface CartInterface extends HasTotals, Arrayable
     public function remove(CartItem $cartItem): CartInterface;
 
     public function update(CartItem $cartItem): CartInterface;
+
+    public function items(): CartItemCollection;
 }
