@@ -23,14 +23,6 @@ class CartItem extends DataTransferObject implements Arrayable, Jsonable
     public Collection $attributes;
     public DiscountCollection $discounts;
 
-    public function __construct(array $parameters = [])
-    {
-        $this->attributes = collect([]);
-        $this->discounts  = DiscountCollection::make([]);
-
-        parent::__construct($parameters);
-    }
-
     public function withDiscount(Discount $discount): self
     {
         if ($discount->target !== DiscountTarget::Item) {
@@ -65,6 +57,7 @@ class CartItem extends DataTransferObject implements Arrayable, Jsonable
             'attributes' => $attributes,
             'quantity'   => $quantity,
             'price'      => $purchasable->cartPrice($attributes),
+            'discounts'  => DiscountCollection::make([]),
         ]);
     }
 
