@@ -20,6 +20,14 @@ class Customer extends DataTransferObject implements Jsonable
 
     public function __construct(array $parameters = [])
     {
+        if (isset($parameters['billingAddress']) && is_array($parameters['billingAddress'])) {
+            $parameters['billingAddress'] = new Address($parameters['billingAddress']);
+        }
+
+        if (isset($parameters['shippingAddress']) && is_array($parameters['shippingAddress'])) {
+            $parameters['shippingAddress'] = new Address($parameters['shippingAddress']);
+        }
+
         $parameters['billingAddress'] ??= new Address([
             'type' => AddressType::Billing,
         ]);
