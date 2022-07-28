@@ -3,8 +3,10 @@
 namespace Weble\LaravelEcommerce\Storage;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
+use Weble\LaravelEcommerce\Cart\CartItem;
 
 class EloquentStorage implements StorageInterface
 {
@@ -73,8 +75,10 @@ class EloquentStorage implements StorageInterface
                 return $default;
             }
 
-            return $items->map(function ($model) {
-                return $model->toCartValue();
+            return $items->mapWithKeys(function (Model|StoresEcommerceData $model) {
+                /** @var CartItem $cartItem */
+                $cartItem = $model->toCartValue();
+                return [$cartItem->getId() => $cartItem];
             });
         }
 

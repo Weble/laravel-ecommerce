@@ -103,6 +103,23 @@ class CartTest extends TestCase
      * @test
      * @dataProvider driversProvider
      */
+    public function can_check_if_item_is_in_cart($driver)
+    {
+        $this->setCartStorageDriver($driver);
+
+        $product  = ProductFactory::new(['price' => money(100)])->create();
+
+        /** @var Cart $cart */
+        $cart     = app('ecommerce.cart');
+        $cartItem = $cart->add($product, 1);
+
+        $this->assertTrue($cart->has($cartItem->getId()));
+    }
+
+    /**
+     * @test
+     * @dataProvider driversProvider
+     */
     public function can_remove_from_cart($driver)
     {
         $this->setCartStorageDriver($driver);
@@ -404,15 +421,15 @@ class CartTest extends TestCase
     public function driversProvider()
     {
         return [
-            [
+            'session' => [
                 'session',
                 SessionStorage::class,
             ],
-            [
+            'cache' => [
                 'cache',
                 CacheStorage::class,
             ],
-            [
+            'eloquent' => [
                 'eloquent',
                 EloquentStorage::class,
             ],
