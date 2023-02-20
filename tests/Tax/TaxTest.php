@@ -47,8 +47,8 @@ class TaxTest extends TestCase
         $amounts = app()->make(TaxResolver::class)->resolveAmounts($product, $context);
         $tax     = $amounts[0]->getAmount();
 
-        $tax = money($tax * 100);
-        $this->assertTrue(money(22)->equals($tax));
+        $tax = money((string) $tax);
+        $this->assertTrue(money(22, $tax->getCurrency())->equals($tax),);
     }
 
     /** @test */
