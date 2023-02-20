@@ -20,8 +20,8 @@ class Discount extends DataTransferObject implements Arrayable, Jsonable
 
     public function __construct(array $parameters = [])
     {
-        $this->attributes = collect([]);
         $parameters['id'] ??= sha1((string)Str::orderedUuid());
+        $parameters['attributes'] ??= Collection::make([]);
 
         parent::__construct($parameters);
     }
