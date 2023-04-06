@@ -2,8 +2,8 @@
 
 namespace Weble\LaravelEcommerce\Order;
 
-use Cknow\Money\Money;
 use Cknow\Money\Casts\MoneyIntegerCast;
+use Cknow\Money\Money;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -44,7 +44,9 @@ class OrderItem extends Model
 
     public static function fromCartItem(CartItem $cartItem): OrderItemBuilder
     {
-        return (new OrderItemBuilder())->fromCartItem($cartItem);
+        /** @var OrderItemBuilder $builder */
+        $builder = config('ecommerce.classes.orderItemBuilder', OrderItemBuilder::class);
+        return (new $builder)->fromCartItem($cartItem);
     }
 
     public function order(): BelongsTo
