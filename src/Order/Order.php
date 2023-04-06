@@ -57,7 +57,9 @@ class Order extends Model
 
     public static function fromCart(CartInterface $cart): OrderBuilder
     {
-        return (new OrderBuilder())->fromCart($cart);
+        /** @var OrderBuilder $builder */
+        $builder = config('ecommerce.classes.orderBuilder', OrderBuilder::class);
+        return (new $builder)->fromCart($cart);
     }
 
     public function items(): HasMany

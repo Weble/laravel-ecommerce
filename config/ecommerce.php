@@ -402,6 +402,8 @@ return [
         'orderModel'        => \Weble\LaravelEcommerce\Order\Order::class,
         'orderItemModel'    => \Weble\LaravelEcommerce\Order\OrderItem::class,
         'orderHistoryModel' => \Weble\LaravelEcommerce\Order\StateHistory::class,
+        'orderBuilder'      => \Weble\LaravelEcommerce\Order\OrderBuilder::class,
+        'orderItemBuilder'  => \Weble\LaravelEcommerce\Order\OrderItemBuilder::class,
         'paymentModel'      => \Weble\LaravelEcommerce\Payment\Payment::class,
         'customerModel'     => \Weble\LaravelEcommerce\Customer\CustomerModel::class,
         'addressModel'      => \Weble\LaravelEcommerce\Address\AddressModel::class,
