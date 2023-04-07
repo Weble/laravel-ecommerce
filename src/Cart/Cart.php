@@ -79,13 +79,16 @@ class Cart implements CartInterface, Jsonable
         return $this;
     }
 
-    public function add(Purchasable $purchasable, float $quantity = 1, ?Collection $attributes = null): CartItem
+    public function add(Purchasable $purchasable, float $quantity = 1, ?Collection $attributes = null, ?Money $price = null): CartItem
     {
         if ($attributes === null) {
             $attributes = collect([]);
         }
 
         $cartItem = CartItem::fromPurchasable($purchasable, $quantity, $attributes);
+        if ($price !== null) {
+            $cartItem->price = $price;
+        }
 
         if ($this->items()->has($cartItem->getId())) {
             $cartItem->quantity += $this->items()->get($cartItem->getId())->quantity;

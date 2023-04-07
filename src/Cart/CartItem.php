@@ -46,17 +46,19 @@ class CartItem extends DataTransferObject implements Arrayable, Jsonable
         return json_encode($this->toArray(), $options);
     }
 
-    public static function fromPurchasable(Purchasable $purchasable, float $quantity = 1, ?Collection $attributes = null): self
+    public static function fromPurchasable(Purchasable $purchasable, float $quantity = 1, ?Collection $attributes = null, ?Money $price = null): self
     {
         if ($attributes === null) {
             $attributes = collect([]);
         }
 
+        $price ??= $purchasable->cartPrice($attributes);
+
         return new static([
             'product'    => $purchasable,
             'attributes' => $attributes,
             'quantity'   => $quantity,
-            'price'      => $purchasable->cartPrice($attributes),
+            'price'      => $price,
             'discounts'  => DiscountCollection::make([]),
         ]);
     }
