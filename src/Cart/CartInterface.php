@@ -6,6 +6,7 @@ use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Support\Collection;
 use Weble\LaravelEcommerce\Price\HasTotals;
 use Weble\LaravelEcommerce\Purchasable;
+use Cknow\Money\Money;
 
 interface CartInterface extends HasTotals, Arrayable
 {
@@ -17,7 +18,7 @@ interface CartInterface extends HasTotals, Arrayable
 
     public function clear(): CartInterface;
 
-    public function add(Purchasable $purchasable, float $quantity = 1, ?Collection $attributes = null): CartItem;
+    public function add(Purchasable $purchasable, float $quantity = 1, ?Collection $attributes = null, ?Money $price = null): CartItem;
 
     public function remove(CartItem $cartItem): CartInterface;
 
