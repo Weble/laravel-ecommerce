@@ -26,6 +26,12 @@ class Discount extends DataTransferObject implements Arrayable, Jsonable
         parent::__construct($parameters);
     }
 
+
+    public function getId(): string
+    {
+        return $this->id;
+    }
+
     public function calculateValue(Money $price): Money
     {
         if ($this->type === DiscountType::Percentage) {
