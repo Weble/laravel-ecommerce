@@ -33,6 +33,11 @@ class DiscountModel extends Model implements StoresEcommerceData, StoresDifferen
         'discount_attributes' => 'collection',
     ];
 
+    public function getId(): string
+    {
+        return $this->getKey();
+    }
+
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
