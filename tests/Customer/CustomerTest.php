@@ -16,9 +16,7 @@ class CustomerTest extends TestCase
 {
     use WithFaker;
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_add_to_cart_storing_in_db()
     {
         config()->set('ecommerce.cart.instances.cart.storage', 'eloquent');
@@ -46,9 +44,7 @@ class CustomerTest extends TestCase
         $this->assertEquals($surname, $storedCustomer->billing_address->surname);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_add_to_cart_for_user_storing_in_db()
     {
         config()->set('ecommerce.cart.instances.cart.storage', 'eloquent');
@@ -68,9 +64,7 @@ class CustomerTest extends TestCase
         $this->assertEquals($user->getKey(), $storedCustomer->user_id);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_add_to_cart_for_user_storing_in_db_multiple_times()
     {
         config()->set('ecommerce.cart.instances.cart.storage', 'eloquent');

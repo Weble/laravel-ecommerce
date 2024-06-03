@@ -15,19 +15,19 @@ use Weble\LaravelEcommerce\Tests\TestCase;
 
 class TaxTest extends TestCase
 {
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_get_tax_resolver()
     {
         $this->assertInstanceOf(TaxResolverInterface::class, app('ecommerce.tax.resolver'));
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_get_tax_manager()
     {
         $this->assertInstanceOf(TaxManager::class, app('ecommerce.tax'));
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_calculate_tax_for_physical_product()
     {
         // This has IT stadard rate type (22%) and it's a physical product
@@ -51,7 +51,7 @@ class TaxTest extends TestCase
         $this->assertTrue(money(22, $tax->getCurrency())->equals($tax),);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_calculate_tax_for_physical_product_with_different_country_eu_private_customer()
     {
         // Disable vat vies check in test
@@ -71,7 +71,7 @@ class TaxTest extends TestCase
         $this->assertTrue((new Money(98, new Currency($product->cartPrice()->getCurrency())))->equals($tax));
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_calculate_tax_for_physical_product_with_different_country_eu_company()
     {
         // Disable vat vies check in test
