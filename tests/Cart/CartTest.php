@@ -24,22 +24,20 @@ use Weble\LaravelEcommerce\Tests\TestCase;
 
 class CartTest extends TestCase
 {
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_get_cart_manager_from_config()
     {
         $this->assertInstanceOf(CartManager::class, app('ecommerce.cart'));
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_load_facade()
     {
         $this->assertInstanceOf(CartManager::class, \Weble\LaravelEcommerce\Facades\Cart::getFacadeRoot());
     }
 
-    /**
-     * @test
-     * @dataProvider driversProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('driversProvider')]
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_get_cart_instances($driver, $expectedStorage)
     {
         $this->setCartStorageDriver($driver);
@@ -61,9 +59,7 @@ class CartTest extends TestCase
         $this->assertEquals('wishlist', $wishlist->instanceName());
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_generate_cart_items_ids_consistently()
     {
         $product = ProductFactory::new(['price' => money(100)])->create();
@@ -78,10 +74,8 @@ class CartTest extends TestCase
         $this->assertEquals($cartItem->toArray(), $restoredCartitem->toArray());
     }
 
-    /**
-     * @test
-     * @dataProvider driversProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('driversProvider')]
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_add_to_cart($driver)
     {
         $this->setCartStorageDriver($driver);
@@ -99,10 +93,8 @@ class CartTest extends TestCase
         $this->assertEquals($cartItem, $retrievedCartItem);
     }
 
-    /**
-     * @test
-     * @dataProvider driversProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('driversProvider')]
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_check_if_item_is_in_cart($driver)
     {
         $this->setCartStorageDriver($driver);
@@ -116,10 +108,8 @@ class CartTest extends TestCase
         $this->assertTrue($cart->has($cartItem->getId()));
     }
 
-    /**
-     * @test
-     * @dataProvider driversProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('driversProvider')]
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_remove_from_cart($driver)
     {
         $this->setCartStorageDriver($driver);
@@ -136,10 +126,8 @@ class CartTest extends TestCase
         $this->assertEquals(1, $cart->items()->total());
     }
 
-    /**
-     * @test
-     * @dataProvider driversProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('driversProvider')]
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_calculate_total($driver)
     {
         $this->setCartStorageDriver($driver);
@@ -155,10 +143,8 @@ class CartTest extends TestCase
         $this->assertTrue($cart->subTotal()->equals(money(400)), $cart->subTotal());
     }
 
-    /**
-     * @test
-     * @dataProvider driversProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('driversProvider')]
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_calculate_tax($driver)
     {
         $this->setCartStorageDriver($driver);
@@ -176,10 +162,8 @@ class CartTest extends TestCase
         $this->assertTrue($cart->total()->equals(money(488)));
     }
 
-    /**
-     * @test
-     * @dataProvider driversProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('driversProvider')]
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_calculate_item_discounts($driver)
     {
         $this->setCartStorageDriver($driver);
@@ -189,20 +173,18 @@ class CartTest extends TestCase
 
         /** @var Cart $cart */
         $cart     = app('ecommerce.cart');
-        $cartItem = $cart->add($product, 2)->withDiscount(new Discount([
-            'value'  => money(10),
-            'type'   => DiscountType::Value,
-            'target' => DiscountTarget::Item,
-        ]));
+        $cartItem = $cart->add($product, 2)->withDiscount(new Discount(
+            value: money(10),
+            target: DiscountTarget::Item,
+            type: DiscountType::Value,
+        ));
         $cart->update($cartItem);
 
         $this->assertTrue($cart->subTotal()->equals(money(180)), $cart->subTotal());
     }
 
-    /**
-     * @test
-     * @dataProvider driversProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('driversProvider')]
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_calculate_subtotal_discounts($driver)
     {
         $this->setCartStorageDriver($driver);
@@ -214,19 +196,17 @@ class CartTest extends TestCase
         $cart = app('ecommerce.cart');
         $cart->add($product, 2);
 
-        $cart->withDiscount(new Discount([
-            'value'  => money(10),
-            'type'   => DiscountType::Value,
-            'target' => DiscountTarget::Subtotal,
-        ]));
+        $cart->withDiscount(new Discount(
+            value: money(10),
+            target: DiscountTarget::Subtotal,
+            type: DiscountType::Value,
+        ));
 
         $this->assertTrue($cart->subTotal()->equals(money(190)));
     }
 
-    /**
-     * @test
-     * @dataProvider driversProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('driversProvider')]
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_calculate_items_discounts($driver)
     {
         $this->setCartStorageDriver($driver);
@@ -238,19 +218,17 @@ class CartTest extends TestCase
         $cart = app('ecommerce.cart');
         $cart->add($product, 2);
 
-        $cart->withDiscount(new Discount([
-            'type'   => DiscountType::Value,
-            'value'  => money(60),
-            'target' => DiscountTarget::Items,
-        ]));
+        $cart->withDiscount(new Discount(
+            value: money(60),
+            target: DiscountTarget::Items,
+            type: DiscountType::Value,
+        ));
 
         $this->assertTrue($cart->subTotal()->equals(money(140)));
     }
 
-    /**
-     * @test
-     * @dataProvider driversProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('driversProvider')]
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_attach_customer_to_cart($driver)
     {
         $this->setCartStorageDriver($driver);
@@ -264,15 +242,15 @@ class CartTest extends TestCase
 
         $this->assertTrue(! $cart->tax()->isZero());
 
-        $customer                 = new Customer([]);
-        $customer->billingAddress = new Address([
-            'country' => 'IT',
-            'state'   => 'VI',
-        ]);
-        $customer->shippingAddress = new Address([
-            'country' => 'US',
-            'state'   => 'NY',
-        ]);
+        $customer                 = new Customer();
+        $customer->billingAddress = new Address(
+            country: 'IT',
+            state  : 'VI',
+        );
+        $customer->shippingAddress = new Address(
+            country: 'US',
+            state  : 'NY',
+        );
 
         $cart->forCustomer($customer);
 
@@ -284,9 +262,7 @@ class CartTest extends TestCase
         config()->set('ecommerce.cart.instances.cart.storage', $driver);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_add_to_cart_storing_in_db()
     {
         $this->setCartStorageDriver('eloquent');
@@ -309,9 +285,7 @@ class CartTest extends TestCase
         $this->assertEquals(0, CartItemModel::query()->count());
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function user_add_to_cart_storing_in_db()
     {
         $this->setCartStorageDriver('eloquent');
@@ -338,9 +312,7 @@ class CartTest extends TestCase
         $this->assertEquals(0, CartItemModel::query()->count());
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function cart_stored_storing_in_db_for_different_users()
     {
         $this->setCartStorageDriver('eloquent');
@@ -387,9 +359,7 @@ class CartTest extends TestCase
         $this->assertEquals(0, CartItemModel::query()->where('user_id', '=', $otherUser->id)->count());
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_add_discount_to_cart_storing_in_db()
     {
         $this->setCartStorageDriver('eloquent');
@@ -401,12 +371,12 @@ class CartTest extends TestCase
         /** @var Cart $cart */
         $cart     = app('ecommerce.cart');
         $cartItem = $cart->add($product, 2);
-        $cart->withDiscount(new Discount([
-            'value'      => $value,
-            'target'     => DiscountTarget::Items,
-            'type'       => DiscountType::Value,
-            'attributes' => $options,
-        ]));
+        $cart->withDiscount(new Discount(
+            value:      $value,
+            target:     DiscountTarget::Items,
+            type:       DiscountType::Value,
+            attributes: $options,
+        ));
 
         $this->assertEquals(1, DiscountModel::query()->count());
 
@@ -418,7 +388,7 @@ class CartTest extends TestCase
         $this->assertEquals(0, $options->diff($storedDiscount->discount_attributes)->count());
     }
 
-    public function driversProvider()
+    public static function driversProvider()
     {
         return [
             'session' => [

@@ -6,10 +6,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Spatie\DataTransferObject\DataTransferObject;
+use Spatie\LaravelData\Data;
 use Weble\LaravelEcommerce\Address\Address;
 use Weble\LaravelEcommerce\Storage\StoresEcommerceData;
-use Weble\LaravelEcommerce\Support\DTOCast;
 
 /**
  * @property string $id
@@ -21,12 +20,12 @@ class CustomerModel extends Model implements StoresEcommerceData
 {
     protected $guarded = [];
 
-    protected $keyType   = 'string';
+    protected $keyType = 'string';
     public $incrementing = false;
 
     protected $casts = [
-        'billing_address'  => DTOCast::class . ':' . Address::class,
-        'shipping_address' => DTOCast::class . ':' . Address::class,
+        'billing_address'  => Address::class,
+        'shipping_address' => Address::class,
     ];
 
     public function __construct(array $attributes = [])
@@ -41,16 +40,16 @@ class CustomerModel extends Model implements StoresEcommerceData
         $this->belongsTo(config('ecommerce.classes.user', '\\App\\Models\\User'));
     }
 
-    public function toCartValue(): DataTransferObject
+    public function toCartValue(): Data
     {
         $userModel = config('ecommerce.classes.user', '\\App\\Models\\User');
 
-        return new Customer([
-            'id'              => $this->getKey(),
-            'user'            => $this->user_id ? $userModel::find($this->user_id) : null,
-            'shippingAddress' => $this->shipping_address,
-            'billingAddress'  => $this->billing_address,
-        ]);
+        return new Customer(
+            id: $this->getKey(),
+            user: $this->user_id ? $userModel::find($this->user_id) : null,
+            billingAddress: $this->billing_address,
+            shippingAddress: $this->shipping_address,
+        );
     }
 
     /**
@@ -84,18 +83,18 @@ class CustomerModel extends Model implements StoresEcommerceData
                 ->where($this->getKeyName(), '=', $customer->getId())
                 ->firstOrFail()
                 ->fill([
-                    'session_id'         => session()->getId(),
-                    'user_id'            => $customer->user ? $customer->user->getKey() : null,
-                    'shipping_address'   => $customer->shippingAddress,
-                    'billing_address'    => $customer->billingAddress,
+                    'session_id'       => session()->getId(),
+                    'user_id'          => $customer->user ? $customer->user->getKey() : null,
+                    'shipping_address' => $customer->shippingAddress,
+                    'billing_address'  => $customer->billingAddress,
                 ]);
         } catch (ModelNotFoundException $e) {
             return (new self([
-                'id'                 => $customer->getId(),
-                'session_id'         => session()->getId(),
-                'user_id'            => $customer->user ? $customer->user->getKey() : null,
-                'shipping_address'   => $customer->shippingAddress,
-                'billing_address'    => $customer->billingAddress,
+                'id'               => $customer->getId(),
+                'session_id'       => session()->getId(),
+                'user_id'          => $customer->user ? $customer->user->getKey() : null,
+                'shipping_address' => $customer->shippingAddress,
+                'billing_address'  => $customer->billingAddress,
             ]));
         }
     }

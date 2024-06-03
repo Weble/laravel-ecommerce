@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Collection;
-use Spatie\DataTransferObject\DataTransferObject;
+use Spatie\LaravelData\Data;
 use Weble\LaravelEcommerce\Discount\Discount;
 use Weble\LaravelEcommerce\Discount\DiscountCollection;
 use Weble\LaravelEcommerce\Purchasable;
@@ -71,15 +71,15 @@ class CartItemModel extends Model implements StoresEcommerceData, StoresDifferen
         }));
     }
 
-    public function toCartValue(): DataTransferObject
+    public function toCartValue(): Data
     {
-        return new CartItem([
-            'price'      => $this->price,
-            'attributes' => $this->product_attributes,
-            'discounts'  => DiscountCollection::make($this->discounts),
-            'product'    => $this->product,
-            'quantity'   => $this->quantity,
-        ]);
+        return new CartItem(
+            product: $this->product,
+            price: $this->price,
+            attributes: $this->product_attributes,
+            discounts: DiscountCollection::make($this->discounts),
+            quantity: $this->quantity,
+        );
     }
 
     /**

@@ -12,9 +12,7 @@ use Weble\LaravelEcommerce\Tests\TestCase;
 
 class MultipleCartsTest extends TestCase
 {
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function stores_different_carts_in_db()
     {
         config()->set('ecommerce.cart.instances.cart.storage', 'eloquent');

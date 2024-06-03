@@ -3,7 +3,7 @@
 namespace Weble\LaravelEcommerce\Storage;
 
 use Illuminate\Database\Eloquent\Builder;
-use Spatie\DataTransferObject\DataTransferObject;
+use Spatie\LaravelData\Data;
 
 /**
  * @method Builder forCurrentUser()
@@ -15,5 +15,5 @@ interface StoresEcommerceData
 
     public function fromCartValue($value, string $key, string $instanceName): self;
 
-    public function toCartValue(): DataTransferObject;
+    public function toCartValue(): Data;
 }

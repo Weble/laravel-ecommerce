@@ -8,11 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
 use Money\Currency;
-use Spatie\DataTransferObject\DataTransferObject;
+use Spatie\LaravelData\Data;
 use Weble\LaravelEcommerce\Storage\StoresDifferentInstances;
 use Weble\LaravelEcommerce\Storage\StoresEcommerceData;
 use Weble\LaravelEcommerce\Support\CurrencyCast;
-use Weble\LaravelEcommerce\Support\DTOCast;
 
 /**
  * @property DiscountType $type
@@ -49,14 +48,14 @@ class DiscountModel extends Model implements StoresEcommerceData, StoresDifferen
         return $value;
     }
 
-    public function toCartValue(): DataTransferObject
+    public function toCartValue(): Data
     {
-        return new Discount([
-            'type'       => $this->type,
-            'target'     => $this->target,
-            'value'      => $this->value,
-            'attributes' => $this->discount_attributes,
-        ]);
+        return new Discount(
+            type:       $this->type,
+            target:     $this->target,
+            value:      $this->value,
+            attributes: $this->discount_attributes,
+        );
     }
 
     /**

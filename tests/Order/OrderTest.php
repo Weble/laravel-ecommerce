@@ -16,7 +16,7 @@ use Weble\LaravelEcommerce\Tests\TestCase;
 
 class OrderTest extends TestCase
 {
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_create_order_from_cart()
     {
         $product = ProductFactory::new(['price' => money(100)])->create();
@@ -36,7 +36,7 @@ class OrderTest extends TestCase
         $this->assertEquals($product->getKey(), $order->items->first()->product->getKey());
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function order_has_unique_hash()
     {
         $product = ProductFactory::new()->create(['price' => money(100)]);
@@ -53,7 +53,7 @@ class OrderTest extends TestCase
         $this->assertEquals(1, Order::whereHash($order->hash)->count());
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function order_items_are_stored_correctly()
     {
         $product = ProductFactory::new()->create(['price' => money(100)]);
@@ -82,7 +82,7 @@ class OrderTest extends TestCase
         $this->assertDatabaseCount('order_items', 2);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function uses_state_machine_to_manage_order()
     {
         $product = ProductFactory::new()->create(['price' => money(100)]);
@@ -102,7 +102,7 @@ class OrderTest extends TestCase
         $this->assertEquals(OrderState::Payed->value(), $order->stateIs());
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function order_history_is_stored_correctly()
     {
         $product = ProductFactory::new()->create(['price' => money(100)]);
@@ -129,7 +129,7 @@ class OrderTest extends TestCase
         $this->assertDatabaseCount('ecommerce_state_history', 2);
     }
 
-    /** @test */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function order_creates_payment()
     {
         $product = ProductFactory::new()->create(['price' => money(100)]);

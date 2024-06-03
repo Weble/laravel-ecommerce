@@ -39,7 +39,7 @@ trait InteractsWithStorage
     {
         $this->items = CartItemCollection::make(
             $this->storage()->get(StorageType::Items->value, [])
-        )->keyBy(fn (CartItem $item) => $item->getId());
+        )->keyBy(fn(CartItem $item) => $item->getId());
     }
 
     protected function loadDiscountsFromStorage(): void
@@ -56,15 +56,15 @@ trait InteractsWithStorage
     {
         $this->customer = $this->storage()->get(
             StorageType::Customer->value,
-            new Customer([
-                'id'              => (string) Str::orderedUuid(),
-                'shippingAddress' => new Address([
-                    'type' => AddressType::Shipping,
-                ]),
-                'billingAddress' => new Address([
-                    'type' => AddressType::Billing,
-                ]),
-            ])
+            new Customer(
+                id: (string)Str::orderedUuid(),
+                billingAddress: new Address(
+                    type: AddressType::Billing,
+                ),
+                shippingAddress: new Address(
+                    type: AddressType::Shipping,
+                ),
+            )
         );
     }
 }

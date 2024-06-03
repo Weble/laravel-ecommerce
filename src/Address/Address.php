@@ -6,35 +6,25 @@ use CommerceGuys\Addressing\AddressInterface;
 use CommerceGuys\Addressing\Country\Country;
 use CommerceGuys\Addressing\Country\CountryRepositoryInterface;
 use Illuminate\Http\Request;
-use Spatie\DataTransferObject\DataTransferObject;
+use Spatie\LaravelData\Data;
 
-class Address extends DataTransferObject implements AddressInterface
+class Address extends Data implements AddressInterface
 {
-    public string $name         = '';
-    public string $surname      = '';
-    public string $company      = '';
-    public string $vatId        = '';
-    public string $personalId   = '';
-    public string $country;
-    public string $street = '';
-    public string $zip    = '';
-    public string $state  = '';
-    public string $city   = '';
-    public AddressType $type;
-
-    public function __construct(array $parameters = [])
+    public function __construct(
+        public string      $name = '',
+        public string      $surname = '',
+        public string      $company = '',
+        public string      $vatId = '',
+        public string      $personalId = '',
+        public string      $country = 'IT',
+        public string      $street = '',
+        public string      $zip = '',
+        public string      $state = '',
+        public string      $city = '',
+        public AddressType $type = AddressType::Shipping,
+    )
     {
-        $parameters['country'] ??= config('ecommerce.store.address.country', 'IT');
 
-        $type = $parameters['type'] ?? AddressType::Shipping;
-
-        if (! $type instanceof AddressType) {
-            $type = AddressType::from($type);
-        }
-
-        $parameters['type'] = $type;
-
-        parent::__construct($parameters);
     }
 
     public function country(): Country

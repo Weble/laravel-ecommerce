@@ -16,9 +16,7 @@ class CustomerTest extends TestCase
 {
     use WithFaker;
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_add_to_cart_storing_in_db()
     {
         config()->set('ecommerce.cart.instances.cart.storage', 'eloquent');
@@ -27,13 +25,13 @@ class CustomerTest extends TestCase
 
         $surname = $this->faker->lastName;
 
-        $customer = new Customer([
-            'billingAddress' => new Address([
-                'type'    => AddressType::Billing,
-                'name'    => $name,
-                'surname' => $surname,
-            ]),
-        ]);
+        $customer = new Customer(
+            billingAddress: new Address(
+                name: $name,
+                surname: $surname,
+                type: AddressType::Billing,
+            ),
+        );
 
         /** @var Cart $cart */
         $cart = app('ecommerce.cart');
@@ -46,17 +44,15 @@ class CustomerTest extends TestCase
         $this->assertEquals($surname, $storedCustomer->billing_address->surname);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_add_to_cart_for_user_storing_in_db()
     {
         config()->set('ecommerce.cart.instances.cart.storage', 'eloquent');
 
-        $user     = UserFactory::new()->create();
-        $customer = new Customer([
-            'user' => $user,
-        ]);
+        $user = UserFactory::new()->create();
+        $customer = new Customer(
+            user: $user,
+        );
 
         /** @var Cart $cart */
         $cart = app('ecommerce.cart');
@@ -68,17 +64,15 @@ class CustomerTest extends TestCase
         $this->assertEquals($user->getKey(), $storedCustomer->user_id);
     }
 
-    /**
-     * @test
-     */
+    #[\PHPUnit\Framework\Attributes\Test]
     public function can_add_to_cart_for_user_storing_in_db_multiple_times()
     {
         config()->set('ecommerce.cart.instances.cart.storage', 'eloquent');
 
-        $user     = UserFactory::new()->create();
-        $customer = new Customer([
-            'user' => $user,
-        ]);
+        $user = UserFactory::new()->create();
+        $customer = new Customer(
+            user: $user,
+        );
 
         /** @var Cart $cart */
         $cart = app('ecommerce.cart');
@@ -93,11 +87,11 @@ class CustomerTest extends TestCase
         $surname = $this->faker->lastName;
 
         /** @var Cart $cart */
-        $customer->billingAddress = new Address([
-            'type'    => AddressType::Billing,
-            'name'    => $name,
-            'surname' => $surname,
-        ]);
+        $customer->billingAddress = new Address(
+            type: AddressType::Billing,
+            name: $name,
+            surname: $surname,
+        );
         $cart->forCustomer($customer);
 
         // Should be the same as before

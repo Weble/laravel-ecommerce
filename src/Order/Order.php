@@ -11,7 +11,6 @@ use Weble\LaravelEcommerce\Cart\CartInterface;
 use Weble\LaravelEcommerce\Customer\Customer;
 use Weble\LaravelEcommerce\Order\Concern\Payable;
 use Weble\LaravelEcommerce\Support\CurrencyCast;
-use Weble\LaravelEcommerce\Support\DTOCast;
 use Weble\LaravelEcommerce\Support\InteractsWithStateMachine;
 
 class Order extends Model
@@ -21,7 +20,7 @@ class Order extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'customer'           => DTOCast::class . ':' . Customer::class,
+        'customer'           => Customer::class,
         'currency'           => CurrencyCast::class,
         'discounts'          => 'collection',
         'discounts_subtotal' => MoneyIntegerCast::class . ':currency',
