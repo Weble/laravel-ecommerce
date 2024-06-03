@@ -173,11 +173,11 @@ class CartTest extends TestCase
 
         /** @var Cart $cart */
         $cart     = app('ecommerce.cart');
-        $cartItem = $cart->add($product, 2)->withDiscount(new Discount([
-            'value'  => money(10),
-            'type'   => DiscountType::Value,
-            'target' => DiscountTarget::Item,
-        ]));
+        $cartItem = $cart->add($product, 2)->withDiscount(new Discount(
+            value: money(10),
+            target: DiscountTarget::Item,
+            type: DiscountType::Value,
+        ));
         $cart->update($cartItem);
 
         $this->assertTrue($cart->subTotal()->equals(money(180)), $cart->subTotal());
@@ -196,11 +196,11 @@ class CartTest extends TestCase
         $cart = app('ecommerce.cart');
         $cart->add($product, 2);
 
-        $cart->withDiscount(new Discount([
-            'value'  => money(10),
-            'type'   => DiscountType::Value,
-            'target' => DiscountTarget::Subtotal,
-        ]));
+        $cart->withDiscount(new Discount(
+            value: money(10),
+            target: DiscountTarget::Subtotal,
+            type: DiscountType::Value,
+        ));
 
         $this->assertTrue($cart->subTotal()->equals(money(190)));
     }
@@ -218,11 +218,11 @@ class CartTest extends TestCase
         $cart = app('ecommerce.cart');
         $cart->add($product, 2);
 
-        $cart->withDiscount(new Discount([
-            'type'   => DiscountType::Value,
-            'value'  => money(60),
-            'target' => DiscountTarget::Items,
-        ]));
+        $cart->withDiscount(new Discount(
+            value: money(60),
+            target: DiscountTarget::Items,
+            type: DiscountType::Value,
+        ));
 
         $this->assertTrue($cart->subTotal()->equals(money(140)));
     }
@@ -242,15 +242,15 @@ class CartTest extends TestCase
 
         $this->assertTrue(! $cart->tax()->isZero());
 
-        $customer                 = new Customer([]);
-        $customer->billingAddress = new Address([
-            'country' => 'IT',
-            'state'   => 'VI',
-        ]);
-        $customer->shippingAddress = new Address([
-            'country' => 'US',
-            'state'   => 'NY',
-        ]);
+        $customer                 = new Customer();
+        $customer->billingAddress = new Address(
+            country: 'IT',
+            state  : 'VI',
+        );
+        $customer->shippingAddress = new Address(
+            country: 'US',
+            state  : 'NY',
+        );
 
         $cart->forCustomer($customer);
 
@@ -371,12 +371,12 @@ class CartTest extends TestCase
         /** @var Cart $cart */
         $cart     = app('ecommerce.cart');
         $cartItem = $cart->add($product, 2);
-        $cart->withDiscount(new Discount([
-            'value'      => $value,
-            'target'     => DiscountTarget::Items,
-            'type'       => DiscountType::Value,
-            'attributes' => $options,
-        ]));
+        $cart->withDiscount(new Discount(
+            value:      $value,
+            target:     DiscountTarget::Items,
+            type:       DiscountType::Value,
+            attributes: $options,
+        ));
 
         $this->assertEquals(1, DiscountModel::query()->count());
 

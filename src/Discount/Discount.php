@@ -3,33 +3,28 @@
 namespace Weble\LaravelEcommerce\Discount;
 
 use Cknow\Money\Money;
-use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use Spatie\DataTransferObject\DataTransferObject;
+use Spatie\LaravelData\Data;
 
-class Discount extends DataTransferObject implements Arrayable, Jsonable
+class Discount extends Data
 {
-    public string $id;
-    /** @var \Cknow\Money\Money|\Money\Money|float|int */
-    public $value;
-    public DiscountTarget $target;
-    public DiscountType $type;
-    public Collection $attributes;
-
-    public function __construct(array $parameters = [])
+    public function __construct(
+        public Money|int      $value,
+        public ?string        $id = null,
+        public DiscountTarget $target = DiscountTarget::Items,
+        public DiscountType   $type = DiscountType::Percentage,
+        public ?Collection    $attributes = null,
+    )
     {
-        $parameters['id'] ??= sha1((string)Str::orderedUuid());
-        $parameters['attributes'] ??= Collection::make([]);
-
-        parent::__construct($parameters);
+        $this->id ??= sha1((string)Str::orderedUuid());
+        $this->attributes ??= Collection::make([]);
     }
 
     public function calculateValue(Money $price): Money
     {
         if ($this->type === DiscountType::Percentage) {
-            return $price->multiply((string) ($this->value / 100));
+            return $price->multiply((string)($this->value / 100));
         }
 
         return $this->value;
@@ -40,22 +35,17 @@ class Discount extends DataTransferObject implements Arrayable, Jsonable
         return $this->target;
     }
 
-    public function toJson($options = 0): string
-    {
-        return json_encode($this->toArray(), $options);
-    }
-
     public static function fromArray(array $discount): self
     {
         $type = DiscountType::tryFrom($discount['type']);
 
-        return new Discount([
-            'type'       => $type,
-            'target'     => DiscountTarget::tryFrom($discount['target']),
-            'value'      => $type === DiscountType::Value
-                                ? new Money($discount['value']['amount'] ?? 0, $discount['value']['currency'] ?? 'USD')
-                                : (float)$discount['value'],
-            'attributes' => collect($discount['attributes'] ?? []),
-        ]);
+        return new Discount(
+            value: $type === DiscountType::Value
+                ? new Money($discount['value']['amount'] ?? 0, $discount['value']['currency'] ?? 'USD')
+                : (float)$discount['value'],
+            target: DiscountTarget::tryFrom($discount['target']),
+            type: $type,
+            attributes: collect($discount['attributes'] ?? []),
+        );
     }
 }

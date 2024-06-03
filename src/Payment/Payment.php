@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Weble\LaravelEcommerce\Customer\Customer;
 use Weble\LaravelEcommerce\Order\Order;
 use Weble\LaravelEcommerce\Support\CurrencyCast;
-use Weble\LaravelEcommerce\Support\DTOCast;
 use Weble\LaravelEcommerce\Support\InteractsWithStateMachine;
 
 class Payment extends Model
@@ -18,7 +17,7 @@ class Payment extends Model
     protected $guarded = [];
 
     protected $casts = [
-        'customer'           => DTOCast::class . ':' . Customer::class,
+        'customer'           => Customer::class,
         'currency'           => CurrencyCast::class,
         'discounts'          => 'collection',
         'discounts_subtotal' => MoneyIntegerCast::class . ':currency',

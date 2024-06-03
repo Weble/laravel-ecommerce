@@ -5,6 +5,8 @@ namespace Weble\LaravelEcommerce\Tests;
 use Cknow\Money\MoneyServiceProvider;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\LaravelData\LaravelDataServiceProvider;
+use Spatie\LaravelData\Support\Creation\ValidationStrategy;
 use Swap\Laravel\SwapServiceProvider;
 use Weble\LaravelEcommerce\LaravelEcommerceServiceProvider;
 use Weble\LaravelEcommerce\Tests\mocks\User;
@@ -28,6 +30,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
             MoneyServiceProvider::class,
             \Sebdesign\SM\ServiceProvider::class,
             \Iben\Statable\ServiceProvider::class,
+            LaravelDataServiceProvider::class,
             LaravelEcommerceServiceProvider::class,
         ];
     }
@@ -53,6 +56,8 @@ class TestCase extends \Orchestra\Testbench\TestCase
         ]);
 
         $app['config']->set('ecommerce.classes.user', User::class);
+
+
     }
 
     protected function setupDatabase()

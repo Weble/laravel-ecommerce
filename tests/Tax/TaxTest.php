@@ -82,11 +82,11 @@ class TaxTest extends TestCase
             'price' => money(100),
         ]);
 
-        $customerAddress = (new \Weble\LaravelEcommerce\Address\Address([
-            'company' => 'YOOtheme Gmbh',
-            'country' => 'DE',
-            'vatId' => 'DEVFCLQFW054',
-        ]));
+        $customerAddress = new \Weble\LaravelEcommerce\Address\Address(
+            company: 'YOOtheme Gmbh',
+            vatId: 'DEVFCLQFW054',
+            country: 'DE',
+        );
 
         $tax = \taxManager()->taxFor($product, $product->cartPrice(), $customerAddress);
 

@@ -3,41 +3,32 @@
 namespace Weble\LaravelEcommerce\Customer;
 
 use CommerceGuys\Addressing\AddressInterface;
-use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Str;
-use Spatie\DataTransferObject\DataTransferObject;
+use Spatie\LaravelData\Data;
 use Weble\LaravelEcommerce\Address\Address;
 use Weble\LaravelEcommerce\Address\AddressType;
 use Weble\LaravelEcommerce\Address\StoreAddress;
 
-class Customer extends DataTransferObject implements Jsonable
+class Customer extends Data
 {
-    public string $id;
-    public $user = null;
-    public ?string $email;
-    public ?Address $billingAddress;
-    public ?Address $shippingAddress;
-
-    public function __construct(array $parameters = [])
+    public function __construct(
+        public ?string $id = null,
+        public $user = null,
+        public ?string $email = null,
+        public ?Address $billingAddress = null,
+        public ?Address $shippingAddress = null,
+    )
     {
-        if (isset($parameters['billingAddress']) && is_array($parameters['billingAddress'])) {
-            $parameters['billingAddress'] = new Address($parameters['billingAddress']);
-        }
 
-        if (isset($parameters['shippingAddress']) && is_array($parameters['shippingAddress'])) {
-            $parameters['shippingAddress'] = new Address($parameters['shippingAddress']);
-        }
+        $this->billingAddress ??= new Address(
+            type: AddressType::Billing,
+        );
 
-        $parameters['billingAddress'] ??= new Address([
-            'type' => AddressType::Billing,
-        ]);
-        $parameters['shippingAddress'] ??= new Address([
-            'type' => AddressType::Shipping,
-        ]);
+        $this->shippingAddress ??= new Address(
+            type: AddressType::Shipping,
+        );
 
-        $parameters['id'] ??= sha1((string)Str::orderedUuid());
-
-        parent::__construct($parameters);
+        $this->id ??= sha1((string)Str::orderedUuid());
     }
 
     public function getId(): string
@@ -58,10 +49,5 @@ class Customer extends DataTransferObject implements Jsonable
         }
 
         return new StoreAddress();
-    }
-
-    public function toJson($options = 0): string
-    {
-        return json_encode($this->toArray(), $options);
     }
 }

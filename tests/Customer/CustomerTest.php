@@ -25,13 +25,13 @@ class CustomerTest extends TestCase
 
         $surname = $this->faker->lastName;
 
-        $customer = new Customer([
-            'billingAddress' => new Address([
-                'type'    => AddressType::Billing,
-                'name'    => $name,
-                'surname' => $surname,
-            ]),
-        ]);
+        $customer = new Customer(
+            billingAddress: new Address(
+                name: $name,
+                surname: $surname,
+                type: AddressType::Billing,
+            ),
+        );
 
         /** @var Cart $cart */
         $cart = app('ecommerce.cart');
@@ -49,10 +49,10 @@ class CustomerTest extends TestCase
     {
         config()->set('ecommerce.cart.instances.cart.storage', 'eloquent');
 
-        $user     = UserFactory::new()->create();
-        $customer = new Customer([
-            'user' => $user,
-        ]);
+        $user = UserFactory::new()->create();
+        $customer = new Customer(
+            user: $user,
+        );
 
         /** @var Cart $cart */
         $cart = app('ecommerce.cart');
@@ -69,10 +69,10 @@ class CustomerTest extends TestCase
     {
         config()->set('ecommerce.cart.instances.cart.storage', 'eloquent');
 
-        $user     = UserFactory::new()->create();
-        $customer = new Customer([
-            'user' => $user,
-        ]);
+        $user = UserFactory::new()->create();
+        $customer = new Customer(
+            user: $user,
+        );
 
         /** @var Cart $cart */
         $cart = app('ecommerce.cart');
@@ -87,11 +87,11 @@ class CustomerTest extends TestCase
         $surname = $this->faker->lastName;
 
         /** @var Cart $cart */
-        $customer->billingAddress = new Address([
-            'type'    => AddressType::Billing,
-            'name'    => $name,
-            'surname' => $surname,
-        ]);
+        $customer->billingAddress = new Address(
+            type: AddressType::Billing,
+            name: $name,
+            surname: $surname,
+        );
         $cart->forCustomer($customer);
 
         // Should be the same as before

@@ -4,24 +4,27 @@ namespace Weble\LaravelEcommerce\Cart;
 
 use Cknow\Money\Money;
 use CommerceGuys\Addressing\AddressInterface;
-use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\Contracts\Support\Jsonable;
+
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Collection;
-use Spatie\DataTransferObject\DataTransferObject;
+use Spatie\LaravelData\Data;
 use Weble\LaravelEcommerce\Discount\Discount;
 use Weble\LaravelEcommerce\Discount\DiscountCollection;
 use Weble\LaravelEcommerce\Discount\DiscountTarget;
 use Weble\LaravelEcommerce\Discount\InvalidDiscountException;
 use Weble\LaravelEcommerce\Purchasable;
 
-class CartItem extends DataTransferObject implements Arrayable, Jsonable
+class CartItem extends Data
 {
-    public Purchasable $product;
-    public float $quantity = 1;
-    public Money $price;
-    public Collection $attributes;
-    public DiscountCollection $discounts;
+    public function __construct(
+        public Purchasable        $product,
+        public Money              $price,
+        public Collection         $attributes,
+        public DiscountCollection $discounts,
+        public float              $quantity = 1,
+    )
+    {
+    }
 
     public function withDiscount(Discount $discount): self
     {
@@ -41,10 +44,6 @@ class CartItem extends DataTransferObject implements Arrayable, Jsonable
         return $this;
     }
 
-    public function toJson($options = 0): string
-    {
-        return json_encode($this->toArray(), $options);
-    }
 
     public static function fromPurchasable(Purchasable $purchasable, float $quantity = 1, ?Collection $attributes = null, ?Money $price = null): self
     {
@@ -54,13 +53,13 @@ class CartItem extends DataTransferObject implements Arrayable, Jsonable
 
         $price ??= $purchasable->cartPrice($attributes);
 
-        return new static([
-            'product'    => $purchasable,
-            'attributes' => $attributes,
-            'quantity'   => $quantity,
-            'price'      => $price,
-            'discounts'  => DiscountCollection::make([]),
-        ]);
+        return new static(
+            product: $purchasable,
+            price: $price,
+            attributes: $attributes,
+            discounts: DiscountCollection::make([]),
+            quantity: $quantity,
+        );
     }
 
     public function getId(): string
